@@ -1,1 +1,2 @@
 # team-sigma
+Zaur Babayev
