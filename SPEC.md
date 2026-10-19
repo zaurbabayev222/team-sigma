@@ -9,9 +9,13 @@ Most of this page is already decided by the event and the [rubric](docs/criteria
 The examples after each `FILL IN` show the shape of an answer. They are not hints about the prompts.
 
 ## 1. Team and prompt
-- **Team name:** FILL IN. Example: "Control Freaks"
-- **Track:** FILL IN, on-campus (24 hours) or Virtual DL Challenge (7 days). See [`docs/schedule.md`](docs/schedule.md).
-- **Prompt we chose:** FILL IN, the prompt number and title, copied from the [Devpost](https://six-sigma-hackathon.devpost.com/) challenge page at kickoff.
+- **Team name:** Sigma Airlines
+- **Track:** Virtual DL Challenge (7 days). See [`docs/schedule.md`](docs/schedule.md).
+- **Prompt we chose:** Prompt 1, "Industrial Systems, 3D Printing for Aerospace", from the [Devpost](https://six-sigma-hackathon.devpost.com/) challenge page:
+  > An aerospace contractor 3D-printing titanium brackets is failing client strength tests. They don't
+  > currently track enough environmental and stress parameters against final part strength. Design a
+  > tool to monitor and flag when and whether the printing process is capable of meeting strict
+  > aerospace tolerances, and help contractors resolve these issues.
 - **Our public repo:** FILL IN. Example: "github.com/our-team/our-tool"
 
 ## 2. User and use case (rubric: scope 5, user and use case 5)
