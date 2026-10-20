@@ -74,9 +74,9 @@ tasks:
   - id: H-04
     title: Working tool - one demo copied to app/ and wired to the H-03 function
     points: "25 - Tool Implementation: an effective, working tool (does it run?)"
-    status: todo
-    owner: ""
-    started_at: ""
+    status: in_progress
+    owner: "Zaur Babayev (agent)"
+    started_at: "2026-10-20 23:21 UTC"
     owns: ["app/"]
     notes: >
       Copy ONE folder from demos/ (the one named in SPEC section 5) to app/.
