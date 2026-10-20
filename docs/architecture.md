@@ -8,6 +8,10 @@ step ([activity diagram](#2-activity-diagram)), and which function belongs to wh
 maps each subsystem to a CONTRACT task and a teammate. Details live in [`SPEC.md`](../SPEC.md);
 reasons in [`decisions.md`](decisions.md).
 
+Each diagram has an image link under it, in case GitHub draws the Mermaid code badly. The images
+are exported from the code: after editing a diagram, regenerate its image with
+`npx -y @mermaid-js/mermaid-cli@11.4.2 -i <diagram>.mmd -o docs/images/diagram-<name>.png -b white -s 2`.
+
 ## 1. Use case diagram
 
 ```mermaid
@@ -39,6 +43,8 @@ flowchart LR
     UC7 -. includes .-> UC3
     UC7 -. includes .-> UC4
 ```
+
+[Open this diagram as an image](images/diagram-use-case.png)
 
 The quality engineer is the one user release 1 is built for. Judges use the same page through the
 demo datasets. Adding a process profile is a future use case (dashed); release 1 only makes it
@@ -75,6 +81,8 @@ flowchart TD
     A10 --> F([End])
 ```
 
+[Open this diagram as an image](images/diagram-activity.png)
+
 "File valid?" checks four things: the required columns are present, no `uts_mpa` is blank, every
 build has the same number of coupons, and there are at least 2 builds. Every path ends with the
 numbers on screen. Only the verdict changes, and it always says why.
@@ -101,6 +109,8 @@ flowchart LR
     class F4,F5 stats
 ```
 
+[Open this diagram as an image](images/diagram-ffbd.png)
+
 Blue = front end · amber = API and profile · green = statistics engine.
 
 Function 4.0 broken down (all inside `app/qc.py`, no web code):
@@ -117,6 +127,8 @@ flowchart LR
     G4 --> G8["5.0<br>Verdict"]
     G5 --> G8
 ```
+
+[Open this diagram as an image](images/diagram-ffbd-statistics.png)
 
 The constants in 4.2 are c4, A3, B3 and B4, computed from the number of coupons per build. The
 normality check in 4.7 is a Shapiro-Wilk test.
@@ -156,3 +168,5 @@ flowchart LR
     D --> R
     R --> W["B: H-07 README,<br>H-08 submit"]
 ```
+
+[Open this diagram as an image](images/diagram-parallel-work.png)
