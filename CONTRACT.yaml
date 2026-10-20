@@ -58,9 +58,9 @@ tasks:
   - id: H-03
     title: Core QC statistic as one plain, tested function
     points: "25 - Tool Implementation: valid analyses relevant to quality control in R or Python"
-    status: todo
-    owner: ""
-    started_at: ""
+    status: in_progress
+    owner: "Zaur Babayev (agent)"
+    started_at: "2026-10-20 22:48 UTC"
     owns: ["app/qc.py", "app/qc.R", "app/requirements.txt", "tests/"]
     notes: >
       Load the stats-first-steering skill before writing any statistics. Plain
