@@ -2,8 +2,8 @@
 
 Sigma Airlines · AeroQual release 1 · written 2026-10-20
 
-**Deadline: Friday Oct 23, 3 PM ET** on [Devpost](https://six-sigma-hackathon.devpost.com/). We aim to
-submit by **Friday noon** to leave a buffer.
+**Deadline: Friday Oct 23, 3 PM ET** on [Devpost](https://six-sigma-hackathon.devpost.com/). **Our own deadline is
+Thursday Oct 22, 8 PM ET**: everything done and submitted, leaving Friday as a buffer.
 
 **How this works:** every task has an owner (A, B, C or D, below). Each owner starts their task by its
 *start by* time and pushes progress as they go. C is also the **backup**: if a task has not started by
@@ -79,11 +79,11 @@ name as owner). *Check-in* = the work so far is pushed and the chat knows where 
 |---|---|---|---|---|---|---|
 | H-03 | Statistics function and tests | A | Tue Oct 20, 9 PM | Wed Oct 21, 9 AM | Wed Oct 21, noon | ~4 h |
 | H-02 | Three datasets + codebook | B | Tue Oct 20, 9 PM | Wed Oct 21, 9 AM | Wed Oct 21, noon | ~3 h |
-| H-04 | API + LPBF profile | C | Tue Oct 20 | Wed Oct 21, noon | Wed Oct 21, 6 PM | ~4 h |
-| H-05 | Page + demo walkthrough | D | Wed Oct 21, 9 AM | Wed Oct 21, 9 PM | Thu Oct 22, 6 PM | ~5 h |
-| H-06 | Deploy to Posit Connect | C | Wed Oct 21, 6 PM | Thu Oct 22, 9 AM | Thu Oct 22, noon | ~2 h |
-| H-07 | README | B | Thu Oct 22, noon | Thu Oct 22, 6 PM | Thu Oct 22, 9 PM | ~2 h |
-| H-08 | Fresh-clone check + Devpost | B | Fri Oct 23, 8 AM | Fri Oct 23, 10 AM | **Fri Oct 23, noon** | ~1 h |
+| H-04 | API + LPBF profile | C | Tue Oct 20, 9 PM | Wed Oct 21, 9 AM | Wed Oct 21, 3 PM | ~4 h |
+| H-05 | Page + demo walkthrough | D | Wed Oct 21, 9 AM | Wed Oct 21, 3 PM | Thu Oct 22, noon | ~5 h |
+| H-06 | Deploy to Posit Connect | C | Wed Oct 21, 3 PM | Wed Oct 21, 6 PM | Wed Oct 21, 9 PM | ~2 h |
+| H-07 | README | B | Thu Oct 22, 9 AM | Thu Oct 22, noon | Thu Oct 22, 3 PM | ~2 h |
+| H-08 | Fresh-clone check + Devpost | B | Thu Oct 22, 3 PM | Thu Oct 22, 5 PM | **Thu Oct 22, 8 PM** | ~1 h |
 
 The live status is in `CONTRACT.yaml`: `todo` (not started), `in_progress` (who has it), `done`.
 
@@ -220,8 +220,8 @@ Once the tool is live. Owns `README.md`, `app/README.md`.
 
 ### H-08 Submit: `/superagent build H-08`
 
-Friday morning. Owns `.gitignore`.
+Thursday afternoon. Owns `.gitignore`.
 
 - [ ] A fresh clone into an empty folder runs `testme` and `pytest tests` with no extra steps.
 - [ ] `git grep -i "api_key"` finds no real key.
-- [ ] Devpost entry submitted with the repo link and demo, **by Friday noon**.
+- [ ] Devpost entry submitted with the repo link and demo, **by Thursday 8 PM ET**.
