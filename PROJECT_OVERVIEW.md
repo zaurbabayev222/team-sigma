@@ -1,125 +1,146 @@
 # AeroQual
-## Technology-Agnostic Titanium Additive Manufacturing Quality Dashboard
+## Titanium Additive Manufacturing Quality Dashboard
 
-**Cornell SYSEN 5300 — Six Sigma Hackathon**  
-**Status:** Proposed / in development  
-**Initial demonstration:** Synthetic laser powder bed fusion (LPBF) data; LPBF is **not** a requirement of the original problem.
+**Cornell SYSEN 5300 — Six Sigma Hackathon** · Team **Sigma Airlines** · Virtual DL Challenge (7 days)
+**Prompt:** 1, "Industrial Systems, 3D Printing for Aerospace"
+**Status:** Release 1 scope agreed 2026-10-19; in development
+**Initial demonstration:** synthetic laser powder bed fusion (LPBF) data. LPBF is **not** a requirement of the prompt.
+
+> This overview is the big picture. The binding definition of release 1 is [`SPEC.md`](SPEC.md); the
+> reasons behind each choice are in [`docs/decisions.md`](docs/decisions.md).
 
 ## Executive summary
 
-AeroQual is an interactive process-monitoring and quality-analysis dashboard for aerospace contractors manufacturing 3D-printed titanium brackets. The customer problem is failed strength testing and insufficient linkage between manufacturing conditions, material defects, and final part performance. AeroQual combines statistical process control (SPC), process capability, yield tracking, and exploratory root-cause analysis to help engineers determine whether a manufacturing process is stable, whether it is capable of meeting applicable customer specifications, and what conditions merit investigation.
+AeroQual is a process-monitoring and capability dashboard for aerospace contractors 3D-printing
+titanium brackets. The customer problem is failed strength tests and records that do not link
+process conditions to final part strength.
 
-The platform is **technology-agnostic**: a common data model and statistical engine operate across metal additive manufacturing methods, while optional, validated process profiles define method-specific measurements. The initial demonstration uses LPBF only to provide a concrete, reproducible example. No universal titanium strength threshold or printing parameter limit is implied.
+Release 1 answers three questions for one user, the quality engineer who reviews each finished
+build:
+
+1. **Is the printing process stable,** or did a build shift? (X-bar and S chart, one subgroup per build)
+2. **Can the process reliably meet the customer's minimum strength?** (lower-side Cpk and Ppk)
+3. **How often do coupons fail today?** (coupon failure rate)
+
+When builds are flagged, the tool shows which recorded process parameters moved, so the engineer
+knows where to look first.
+
+The platform is designed to be **technology-agnostic**: the statistics never know which printing
+process produced the data, and each process is described by one small *process profile*. Release 1
+ships the LPBF profile only; other processes are added later as new profiles.
 
 ## Problem statement and objectives
 
-An aerospace contractor 3D-printing titanium brackets is failing client strength tests. Its current records do not adequately connect environmental and process conditions to final strength and defects. The dashboard must:
+An aerospace contractor 3D-printing titanium brackets is failing client strength tests. Its records
+do not adequately connect process and environmental conditions to final strength. The tool must:
 
-1. Track tested-part and build-level conformance to **customer-provided** requirements.
-2. Detect special-cause process variation through appropriate SPC methods.
-3. Assess process capability only where sufficient stable data and defensible variance estimates exist.
-4. Explore associations between process parameters, defect characteristics, and mechanical properties.
-5. Support traceable engineering investigation and corrective action without automatically certifying or releasing hardware.
+1. Track coupon-level conformance to the **customer-provided** minimum strength.
+2. Detect special-cause variation between builds with an appropriate control chart.
+3. Assess capability only when the process is stable and there is enough data, and say why when not.
+4. Point to process parameters associated with flagged builds.
+5. Support engineering investigation without automatically certifying or releasing hardware.
 
-## Manufacturing-process support
+## Release 1 at a glance
 
-| Process profile | Example process-specific inputs | Notes |
-|---|---|---|
-| LPBF — initial demo | Laser power, scan speed, hatch spacing, layer thickness, chamber oxygen, powder reuse | Illustrative implementation only |
-| Electron beam powder bed fusion (EB-PBF) | Beam current/power, scan speed, vacuum pressure, build temperature | Do not require laser power or chamber oxygen fields |
-| Directed energy deposition (DED) | Energy-source power, feedstock feed rate, travel speed, shielding conditions | May use powder or wire feedstock |
-| Wire arc additive manufacturing (WAAM) | Arc current, voltage, wire feed rate, travel speed, shielding gas | Does not use a powder bed |
-| Binder jetting with sintering | Binder saturation, green density, furnace profile, shrinkage | Different consolidation and defect mechanisms |
-
-The system shall permit a `process_type` and a process-profile configuration, including parameter name, unit, type, expected collection method, and optional **customer-validated** operating window. Unsupported fields remain absent or null, never silently set to zero. New process profiles can be added without rewriting the statistical engine.
-
-## Data architecture
-
-### Common traceability fields
-
-`observation_id`, `part_id`, `build_id`, `machine_id`, `process_type`, `material_alloy`, `material_lot`, `timestamp`, `specification_id`, `test_method`, `specimen_orientation`, `post_processing_batch`, `inspection_method`.
-
-### Common outcome and inspection fields
-
-- Ultimate tensile strength (UTS), MPa
-- Yield strength, MPa
-- Elongation at break, %
-- Porosity, %, when measured
-- Dimensional deviation, mm, when measured
-- Residual stress, MPa, when measured or estimated with method indicated
-- Customer acceptance results and disposition, with provenance
-
-### Process-specific measurements
-
-Store as typed, unit-bearing parameter observations linked to a build or part, or as validated process-profile-specific fields. For the LPBF demonstration, use laser power (W), scan speed (mm/s), hatch spacing (mm), layer thickness (µm), chamber oxygen (ppm), and powder reuse count. Other methods should not inherit these as mandatory inputs.
-
-Record measurement timestamps and whether a parameter was measured, commanded, estimated, or derived. Track missingness explicitly. Where LPBF volumetric energy density is calculated, use `P / (v * h * t)` with layer thickness converted to mm; label it a derived proxy, not a universal strength predictor.
-
-### Statistical unit of analysis
-
-Distinguish **coupon/test**, **part**, and **build**. Multiple coupons from the same build are correlated; do not treat them as independent builds. Define aggregation, grouping, test coverage, and the denominator for each quality metric. A missing required test is not a pass.
+| Area | Release 1 |
+|---|---|
+| User | The contractor's quality engineer reviewing tensile-test results per finished build |
+| Process | LPBF only, through one process profile |
+| Required inputs | `build_id`, `build_date`, `uts_mpa` per coupon, customer minimum strength (LSL, MPa) |
+| Optional inputs | `chamber_oxygen_ppm`, `powder_reuse_count`, `laser_power_w` |
+| Statistics | X-bar and S chart by build; Cpk and Ppk (lower side); coupon failure rate; verdict |
+| Verdict | "not assessable" if a build is flagged or fewer than 25 builds; else "capable" if Cpk ≥ 1.33 (a setting); else "not capable" |
+| Delivery | FastAPI (Python) backend + React (Vite, plain JavaScript) dashboard, deployed on Posit Connect |
+| Data | Three synthetic datasets, 30 builds × 3 coupons, fixed seeds, with a codebook |
 
 ## Statistical engine
 
+The engine is one plain, tested Python module (`app/qc.py`). It takes generic inputs only: a
+subgroup id (the build), an order (the build date), a measured value (tensile strength) and a lower
+limit. Full formulas and a hand-worked known-answer example are in SPEC section 4.
+
 | Method | Implementation | Interpretation |
 |---|---|---|
-| Descriptive statistics | Mean, median, SD, quantiles, missingness | Baseline variation and data completeness |
-| SPC | Individuals–moving range (I-MR) for appropriately ordered individual results; X-bar/R only for defensible rational subgroups | Detect statistical instability; control limits are **not** specifications |
-| Process capability | Cp/Cpk for two-sided specifications; Cpl/Cpu for one-sided; Pp/Ppk or corresponding one-sided overall indices | Only assign a positive capability verdict when stability, data sufficiency, and measurement assumptions are satisfied |
-| Conformance and yield | Tested-part failure rate, first-pass yield, build-level review status, with explicit denominators | Keep conformance separate from statistical capability |
-| Relationships | Pearson/Spearman correlations; multivariable regression, confidence intervals, diagnostics | Associations, not causal proof; control for machine, lot, process type, and clustered observations where appropriate |
-| Factor comparison | ANOVA or grouped comparisons when design and assumptions support them | Compare machines, lots, orientations, and parameter settings |
-| Investigation | Rule-based deviation review and optional FMEA prioritization | Engineer-review hypotheses and documented corrective actions |
+| SPC | X-bar and S chart; each build's coupons are one subgroup; limits from the average within-build standard deviation | Flags builds that shifted or varied unusually; control limits are **not** specifications |
+| Capability | Cpk (lower) from short-term σ = s̄/c4; Ppk (lower) from the standard deviation of all coupons | Only a stable process with enough builds gets a "capable" verdict |
+| Conformance | Coupons below the minimum ÷ all coupons | What the customer sees today; kept separate from capability |
+| Investigation | For flagged builds, each optional parameter's value next to its usual range | A lead to investigate, not proof of cause |
 
-For a lower-only strength specification, report `Cpl = (mean − LSL)/(3 × within_sigma)` and the corresponding overall index `(mean − LSL)/(3 × overall_sigma)`. Never fabricate an upper strength limit to force a two-sided Cpk. Capability criteria, minimum sample size, and approved limits are configurable, not hard-coded as aerospace standards.
+Safeguards kept from the original plan:
 
-## Dashboard modules
+- Strength has a minimum only: report lower-side Cpk and Ppk, and never invent an upper limit.
+- Coupons from one build are not independent: builds are the subgroups, so within-build and
+  between-build variation are measured separately.
+- A missing test is not a pass: a blank strength value is an error naming the row.
+- Capability thresholds and minimum sample size are settings, not hard-coded aerospace standards.
+- Coupon strengths are checked for rough normality (histogram plus Shapiro-Wilk p-value).
 
-### 1. Production overview
+## Expandable design: process profiles
 
-Process-profile selector; dataset/scenario selector; yield, failure, missing-test, and alert counts; filters by machine, build, material lot, and date; traceable build table. Prominent **SYNTHETIC DEMO DATA** banner when appropriate.
+```text
+CSV upload -> process profile -> statistics (app/qc.py) -> FastAPI -> React page
+              (app/profiles/lpbf.py:          (generic: subgroup, order,
+               optional parameters,            value, lower limit)
+               units, labels)
+```
 
-### 2. Stability and capability
+- A **process profile** is one small Python file listing that process's optional parameters, each
+  with a name, unit and label.
+- The page builds its parameter table from the profile, so a new profile needs no front-end change.
+- **To add a process later:** write `app/profiles/<process>.py`, add a test dataset for it, and
+  register its name. The statistics and their tests do not change.
 
-Control charts, specification distributions, one-sided/two-sided capability indices, explicit sample-size and stability assessments, and reasons for withholding capability conclusions.
+| Process profile | Example optional parameters | Status |
+|---|---|---|
+| LPBF | Laser power, chamber oxygen, powder reuse | Release 1 |
+| Electron beam powder bed fusion (EB-PBF) | Beam power, scan speed, vacuum pressure, build temperature | Future profile |
+| Directed energy deposition (DED) | Energy-source power, feed rate, travel speed, shielding | Future profile |
+| Wire arc additive manufacturing (WAAM) | Arc current, voltage, wire feed rate, travel speed | Future profile |
+| Binder jetting with sintering | Binder saturation, green density, furnace profile | Future profile |
 
-### 3. Relationships and root-cause exploration
+Unsupported fields stay absent, never silently set to zero.
 
-Process-specific scatterplots, correlation and regression summaries, effect uncertainty, group comparisons, and confounding warnings. Variables available for analysis depend on the selected process profile.
+## Dashboard
 
-### 4. Build investigation
+Release 1 is one page:
 
-Build/part traceability, test outcomes, process-parameter excursions, inspection findings, suggested investigation checklist, evidence notes, and disposition status. Alerts are not automated airworthiness or customer acceptance decisions.
+- Dataset selector and the customer minimum (LSL) input, with a **SYNTHETIC DEMO DATA** banner.
+- X-bar and S charts of tensile strength (MPa) by build, flagged builds in red.
+- Cpk, Ppk and failure rate, with the verdict and its reason.
+- Parameter table for flagged builds, when the optional columns are present.
 
 ## Synthetic demonstration scenarios
 
-Generate three reproducible LPBF example datasets, with fixed seeds and documented assumptions:
+Three reproducible LPBF datasets, each 30 builds × 3 coupons, fixed seeds, documented in
+`data/README.md`:
 
-1. **Stable and capable:** Sufficient observations, in-control variation, and adequate lower-specification strength capability.
-2. **Stable but incapable:** Statistically stable measurements that fail the chosen capability criterion.
-3. **Unstable:** Time-ordered process shift or special cause, with relevant process deviations and an explicit warning that capability conclusions are unreliable.
+1. **`stable_capable.csv`:** in control, Cpk ≥ 1.33.
+2. **`stable_incapable.csv`:** in control, but the mean sits too close to the minimum, Cpk < 1.33.
+3. **`unstable_shift.csv`:** chamber oxygen rises from build 20 and strength drops; builds are
+   flagged and the verdict is "not assessable".
 
-Use multiple builds, machines, lots, and repeated coupon observations. The synthetic relationships should be plausible enough for demonstration, but **must not be represented as empirically validated physics**. All limits (including example UTS and oxygen values) are illustrative and replaceable.
-
-## Architecture and deliverables
-
-- **Frontend:** React, Vite, TypeScript, Recharts; responsive dashboard and clear units.
-- **Backend:** Python FastAPI with pandas, NumPy, SciPy, and statsmodels.
-- **Data:** CSV ingestion, schema validation, process-profile registry, three generated synthetic datasets.
-- **Quality:** Unit tests for capability/SPC calculations, expected-scenario tests, API tests, frontend build checks, and a data dictionary.
-- **Documentation:** Local Windows/Positron setup, API endpoints, assumptions, limitations, and a deployment plan for Posit Connect subject to actual platform verification.
-
-## Safety and interpretation boundaries
-
-AeroQual is a decision-support prototype. Passing an observed test does not prove process capability; statistical capability does not automatically qualify aerospace hardware. The application does not replace approved material specifications, test standards, measurement-system analysis, qualification plans, customer acceptance processes, or engineering sign-off. Do not imply that LPBF is required by the project prompt.
+The relationships are plausible for demonstration but **not** empirically validated physics. All
+limits, including example strength and oxygen values, are illustrative and replaceable.
 
 ## Roadmap
 
-1. Implement process-agnostic schema and process-profile registry.
-2. Build the LPBF demonstration generator and validate three scenarios.
-3. Implement and test statistical calculations.
-4. Expose the analysis through FastAPI.
-5. Build and integrate the four dashboard modules.
-6. Validate, document, and prepare deployment.
+| Phase | What | Status |
+|---|---|---|
+| Release 1 | The scope above, deployed with a public URL | In development |
+| Later | Correlation of each parameter with strength; confidence intervals for Cpk and Ppk | After release 1 passes review |
+| Later | Traceability columns (machine, lot, heat treatment, orientation) and filters | Optional columns, no engine change |
+| Later | Two-sided Cpk on dimensional deviation (an upper limit input) | Engine extension |
+| Later | Unequal coupons per build | Engine extension (per-build constants) |
+| Later | Other process profiles (EB-PBF, DED, WAAM, binder jetting) | New profile files |
+| Later | Regression, ANOVA, FMEA prioritization | Only with a clear use case |
 
-**Project vision:** Convert additive manufacturing process and test data into traceable, statistically defensible engineering insight, across titanium 3D-printing technologies.
+## Safety and interpretation boundaries
+
+AeroQual is a decision-support prototype. Passing an observed test does not prove process
+capability, and statistical capability does not qualify aerospace hardware. The tool does not
+replace approved material specifications, test standards, measurement-system analysis,
+qualification plans, customer acceptance or engineering sign-off. LPBF is a demonstration choice,
+not a requirement of the prompt.
+
+**Project vision:** turn additive manufacturing process and test data into traceable, statistically
+defensible engineering insight, across titanium 3D-printing technologies.
