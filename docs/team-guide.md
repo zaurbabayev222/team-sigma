@@ -5,9 +5,11 @@ Sigma Airlines · AeroQual release 1 · written 2026-10-20
 **Deadline: Friday Oct 23, 3 PM ET** on [Devpost](https://six-sigma-hackathon.devpost.com/). We aim to
 submit by **Friday noon** to leave a buffer.
 
-**How this works:** Zaur keeps the project moving on the critical path. Everyone else jumps in when
-they have time: claim any open task or review below, and nothing waits on anyone. If an open task is
-still unclaimed at its pick-up-by time, Zaur takes it.
+**How this works:** every task has an owner (A, B, C or D, below). Each owner starts their task by its
+*start by* time and pushes progress as they go. C is also the **backup**: if a task has not started by
+its start-by time, or shows no pushed progress by its check-in, C asks in the team chat and may take it
+over, so the deadline never depends on one person's busy week. Anyone with spare time can also take a
+review or help on a task whose owner asks for it.
 
 The *what* is in [`SPEC.md`](../SPEC.md), the *how* in [`plan.md`](plan.md), the pictures in
 [`architecture.md`](architecture.md), and the *why* in [`decisions.md`](decisions.md). Who has what
@@ -46,8 +48,8 @@ right now is always in [`CONTRACT.yaml`](../CONTRACT.yaml) (`status` and `owner`
                        H-08 fresh-clone check + Devpost
 ```
 
-**Critical path:** H-03 → H-04 → H-06 → H-07 → H-08. A delay here delays the submission, so Zaur
-drives it. H-02 and H-05 run alongside and block nobody.
+**Critical path:** H-03 → H-04 → H-06 → H-07 → H-08. A delay here delays the submission, so these
+tasks have the tightest check-ins. H-02 and H-05 run alongside and block nobody.
 
 | Wave | Starts when | Tasks (parallel within a wave) |
 |---|---|---|
@@ -56,40 +58,66 @@ drives it. H-02 and H-05 run alongside and block nobody.
 | 3 | H-04 and H-06 done | H-05 on the live API + `demo/README.md`; H-07 README |
 | 4 | everything done | H-08 |
 
+## Who owns what
+
+| Role | Tasks | Files you own | You review |
+|---|---|---|---|
+| **A**: Statistics | H-03 | `app/qc.py`, `app/requirements.txt`, `tests/` | C's API numbers (H-04) |
+| **B**: Data and docs | H-02, H-07, H-08 | `data/`, `README.md`, `app/README.md`, `.gitignore` | A's statistics (H-03) |
+| **C**: API, deploy, backup (repo owner) | H-04, H-06 | `app/` (except A's files), `.github/` | D's page (H-05) |
+| **D**: Front end and demo | H-05 | `app/frontend/`, `demo/` | B's README (H-07) |
+
 ## Task board
 
-| Task | What | Status | Default | Open to the team until | Size |
-|---|---|---|---|---|---|
-| H-03 | Statistics function and tests | critical path | Zaur | not open | ~4 h |
-| H-02 | Three datasets + codebook | **open** | Zaur | **Tue Oct 20, 9 PM ET** | ~3 h |
-| H-04 | API + LPBF profile | critical path | Zaur | not open | ~4 h |
-| H-05 | Page + demo walkthrough | **open** | Zaur | **Wed Oct 21, noon ET** | ~5 h |
-| H-06 | Deploy to Posit Connect | critical path | Zaur (repo owner) | not open | ~2 h |
-| H-07 | README | **open** | Zaur | **Thu Oct 22, noon ET** | ~2 h |
-| H-08 | Fresh-clone check + Devpost | end | Zaur | anyone may do the clone check | ~1 h |
+All times ET. *Start by* = the task is checked out in `CONTRACT.yaml` (`status: in_progress`, your
+name as owner). *Check-in* = the work so far is pushed and the chat knows where it stands.
 
-The live status is in `CONTRACT.yaml`: `todo` means free, `in_progress` shows who has it, `done` is done.
+| Task | What | Owner | Start by | Check-in | Done by | Size |
+|---|---|---|---|---|---|---|
+| H-03 | Statistics function and tests | A | Tue Oct 20, 9 PM | Wed Oct 21, 9 AM | Wed Oct 21, noon | ~4 h |
+| H-02 | Three datasets + codebook | B | Tue Oct 20, 9 PM | Wed Oct 21, 9 AM | Wed Oct 21, noon | ~3 h |
+| H-04 | API + LPBF profile | C | Tue Oct 20 | Wed Oct 21, noon | Wed Oct 21, 6 PM | ~4 h |
+| H-05 | Page + demo walkthrough | D | Wed Oct 21, 9 AM | Wed Oct 21, 9 PM | Thu Oct 22, 6 PM | ~5 h |
+| H-06 | Deploy to Posit Connect | C | Wed Oct 21, 6 PM | Thu Oct 22, 9 AM | Thu Oct 22, noon | ~2 h |
+| H-07 | README | B | Thu Oct 22, noon | Thu Oct 22, 6 PM | Thu Oct 22, 9 PM | ~2 h |
+| H-08 | Fresh-clone check + Devpost | B | Fri Oct 23, 8 AM | Fri Oct 23, 10 AM | **Fri Oct 23, noon** | ~1 h |
 
-**Short on time? Take a review** (20-30 minutes each; every task needs one before it counts as done):
+The live status is in `CONTRACT.yaml`: `todo` (not started), `in_progress` (who has it), `done`.
 
-| Review | What you do | When |
+**Reviews** take 20-30 minutes each, and every task needs one before it counts as done:
+
+| Review | Reviewer | What you do |
 |---|---|---|
-| Statistics (H-03) | Read `app/qc.py` against SPEC §4; rerun the known-answer numbers | after H-03 |
-| Datasets (H-02) | Open each CSV; check the columns, 3 coupons per build, the codebook | after H-02 |
-| API numbers (H-04) | Run `testme`, call `/analyze` on one dataset, compare with H-03's numbers | after H-04 |
-| Live tool (H-06) | Open the public URL logged out; run each dataset | after H-06 |
-| README (H-07) | Follow it from a fresh clone, exactly as a judge would | after H-07 |
+| Statistics (H-03) | B | Read `app/qc.py` against SPEC §4; rerun the known-answer numbers |
+| Datasets (H-02) | A | Open each CSV; check the columns, 3 coupons per build, the codebook |
+| API numbers (H-04) | A | Run `testme`, call `/analyze` on one dataset, compare with H-03's numbers |
+| Page (H-05) | C | Run each dataset on the page; compare the numbers with the API |
+| Live tool (H-06) | D | Open the public URL logged out; run each dataset |
+| README (H-07) | D | Follow it from a fresh clone, exactly as a judge would |
 
-## How to jump in
+## Starting your task
 
-1. `git pull`, then open `CONTRACT.yaml`. Pick a task whose `status` is `todo` and that the tree says
-   can start, or a review whose task is done.
-2. Tell the team chat: "I'm taking H-02."
-3. In Claude Code: `/superagent build H-02`. The agent marks it `in_progress` under your name. Let it
-   commit and push that **first**, so nobody else starts the same task.
-4. Work through the task's checklist below. Your agent asks before every commit.
-5. Out of time halfway? Push what works, then tell the chat what is left. Unfinished is fine;
-   silent is not.
+1. `git pull`. Tell the team chat: "Starting H-02."
+2. In Claude Code: `/superagent build H-02`. The agent marks it `in_progress` under your role. Let it
+   commit and push that **first**, so everyone can see it has started.
+3. Work through the task's checklist below. Your agent asks before every commit.
+4. **Push at least once by your check-in**, even if it is not finished, and say in one line where
+   you are ("H-02: two CSVs done, codebook next").
+5. Out of time? Push what works, then tell the chat what is left. Unfinished is fine; silent is not.
+
+## Backup and takeover
+
+C covers any task that stalls, so a busy week never sinks the team:
+
+- **Not started by its start-by time,** or **no pushed progress by its check-in:** C posts in the chat,
+  "H-02 hasn't started yet; I'll take it at 11 PM unless you say you're on it." The owner has **two
+  hours** to reply.
+- **No reply, or the owner says go ahead:** C changes the task's `owner` in `CONTRACT.yaml` and
+  carries on **from whatever the owner pushed**, never from scratch.
+- **The owner can still help:** review the task, or take back a later piece of it.
+- **Anyone ahead of schedule** can offer to help the same way: ask the owner first, then work only in
+  the files they agree to.
+- **The owner asks for help early?** Even better. Say so in the chat as soon as you know.
 
 ## Before you start (once)
 
