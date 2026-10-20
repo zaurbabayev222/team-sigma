@@ -17,36 +17,39 @@ right now is always in [`CONTRACT.yaml`](../CONTRACT.yaml) (`status` and `owner`
 
 ## The task tree
 
+```mermaid
+%%{init: {"flowchart": {"padding": 20, "nodeSpacing": 30, "rankSpacing": 45}}}%%
+flowchart TD
+    S["H-01 SPEC<br>and plan.md<br>(done)"]
+    S --> T3["H-03<br>Statistics<br>(A)"]
+    S --> T2["H-02<br>Data + codebook<br>(B)"]
+    S --> T4["H-04 API<br>fake result first<br>(C)"]
+    S --> T5["H-05 Page<br>sample JSON first<br>(D)"]
+    T3 --> J1["API calls<br>real qc.py"]
+    T4 --> J1
+    T3 --> J2["Datasets give<br>their verdicts"]
+    T2 --> J2
+    J1 --> T6["H-06<br>Deploy<br>(C)"]
+    K["Publisher<br>key"] -.-> T6
+    T6 --> J3["Page on real API,<br>live URL"]
+    T5 --> J3
+    J2 --> J3
+    J3 --> T5b["H-05 finish:<br>demo/README.md<br>(D)"]
+    T5b --> T7["H-07<br>README<br>(B)"]
+    T7 --> T8["H-08 fresh clone<br>+ Devpost<br>(B)"]
+
+    classDef done fill:#e5f4e4,stroke:#4a9a52,color:#000
+    classDef crit fill:#fbebeb,stroke:#b54a4a,color:#000
+    classDef side fill:#e7f1fb,stroke:#4a78b5,color:#000
+    classDef join fill:#f0efec,stroke:#888,color:#000
+    class S done
+    class T3,T4,T6,T7,T8 crit
+    class T2,T5,T5b side
+    class J1,J2,J3,K join
 ```
-                      H-01 SPEC (done)   plan.md (done)
-                               |
-       +---------------+-------+-------+----------------+
-       v               v               v                v
-   H-03 Stats      H-02 Data       H-04 API         H-05 Page
-   (core)          + codebook      (fake result     (sample JSON
-                                    at first)        at first)
-       |               |               |                |
-       +------+--------+-------+-------+                |
-              v                v                        |
-        API calls the      datasets give                |
-        real qc.py         their verdicts               |
-              |                                         |
-              v                                         |
-        H-06 Deploy  <-- needs publisher key            |
-              |                                         |
-              +------------------+----------------------+
-                                 v
-                       page on the real API, live URL
-                                 |
-                                 v
-                       H-05 finish: demo/README.md
-                                 |
-                                 v
-                       H-07 README (needs live URL)
-                                 |
-                                 v
-                       H-08 fresh-clone check + Devpost
-```
+
+[Open this diagram as an image](images/diagram-task-tree.png) · Red = critical path · blue = runs
+alongside · grey = a join point or input · green = done.
 
 **Critical path:** H-03 → H-04 → H-06 → H-07 → H-08. A delay here delays the submission, so these
 tasks have the tightest check-ins. H-02 and H-05 run alongside and block nobody.
