@@ -16,12 +16,18 @@ The examples after each `FILL IN` show the shape of an answer. They are not hint
   > currently track enough environmental and stress parameters against final part strength. Design a
   > tool to monitor and flag when and whether the printing process is capable of meeting strict
   > aerospace tolerances, and help contractors resolve these issues.
-- **Our public repo:** FILL IN. Example: "github.com/our-team/our-tool"
+- **Our public repo:** github.com/zaurbabayev222/team-sigma
 
 ## 2. User and use case (rubric: scope 5, user and use case 5)
-- **User:** FILL IN, one named kind of person, not "everyone". Example: "the supervisor who checks part diameters at the end of each shift"
-- **Decision the tool helps them make, and when:** FILL IN. Example: "whether to stop the line and recalibrate before the next shift starts"
-- **Why this matches the prompt:** FILL IN, one sentence.
+- **User:** the contractor's quality engineer who reviews tensile-test results for each finished
+  titanium build on a laser powder bed fusion (LPBF) printer.
+- **Decision the tool helps them make, and when:** after each new build is tested, (1) whether the
+  printing process has changed and needs investigating before the next build, and (2) whether the
+  process is capable of meeting the customer's minimum strength, and if not, which recorded process
+  parameter to look at first.
+- **Why this matches the prompt:** it monitors and flags *when* the process goes out of control and
+  *whether* it is capable of meeting the customer's strength requirement, and points to the
+  parameters that moved, to help the contractor resolve failing strength tests.
 
 ## 3. Inputs (rubric: minimal inputs 5)
 Only what this user can actually measure or already knows. Fewer is better; every input a user
@@ -29,14 +35,57 @@ cannot measure costs points.
 
 | Input | Type and units | Where the user gets it |
 |---|---|---|
-| FILL IN. Example: `measurements.csv`, one row per part | numeric, mm | their gauge log |
+| `builds.csv`, one row per tested coupon | CSV file | their tensile-test log |
+| `build_id` (required) | text | build traveler / printer job name |
+| `build_date` (required) | date, YYYY-MM-DD; sets the build order | printer job log |
+| `uts_mpa` (required) | numeric, MPa (ultimate tensile strength) | tensile-test report |
+| Customer minimum strength, LSL (required) | numeric, MPa; typed in, not in the CSV | customer specification |
+| `chamber_oxygen_ppm` (optional) | numeric, ppm | printer log |
+| `powder_reuse_count` (optional) | integer, times the powder was reused | powder lot record |
+| `laser_power_w` (optional) | numeric, W | printer job settings |
+
+Every build has the same number of coupons (3 in our datasets). A blank `uts_mpa` is an error that
+names the row, never a pass. The optional columns come from the LPBF *process profile*
+(`app/profiles/lpbf.py`); the statistics never read them.
 
 ## 4. The statistics, and why (rubric: valid QC analysis 25)
 Say the method in words before any code exists. Load the `stats-first-steering` skill first.
-- **Method:** FILL IN. Example: "X-bar and R chart, subgroups of 5, limits from the average range"
-- **Why it fits the use case:** FILL IN, one sentence.
-- **Assumptions and how the tool checks them:** FILL IN. Example: "normality: histogram plus Shapiro-Wilk in the demo"
-- **Known-answer check:** FILL IN, a textbook example or hand calculation the function must reproduce.
+- **Method:** an X-bar and S chart of tensile strength, one subgroup per build (its n coupons, n
+  fixed per file), limits from the average within-build standard deviation; lower-side capability
+  Cpk and performance Ppk against the customer minimum (LSL); and the coupon failure rate.
+  - Center line X̿ = mean of the build means; s̄ = mean of the build standard deviations (n − 1).
+  - X-bar limits: X̿ ± A3·s̄. S limits: B3·s̄ to B4·s̄. For n = 3: c4 = 0.8862, A3 = 1.954,
+    B3 = 0, B4 = 2.568 (computed from n in code, not typed in).
+  - σ_short = s̄ / c4. σ_total = standard deviation of all coupons (n − 1).
+  - Cpk (lower) = (X̿ − LSL) / (3·σ_short). Ppk (lower) = (X̿ − LSL) / (3·σ_total).
+  - Failure rate = coupons with uts_mpa < LSL ÷ all coupons.
+  - A build is flagged out of control if its mean is outside the X-bar limits or its s is above B4·s̄.
+  - Verdict: "not assessable" if any build is flagged or there are fewer than 25 builds (the numbers
+    are still shown, with the reason); else "capable" if Cpk ≥ 1.33; else "not capable". The 1.33
+    threshold is a setting, not hard-coded.
+- **Why it fits the use case:** builds are natural subgroups (coupons printed together share one
+  run), so the X-bar chart flags a build that shifted, the S chart flags uneven builds, and capability
+  is measured on individual coupons, the level the customer tests at.
+- **Assumptions and how the tool checks them:** coupon strengths are roughly normal within a stable
+  process (histogram plus Shapiro-Wilk p-value shown); builds are in time order (sorted by
+  `build_date`); equal coupons per build (checked, clear error if not); the strength spec has a
+  minimum only, so there is no upper limit and no two-sided Cp/Pp.
+- **Known-answer check:** 4 builds × 3 coupons, LSL = 980 MPa (illustrative arithmetic only, not a
+  real titanium limit):
+
+  | build | coupons (MPa) | mean | s |
+  |---|---|---|---|
+  | B1 | 990, 1000, 1010 | 1000 | 10 |
+  | B2 | 1005, 1010, 1015 | 1010 | 5 |
+  | B3 | 975, 990, 1005 | 990 | 15 |
+  | B4 | 990, 1000, 1010 | 1000 | 10 |
+
+  X̿ = 1000; s̄ = 10; X-bar limits 980.46 to 1019.54; S limits 0 to 25.68; no build flagged;
+  σ_short = 11.284; σ_total = 11.677; Cpk (lower) = 0.591; Ppk (lower) = 0.571;
+  failure rate = 1/12 = 8.3% (the 975 coupon); verdict "not assessable: fewer than 25 builds".
+  Degenerate cases: all coupons equal → σ = 0, so Cpk and Ppk are None with the message "no
+  variation"; one build → error "need at least 2 builds"; unequal coupons per build or a blank
+  `uts_mpa` → an error naming the build or row.
 
 Fixed for every team:
 - The statistic lives in **one plain, tested function** (`app/qc.py` or `app/qc.R`). The API, app or
@@ -45,8 +94,13 @@ Fixed for every team:
 - You can explain every number the tool prints. If you cannot, it is not done.
 
 ## 5. Delivery (rubric: working tool 25)
-- **Stack:** FILL IN, one of: R package, Python library, REST API (FastAPI or plumber), dashboard (React or Shiny).
-- **Starting demo:** FILL IN, the one folder copied from [`demos/`](demos/README.md) into `app/`. Example: `demos/fastapi/`
+- **Stack:** REST API (FastAPI, Python) with a React (Vite, plain JavaScript) dashboard. Python
+  computes every number; React only displays them.
+- **Starting demo:** `demos/fastapi/` copied into `app/`, with `demos/reactfront/` as `app/frontend/`.
+- **Built to expand:** the statistics in `app/qc.py` see only generic columns (subgroup id, order,
+  value, lower limit). Everything specific to LPBF lives in one process profile, `app/profiles/lpbf.py`
+  (its optional parameters, units and labels). Adding EB-PBF, DED or WAAM later means adding one profile
+  file, not changing the statistics. See [`docs/decisions.md`](docs/decisions.md).
 
 Fixed for every team:
 - Start from **one** demo in `demos/`, copied to `app/`. Keep its four-script contract
@@ -57,14 +111,21 @@ Fixed for every team:
 - A small tool that runs beats a large tool that does not.
 
 ## 6. Outputs
-- **What the user sees:** FILL IN, a number, chart or pass/fail, with units and a one-line "how to read this".
-  Example: "a control chart with out-of-control points in red, plus 'stop the line: yes/no'"
+- **What the user sees:** an X-bar chart and an S chart of tensile strength (MPa) by build, with
+  out-of-control builds in red; Cpk and Ppk (lower) with the failure rate; and a verdict, "capable",
+  "not capable" or "not assessable", with its reason. How to read this: red builds mean something
+  changed in that build, so look at its process parameters; "capable" means the process reliably
+  stays above the customer minimum. When optional parameters are present, a small table shows each
+  parameter's value for the flagged builds next to its usual range.
 
 ## 7. Test datasets and codebook (rubric: demo 10, datasets 5, codebook 5)
 2-3 small CSVs in `data/`, invented but shaped like real field data, each showing one behavior.
 `data/README.md` is the codebook: every file, every column with units, and what it would take to
 collect this data for real.
-- **Datasets:** FILL IN. Example: "`in_control.csv`, `planted_shift.csv` (mean shifts at row 40), `edge_case.csv` (one subgroup)"
+- **Datasets:** 30 builds × 3 coupons each, fixed random seeds, all clearly labeled synthetic:
+  `stable_capable.csv` (in control, Cpk ≥ 1.33), `stable_incapable.csv` (in control, mean too close
+  to the LSL, Cpk < 1.33), `unstable_shift.csv` (chamber oxygen rises from build 20 on and strength
+  drops, so builds are flagged and the verdict is "not assessable").
 
 ## 8. Documentation and reproducibility (rubric: docs 10, public repo 5)
 - `README.md` says what the tool does, for whom, every input and parameter, how to run it in one
@@ -75,4 +136,8 @@ collect this data for real.
 ## 9. Out of scope
 What we will NOT build, so nobody (human or agent) builds it by accident.
 - Default: logins, databases, real customer data, a second statistic before the first one is tested.
-- FILL IN, anything else. Example: "no forecasting; no multi-plant comparison"
+- Other printing processes (EB-PBF, DED, WAAM, binder jetting) in the first release: the design
+  leaves room for them as profiles (section 5), but none are built now.
+- Regression, ANOVA, FMEA, machine learning or forecasting; two-sided Cpk on dimensions; filters by
+  machine or lot; files with unequal coupons per build. Later, only after the core passes review.
+- Certifying parts: the tool supports a decision, it does not release hardware.

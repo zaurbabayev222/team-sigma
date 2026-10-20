@@ -22,13 +22,13 @@
 # Delete the paths you do not use.
 
 spec: SPEC.md
-updated: ""
+updated: "2026-10-19"
 
 tasks:
   - id: H-01
     title: Fill in every FILL IN line in SPEC.md
     points: "15 - Tool Design: scope matches a prompt (5), clear user and use case (5), minimal inputs (5)"
-    status: in_progress
+    status: done
     owner: "Zaur Babayev"
     started_at: "2026-10-19T02:50:55Z"
     owns: ["SPEC.md"]
@@ -40,7 +40,7 @@ tasks:
       grep -c "FILL IN[.,]" SPEC.md prints 0 (it counts only the blanks,
       not the instructions at the top), and every teammate can say the
       method sentence in SPEC section 4 without reading it.
-    result: ""
+    result: "SPEC.md filled in (X-bar/S by build, lower Cpk/Ppk, failure rate; FastAPI + React); reasons in docs/decisions.md"
 
   - id: H-02
     title: Two or three test datasets plus a codebook
