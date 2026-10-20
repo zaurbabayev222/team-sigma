@@ -5,11 +5,11 @@ Sigma Airlines · AeroQual release 1 · written 2026-10-20
 **Deadline: Friday Oct 23, 3 PM ET** on [Devpost](https://six-sigma-hackathon.devpost.com/). **Our own deadline is
 Thursday Oct 22, 8 PM ET**: everything done and submitted, leaving Friday as a buffer.
 
-**How this works:** every task has an owner (A, B, C or D, below). Each owner starts their task by its
-*start by* time and pushes progress as they go. C is also the **backup**: if a task has not started by
-its start-by time, or shows no pushed progress by its check-in, C asks in the team chat and may take it
-over, so the deadline never depends on one person's busy week. Anyone with spare time can also take a
-review or help on a task whose owner asks for it.
+**How this works:** nobody is pre-assigned. **Pick a task when you have time, and claim it in the team
+chat before you start**, so nobody duplicates work. Zaur keeps going on the critical path and always
+posts which task he is on now and which he will start next; leave those two to him. Every task has a
+*start by* time: if it is still unclaimed then, whoever is free (usually Zaur) takes it, so the deadline
+never depends on one person's busy week. Short on time? Take a 20-30 minute review instead.
 
 The *what* is in [`SPEC.md`](../SPEC.md), the *how* in [`plan.md`](plan.md), the pictures in
 [`architecture.md`](architecture.md), and the *why* in [`decisions.md`](decisions.md). Who has what
@@ -21,22 +21,22 @@ right now is always in [`CONTRACT.yaml`](../CONTRACT.yaml) (`status` and `owner`
 %%{init: {"flowchart": {"padding": 20, "nodeSpacing": 30, "rankSpacing": 45}}}%%
 flowchart TD
     S["H-01 SPEC<br>and plan.md<br>(done)"]
-    S --> T3["H-03<br>Statistics<br>(A)"]
-    S --> T2["H-02<br>Data + codebook<br>(B)"]
-    S --> T4["H-04 API<br>fake result first<br>(C)"]
-    S --> T5["H-05 Page<br>sample JSON first<br>(D)"]
+    S --> T3["H-03<br>Statistics"]
+    S --> T2["H-02<br>Data + codebook"]
+    S --> T4["H-04 API<br>fake result first"]
+    S --> T5["H-05 Page<br>sample JSON first"]
     T3 --> J1["API calls<br>real qc.py"]
     T4 --> J1
     T3 --> J2["Datasets give<br>their verdicts"]
     T2 --> J2
-    J1 --> T6["H-06<br>Deploy<br>(C)"]
+    J1 --> T6["H-06<br>Deploy"]
     K["Publisher<br>key"] -.-> T6
     T6 --> J3["Page on real API,<br>live URL"]
     T5 --> J3
     J2 --> J3
-    J3 --> T5b["H-05 finish:<br>demo/README.md<br>(D)"]
-    T5b --> T7["H-07<br>README<br>(B)"]
-    T7 --> T8["H-08 fresh clone<br>+ Devpost<br>(B)"]
+    J3 --> T5b["H-05 finish:<br>demo/README.md"]
+    T5b --> T7["H-07<br>README"]
+    T7 --> T8["H-08 fresh clone<br>+ Devpost"]
 
     classDef done fill:#e5f4e4,stroke:#4a9a52,color:#000
     classDef crit fill:#fbebeb,stroke:#b54a4a,color:#000
@@ -61,66 +61,61 @@ tasks have the tightest check-ins. H-02 and H-05 run alongside and block nobody.
 | 3 | H-04 and H-06 done | H-05 on the live API + `demo/README.md`; H-07 README |
 | 4 | everything done | H-08 |
 
-## Who owns what
-
-| Role | Tasks | Files you own | You review |
-|---|---|---|---|
-| **A**: Statistics | H-03 | `app/qc.py`, `app/requirements.txt`, `tests/` | C's API numbers (H-04) |
-| **B**: Data and docs | H-02, H-07, H-08 | `data/`, `README.md`, `app/README.md`, `.gitignore` | A's statistics (H-03) |
-| **C**: API, deploy, backup (repo owner) | H-04, H-06 | `app/` (except A's files), `.github/` | D's page (H-05) |
-| **D**: Front end and demo | H-05 | `app/frontend/`, `demo/` | B's README (H-07) |
-
 ## Task board
 
-All times ET. *Start by* = the task is checked out in `CONTRACT.yaml` (`status: in_progress`, your
-name as owner). *Check-in* = the work so far is pushed and the chat knows where it stands.
+All times ET. *Start by* = someone has claimed it in the chat and checked it out in `CONTRACT.yaml`
+(`status: in_progress`, their name as owner). *Check-in* = the work so far is pushed and the chat knows
+where it stands. Each task writes only to its own files, so people never step on each other.
 
-| Task | What | Owner | Start by | Check-in | Done by | Size |
+| Task | What | Its files | Start by | Check-in | Done by | Size |
 |---|---|---|---|---|---|---|
-| H-03 | Statistics function and tests | A | Tue Oct 20, 9 PM | Wed Oct 21, 9 AM | Wed Oct 21, noon | ~4 h |
-| H-02 | Three datasets + codebook | B | Tue Oct 20, 9 PM | Wed Oct 21, 9 AM | Wed Oct 21, noon | ~3 h |
-| H-04 | API + LPBF profile | C | Tue Oct 20, 9 PM | Wed Oct 21, 9 AM | Wed Oct 21, 3 PM | ~4 h |
-| H-05 | Page + demo walkthrough | D | Wed Oct 21, 9 AM | Wed Oct 21, 3 PM | Thu Oct 22, noon | ~5 h |
-| H-06 | Deploy to Posit Connect | C | Wed Oct 21, 3 PM | Wed Oct 21, 6 PM | Wed Oct 21, 9 PM | ~2 h |
-| H-07 | README | B | Thu Oct 22, 9 AM | Thu Oct 22, noon | Thu Oct 22, 3 PM | ~2 h |
-| H-08 | Fresh-clone check + Devpost | B | Thu Oct 22, 3 PM | Thu Oct 22, 5 PM | **Thu Oct 22, 8 PM** | ~1 h |
+| H-03 | Statistics function and tests | `app/qc.py`, `app/requirements.txt`, `tests/` | Tue Oct 20, 9 PM | Wed Oct 21, 9 AM | Wed Oct 21, noon | ~4 h |
+| H-02 | Three datasets + codebook | `data/` | Tue Oct 20, 9 PM | Wed Oct 21, 9 AM | Wed Oct 21, noon | ~3 h |
+| H-04 | API + LPBF profile | `app/` (except H-03's files) | Tue Oct 20, 9 PM | Wed Oct 21, 9 AM | Wed Oct 21, 3 PM | ~4 h |
+| H-05 | Page + demo walkthrough | `app/frontend/`, `demo/` | Wed Oct 21, 9 AM | Wed Oct 21, 3 PM | Thu Oct 22, noon | ~5 h |
+| H-06 | Deploy to Posit Connect (repo owner) | `.github/`, `app/manifest.json` | Wed Oct 21, 3 PM | Wed Oct 21, 6 PM | Wed Oct 21, 9 PM | ~2 h |
+| H-07 | README | `README.md`, `app/README.md` | Thu Oct 22, 9 AM | Thu Oct 22, noon | Thu Oct 22, 3 PM | ~2 h |
+| H-08 | Fresh-clone check + Devpost | `.gitignore` | Thu Oct 22, 3 PM | Thu Oct 22, 5 PM | **Thu Oct 22, 8 PM** | ~1 h |
 
-The live status is in `CONTRACT.yaml`: `todo` (not started), `in_progress` (who has it), `done`.
+Who has what right now: `git pull`, then look at `status` and `owner` in `CONTRACT.yaml`, and at the
+latest claims in the chat. H-06 needs the repo owner (Zaur) because only he can add the deploy secrets.
 
-**Reviews** take 20-30 minutes each, and every task needs one before it counts as done:
+**Reviews** take 20-30 minutes each, and every task needs one before it counts as done. Any teammate
+who did not build the task can do it; claim it in the chat like a task:
 
-| Review | Reviewer | What you do |
+| Review | After | What you do |
 |---|---|---|
-| Statistics (H-03) | B | Read `app/qc.py` against SPEC §4; rerun the known-answer numbers |
-| Datasets (H-02) | A | Open each CSV; check the columns, 3 coupons per build, the codebook |
-| API numbers (H-04) | A | Run `testme`, call `/analyze` on one dataset, compare with H-03's numbers |
-| Page (H-05) | C | Run each dataset on the page; compare the numbers with the API |
-| Live tool (H-06) | D | Open the public URL logged out; run each dataset |
-| README (H-07) | D | Follow it from a fresh clone, exactly as a judge would |
+| Statistics | H-03 | Read `app/qc.py` against SPEC §4; rerun the known-answer numbers |
+| Datasets | H-02 | Open each CSV; check the columns, 3 coupons per build, the codebook |
+| API numbers | H-04 | Run `testme`, call `/analyze` on one dataset, compare with H-03's numbers |
+| Page | H-05 | Run each dataset on the page; compare the numbers with the API |
+| Live tool | H-06 | Open the public URL logged out; run each dataset |
+| README | H-07 | Follow it from a fresh clone, exactly as a judge would |
 
-## Starting your task
+## Picking up a task
 
-1. `git pull`. Tell the team chat: "Starting H-02."
-2. In Claude Code: `/superagent build H-02`. The agent marks it `in_progress` under your role. Let it
-   commit and push that **first**, so everyone can see it has started.
-3. Work through the task's checklist below. Your agent asks before every commit.
-4. **Push at least once by your check-in**, even if it is not finished, and say in one line where
+1. `git pull`. Check the chat and `CONTRACT.yaml`: pick a task that nobody has claimed, that is not
+   Zaur's "now" or "next", and that the task tree says can start.
+2. **Claim it in the chat:** "Taking H-02." First claim wins.
+3. In Claude Code: `/superagent build H-02`. The agent marks it `in_progress` under your name. Let it
+   commit and push that **first**, so everyone can see it in the repo too.
+4. Work through the task's checklist below. Your agent asks before every commit.
+5. **Push at least once by the check-in time**, even if it is not finished, and post one line on where
    you are ("H-02: two CSVs done, codebook next").
-5. Out of time? Push what works, then tell the chat what is left. Unfinished is fine; silent is not.
+6. Out of time? Push what works, then tell the chat what is left. Unfinished is fine; silent is not.
+7. Finished? Post "H-02 done, needs a review", and pick another task or a review if you have time.
 
-## Backup and takeover
+## When a task stalls
 
-C covers any task that stalls, so a busy week never sinks the team:
-
-- **Not started by its start-by time,** or **no pushed progress by its check-in:** C posts in the chat,
-  "H-02 hasn't started yet; I'll take it at 11 PM unless you say you're on it." The owner has **two
-  hours** to reply.
-- **No reply, or the owner says go ahead:** C changes the task's `owner` in `CONTRACT.yaml` and
-  carries on **from whatever the owner pushed**, never from scratch.
-- **The owner can still help:** review the task, or take back a later piece of it.
-- **Anyone ahead of schedule** can offer to help the same way: ask the owner first, then work only in
-  the files they agree to.
-- **The owner asks for help early?** Even better. Say so in the chat as soon as you know.
+- **Unclaimed at its start-by time:** whoever is free claims it in the chat as usual. Zaur takes it if
+  nobody else does.
+- **Claimed, but nothing pushed by its check-in:** someone asks in the chat, "Still on H-02? I can take
+  it at 11 PM unless you say you're on it." The owner has **two hours** to reply.
+- **No reply, or the owner says go ahead:** the new person changes `owner` in `CONTRACT.yaml` and carries
+  on **from whatever was pushed**, never from scratch. The first owner can still review it or help.
+- **Want to help on someone else's task?** Ask its owner first, then work only in the files they agree to.
+- **Know early that you can't finish?** Say so in the chat as soon as you know. That is the most
+  helpful thing you can do.
 
 ## Before you start (once)
 
