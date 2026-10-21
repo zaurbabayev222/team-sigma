@@ -1,0 +1,803 @@
+{
+  "lsl": 895,
+  "results": {
+    "stable_capable.csv": {
+      "n_builds": 30,
+      "n_per_build": 3,
+      "builds": [
+        {
+          "build_id": "B001",
+          "order": "2026-09-01",
+          "mean": 953.607,
+          "s": 9.703513951141575,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B002",
+          "order": "2026-09-02",
+          "mean": 941.591,
+          "s": 6.283978755533769,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B003",
+          "order": "2026-09-03",
+          "mean": 954.5866666666667,
+          "s": 20.300713025244608,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B004",
+          "order": "2026-09-04",
+          "mean": 943.8883333333333,
+          "s": 13.567846635827351,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B005",
+          "order": "2026-09-05",
+          "mean": 950.7883333333333,
+          "s": 10.450987385569565,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B006",
+          "order": "2026-09-06",
+          "mean": 946.0749999999999,
+          "s": 8.540591372967118,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B007",
+          "order": "2026-09-07",
+          "mean": 957.8290000000001,
+          "s": 15.586971097682861,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B008",
+          "order": "2026-09-08",
+          "mean": 947.6203333333333,
+          "s": 12.13424453080335,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B009",
+          "order": "2026-09-09",
+          "mean": 955.497,
+          "s": 1.734719573879381,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B010",
+          "order": "2026-09-10",
+          "mean": 943.442,
+          "s": 21.345166291223872,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B011",
+          "order": "2026-09-11",
+          "mean": 946.6443333333333,
+          "s": 9.952144609747867,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B012",
+          "order": "2026-09-12",
+          "mean": 945.156,
+          "s": 12.286555212914578,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B013",
+          "order": "2026-09-13",
+          "mean": 952.7896666666667,
+          "s": 3.6669797290595105,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B014",
+          "order": "2026-09-14",
+          "mean": 958.1023333333333,
+          "s": 8.84909997306695,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B015",
+          "order": "2026-09-15",
+          "mean": 948.7886666666667,
+          "s": 6.830861243894009,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B016",
+          "order": "2026-09-16",
+          "mean": 951.1300000000001,
+          "s": 2.436338851637851,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B017",
+          "order": "2026-09-17",
+          "mean": 954.3070000000001,
+          "s": 17.071303289438628,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B018",
+          "order": "2026-09-18",
+          "mean": 958.538,
+          "s": 5.69837248694752,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B019",
+          "order": "2026-09-19",
+          "mean": 944.4206666666665,
+          "s": 6.70952787708145,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B020",
+          "order": "2026-09-20",
+          "mean": 940.0113333333334,
+          "s": 11.862878121827485,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B021",
+          "order": "2026-09-21",
+          "mean": 957.3336666666668,
+          "s": 9.431197926739365,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B022",
+          "order": "2026-09-22",
+          "mean": 955.6673333333333,
+          "s": 11.482639083996933,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B023",
+          "order": "2026-09-23",
+          "mean": 953.7016666666667,
+          "s": 3.015968556423188,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B024",
+          "order": "2026-09-24",
+          "mean": 945.5219999999999,
+          "s": 11.348774955914832,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B025",
+          "order": "2026-09-25",
+          "mean": 952.1846666666667,
+          "s": 8.799983939379237,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B026",
+          "order": "2026-09-26",
+          "mean": 951.0679999999999,
+          "s": 5.109790993768754,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B027",
+          "order": "2026-09-27",
+          "mean": 947.7326666666667,
+          "s": 14.734079351399366,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B028",
+          "order": "2026-09-28",
+          "mean": 944.991,
+          "s": 8.652800644877964,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B029",
+          "order": "2026-09-29",
+          "mean": 951.5203333333334,
+          "s": 3.72720623702709,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B030",
+          "order": "2026-09-30",
+          "mean": 952.5336666666667,
+          "s": 9.460407249866817,
+          "flagged": false,
+          "reason": ""
+        }
+      ],
+      "xbar": {
+        "center": 950.2355888888889,
+        "lcl": 931.2924276158299,
+        "ucl": 969.1787501619478
+      },
+      "s_chart": {
+        "center": 9.692521431829427,
+        "lcl": 0.0,
+        "ucl": 24.892038914075666
+      },
+      "sigma_short": 10.936839260303094,
+      "sigma_total": 10.292446230773237,
+      "cpk": 1.683472027406637,
+      "ppk": 1.7888714257173952,
+      "n_coupons": 90,
+      "n_failures": 0,
+      "failure_rate": 0.0,
+      "shapiro_p": 0.8058380444312407,
+      "verdict": "capable",
+      "reason": "Cpk 1.68 is at or above the target 1.33."
+    },
+    "stable_incapable.csv": {
+      "n_builds": 30,
+      "n_per_build": 3,
+      "builds": [
+        {
+          "build_id": "B001",
+          "order": "2026-09-01",
+          "mean": 908.607,
+          "s": 9.703513951141575,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B002",
+          "order": "2026-09-02",
+          "mean": 896.591,
+          "s": 6.283978755533769,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B003",
+          "order": "2026-09-03",
+          "mean": 909.5866666666667,
+          "s": 20.300713025244608,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B004",
+          "order": "2026-09-04",
+          "mean": 898.8883333333333,
+          "s": 13.567846635827351,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B005",
+          "order": "2026-09-05",
+          "mean": 905.7883333333333,
+          "s": 10.450987385569565,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B006",
+          "order": "2026-09-06",
+          "mean": 901.0749999999999,
+          "s": 8.540591372967118,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B007",
+          "order": "2026-09-07",
+          "mean": 912.8290000000001,
+          "s": 15.586971097682861,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B008",
+          "order": "2026-09-08",
+          "mean": 902.6203333333333,
+          "s": 12.13424453080335,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B009",
+          "order": "2026-09-09",
+          "mean": 910.497,
+          "s": 1.734719573879381,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B010",
+          "order": "2026-09-10",
+          "mean": 898.442,
+          "s": 21.345166291223872,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B011",
+          "order": "2026-09-11",
+          "mean": 901.6443333333333,
+          "s": 9.952144609747867,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B012",
+          "order": "2026-09-12",
+          "mean": 900.156,
+          "s": 12.286555212914578,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B013",
+          "order": "2026-09-13",
+          "mean": 907.7896666666667,
+          "s": 3.6669797290595105,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B014",
+          "order": "2026-09-14",
+          "mean": 913.1023333333333,
+          "s": 8.84909997306695,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B015",
+          "order": "2026-09-15",
+          "mean": 903.7886666666667,
+          "s": 6.830861243894009,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B016",
+          "order": "2026-09-16",
+          "mean": 906.1300000000001,
+          "s": 2.436338851637851,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B017",
+          "order": "2026-09-17",
+          "mean": 909.3070000000001,
+          "s": 17.071303289438628,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B018",
+          "order": "2026-09-18",
+          "mean": 913.538,
+          "s": 5.69837248694752,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B019",
+          "order": "2026-09-19",
+          "mean": 899.4206666666665,
+          "s": 6.70952787708145,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B020",
+          "order": "2026-09-20",
+          "mean": 895.0113333333334,
+          "s": 11.862878121827485,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B021",
+          "order": "2026-09-21",
+          "mean": 912.3336666666668,
+          "s": 9.431197926739365,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B022",
+          "order": "2026-09-22",
+          "mean": 910.6673333333333,
+          "s": 11.482639083996933,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B023",
+          "order": "2026-09-23",
+          "mean": 908.7016666666667,
+          "s": 3.015968556423188,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B024",
+          "order": "2026-09-24",
+          "mean": 900.5219999999999,
+          "s": 11.348774955914832,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B025",
+          "order": "2026-09-25",
+          "mean": 907.1846666666667,
+          "s": 8.799983939379237,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B026",
+          "order": "2026-09-26",
+          "mean": 906.0679999999999,
+          "s": 5.109790993768754,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B027",
+          "order": "2026-09-27",
+          "mean": 902.7326666666667,
+          "s": 14.734079351399366,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B028",
+          "order": "2026-09-28",
+          "mean": 899.991,
+          "s": 8.652800644877964,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B029",
+          "order": "2026-09-29",
+          "mean": 906.5203333333334,
+          "s": 3.72720623702709,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B030",
+          "order": "2026-09-30",
+          "mean": 907.5336666666667,
+          "s": 9.460407249866817,
+          "flagged": false,
+          "reason": ""
+        }
+      ],
+      "xbar": {
+        "center": 905.2355888888889,
+        "lcl": 886.2924276158299,
+        "ucl": 924.1787501619478
+      },
+      "s_chart": {
+        "center": 9.692521431829427,
+        "lcl": 0.0,
+        "ucl": 24.892038914075666
+      },
+      "sigma_short": 10.936839260303094,
+      "sigma_total": 10.292446230773237,
+      "cpk": 0.3119606023055329,
+      "ppk": 0.3314919394732296,
+      "n_coupons": 90,
+      "n_failures": 17,
+      "failure_rate": 0.18888888888888888,
+      "shapiro_p": 0.8058380444312407,
+      "verdict": "not capable",
+      "reason": "Cpk 0.31 is below the target 1.33."
+    },
+    "unstable_shift.csv": {
+      "n_builds": 30,
+      "n_per_build": 3,
+      "builds": [
+        {
+          "build_id": "B001",
+          "order": "2026-09-01",
+          "mean": 953.607,
+          "s": 9.703513951141575,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B002",
+          "order": "2026-09-02",
+          "mean": 941.591,
+          "s": 6.283978755533769,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B003",
+          "order": "2026-09-03",
+          "mean": 954.5866666666667,
+          "s": 20.300713025244608,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B004",
+          "order": "2026-09-04",
+          "mean": 943.8883333333333,
+          "s": 13.567846635827351,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B005",
+          "order": "2026-09-05",
+          "mean": 950.7883333333333,
+          "s": 10.450987385569565,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B006",
+          "order": "2026-09-06",
+          "mean": 946.0749999999999,
+          "s": 8.540591372967118,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B007",
+          "order": "2026-09-07",
+          "mean": 957.8290000000001,
+          "s": 15.586971097682861,
+          "flagged": true,
+          "reason": "mean above the X-bar upper limit"
+        },
+        {
+          "build_id": "B008",
+          "order": "2026-09-08",
+          "mean": 947.6203333333333,
+          "s": 12.13424453080335,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B009",
+          "order": "2026-09-09",
+          "mean": 955.497,
+          "s": 1.734719573879381,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B010",
+          "order": "2026-09-10",
+          "mean": 943.442,
+          "s": 21.345166291223872,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B011",
+          "order": "2026-09-11",
+          "mean": 946.6443333333333,
+          "s": 9.952144609747867,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B012",
+          "order": "2026-09-12",
+          "mean": 945.156,
+          "s": 12.286555212914578,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B013",
+          "order": "2026-09-13",
+          "mean": 952.7896666666667,
+          "s": 3.6669797290595105,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B014",
+          "order": "2026-09-14",
+          "mean": 958.1023333333333,
+          "s": 8.84909997306695,
+          "flagged": true,
+          "reason": "mean above the X-bar upper limit"
+        },
+        {
+          "build_id": "B015",
+          "order": "2026-09-15",
+          "mean": 948.7886666666667,
+          "s": 6.830861243894009,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B016",
+          "order": "2026-09-16",
+          "mean": 951.1300000000001,
+          "s": 2.436338851637851,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B017",
+          "order": "2026-09-17",
+          "mean": 954.3070000000001,
+          "s": 17.071303289438628,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B018",
+          "order": "2026-09-18",
+          "mean": 958.538,
+          "s": 5.69837248694752,
+          "flagged": true,
+          "reason": "mean above the X-bar upper limit"
+        },
+        {
+          "build_id": "B019",
+          "order": "2026-09-19",
+          "mean": 944.4206666666665,
+          "s": 6.70952787708145,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B020",
+          "order": "2026-09-20",
+          "mean": 905.0113333333334,
+          "s": 11.862878121827485,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "B021",
+          "order": "2026-09-21",
+          "mean": 922.3336666666668,
+          "s": 9.431197926739365,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B022",
+          "order": "2026-09-22",
+          "mean": 920.6673333333333,
+          "s": 11.482639083996933,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B023",
+          "order": "2026-09-23",
+          "mean": 918.7016666666667,
+          "s": 3.015968556423188,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "B024",
+          "order": "2026-09-24",
+          "mean": 910.5219999999999,
+          "s": 11.348774955914832,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "B025",
+          "order": "2026-09-25",
+          "mean": 917.1846666666667,
+          "s": 8.799983939379237,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "B026",
+          "order": "2026-09-26",
+          "mean": 916.0679999999999,
+          "s": 5.109790993768754,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "B027",
+          "order": "2026-09-27",
+          "mean": 912.7326666666667,
+          "s": 14.734079351399366,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "B028",
+          "order": "2026-09-28",
+          "mean": 909.991,
+          "s": 8.652800644877964,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "B029",
+          "order": "2026-09-29",
+          "mean": 916.5203333333334,
+          "s": 3.72720623702709,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "B030",
+          "order": "2026-09-30",
+          "mean": 917.5336666666667,
+          "s": 9.460407249866817,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        }
+      ],
+      "xbar": {
+        "center": 937.4022555555555,
+        "lcl": 918.4590942824965,
+        "ucl": 956.3454168286145
+      },
+      "s_chart": {
+        "center": 9.692521431829427,
+        "lcl": 0.0,
+        "ucl": 24.892038914075666
+      },
+      "sigma_short": 10.936839260303094,
+      "sigma_total": 19.858755839572513,
+      "cpk": 1.2923372876555803,
+      "ppk": 0.7117306491588054,
+      "n_coupons": 90,
+      "n_failures": 0,
+      "failure_rate": 0.0,
+      "shapiro_p": 0.030362371185109528,
+      "verdict": "not assessable",
+      "reason": "Not assessable: process is unstable, builds out of control: B007, B014, B018, B020, B024, B025, B026, B027, B028, B029, B030."
+    }
+  }
+}

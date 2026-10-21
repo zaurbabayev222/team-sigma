@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "locale": "C.UTF-8",
+  "metadata": {
+    "appmode": "python-fastapi",
+    "entrypoint": "app:app"
+  },
+  "python": {
+    "version": "3.12.4",
+    "package_manager": {
+      "name": "pip",
+      "version": "24.0",
+      "package_file": "requirements.txt"
+    }
+  },
+  "environment": {
+    "python": {
+      "requires": "~=3.12.0"
+    }
+  },
+  "files": {
+    "requirements.txt": {
+      "checksum": "4ffc8cc22c35325cf27a3ba663e90e77"
+    },
+    ".python-version": {
+      "checksum": "61939823fbcc7e8de3b61ab105331baf"
+    },
+    "__init__.py": {
+      "checksum": "92bfc2e7046b5449347f74a2d108a155"
+    },
+    "app.py": {
+      "checksum": "a1f6e178be2210485722ea38af8837dc"
+    },
+    "data/README.md": {
+      "checksum": "88d92a5d6a81003c7efe26ae866beff5"
+    },
+    "data/stable_capable.csv": {
+      "checksum": "42630fff3aaf0a21ad22e689ae6fe051"
+    },
+    "data/stable_incapable.csv": {
+      "checksum": "84de55c3e7b04d7d29d4fd2602ad82b0"
+    },
+    "data/unstable_shift.csv": {
+      "checksum": "5d1f571db93872458fecdbe9765ec7d6"
+    },
+    "frontend/dist/assets/index-BILLycUL.js": {
+      "checksum": "067c751dd0c82290fdbd0c12eed7e4f0"
+    },
+    "frontend/dist/assets/index-REKrLcTO.css": {
+      "checksum": "754d457f68ced66a3dee71ec0123bb6c"
+    },
+    "frontend/dist/index.html": {
+      "checksum": "a6c70cbd751088ae06e0f3ee47e833aa"
+    },
+    "profiles/__init__.py": {
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "profiles/lpbf.py": {
+      "checksum": "2c38d9bf740a683cb5ade4fdf45a694e"
+    },
+    "qc.py": {
+      "checksum": "7dfe0f6f637ba9b663b7d5402eeb5e7d"
+    }
+  }
+}

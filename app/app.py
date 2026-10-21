@@ -7,11 +7,14 @@ import io
 import os
 import re
 import sys
+from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 # Import trap: on Posit Connect only this folder is uploaded and app.py is the top-level
 # module, so "from app.qc import ..." would fail there. When we run from inside app/, the
@@ -91,6 +94,10 @@ def run_analysis(df, lsl, min_builds, cpk_target):
         raise HTTPException(status_code=400, detail=str(error))
     result["profile"] = {k: PROFILE[k] for k in ("name", "label", "value_label", "value_unit")}
     result["parameters"] = parameter_summary(df, result)
+    # Add plot-ready bins without changing any existing H-04 response fields.
+    counts, edges = np.histogram(pd.to_numeric(df[PROFILE["value_col"]]), bins="auto")
+    result["histogram"] = [{"lower": float(edges[i]), "upper": float(edges[i + 1]),
+                            "count": int(count)} for i, count in enumerate(counts)]
     return result
 
 
@@ -142,3 +149,9 @@ def analyze_upload(file: UploadFile = File(...), lsl: float = Form(...),
 async def docs_redirect():
     """Redirect to FastAPI interactive documentation."""
     return RedirectResponse(url="/docs")
+
+
+# Keep GET / as the existing API health message; serve H-05 separately.
+FRONTEND_DIR = Path(APP_DIR) / "frontend" / "dist"
+if FRONTEND_DIR.is_dir():
+    app.mount("/dashboard", StaticFiles(directory=FRONTEND_DIR, html=True), name="dashboard")

@@ -45,15 +45,15 @@ tasks:
   - id: H-02
     title: Two or three test datasets plus a codebook
     points: "10 - Tool Documentation: 2-3 working test datasets (5), codebook and README for the data (5)"
-    status: todo
-    owner: ""
-    started_at: ""
+    status: in_progress
+    owner: "Codex H-02"
+    started_at: "2026-10-21 00:53 UTC"
     owns: ["data/"]
     definition_of_done: >
       ls data/*.csv lists 2 or 3 files (e.g. in control, planted shift, edge
       case), and data/README.md names every one of them and describes every
       column with units and how the data would be collected for real.
-    result: ""
+    result: "Three seeded synthetic CSVs and codebook restored; reproducibility, schema, planted-shift and edge-case checks pass against the pulled core; ready for check-in"
 
   - id: H-03
     title: Core QC statistic as one plain, tested function
@@ -91,23 +91,23 @@ tasks:
   - id: H-05
     title: Demonstration of the tool on every test dataset
     points: "10 - Tool Design: a clear demonstration of the tool, using test datasets"
-    status: todo
-    owner: ""
-    started_at: ""
+    status: in_progress
+    owner: "Codex H05 implementer"
+    started_at: "2026-10-20 20:43"
     owns: ["demo/", "app/frontend/"]
     definition_of_done: >
       demo/README.md walks through each data/ CSV with the exact command or
       URL to run, the numbers or chart the tool shows, and a one-line "how to
       read this"; a teammate who did not write it follows it and gets the same
       numbers.
-    result: ""
+    result: "Restored dashboard and walkthrough adapted to completed H-04 dataset IDs and parameter schema; frontend 5 tests pass and bundle API reproduces all three captured results; independent teammate reproduction pending"
 
   - id: H-06
     title: Deploy to the course Posit Connect server
     points: "protects the 25 working-tool points - judges must be able to open it"
-    status: todo
-    owner: ""
-    started_at: ""
+    status: in_progress
+    owner: "Codex H-06"
+    started_at: "2026-10-21 00:43 UTC"
     owns: [".github/workflows/", ".github/scripts/", "app/manifest.json", "app/.python-version"]
     notes: >
       Load the connect-publish skill. Copy ONE workflow for your stack from
@@ -120,7 +120,7 @@ tasks:
     definition_of_done: >
       The workflow run is green, and the public URL answers HTTP 200 from a
       logged-out browser and returns the H-03 numbers for one test dataset.
-    result: ""
+    result: "Restored workflow and publishing tools adapted to H-04 app:app layout; genuine 14-file manifest regenerated and checksummed; isolated bundle dashboard, assets, health, known answer and all three API comparisons pass; live publishing and logged-out Connect verification pending"
 
   - id: H-07
     title: README and function documentation
