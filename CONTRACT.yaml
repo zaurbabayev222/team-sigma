@@ -125,9 +125,9 @@ tasks:
   - id: H-07
     title: README and function documentation
     points: "10 - Tool Documentation: excellent, easy-to-follow documentation"
-    status: todo
-    owner: ""
-    started_at: ""
+    status: in_progress
+    owner: "Jerry Su"
+    started_at: "2026-10-20"
     owns: ["README.md", "app/README.md"]
     notes: >
       Replace the hackathon README.md with your tool's README; the event
@@ -137,14 +137,20 @@ tasks:
       how each function or endpoint works, how to run it in one command, the
       live URL, and links demo/README.md. A teammate who did not write the
       code follows it from a fresh clone and it works.
-    result: ""
+    result: "Updated the main README.md with AeroQual's project overview, 
+    target users, input requirements, statistical methods, setup instructions, 
+    API usage, testing procedures, and project structure. 
+    Added app/README.md to document the Python functions and API endpoints.
+    The documentation is drafted and pending final verification.
+    The live deployment URL, demo links, and fresh-clone reproducibility
+    test will be updated after the remaining development tasks are completed."
 
   - id: H-08
     title: Reproducible public repo, submitted on Devpost
     points: "5 - Tool Documentation: fully reproducible code, posted publicly to GitHub"
-    status: todo
-    owner: ""
-    started_at: ""
+    status: in_progress
+    owner: "Jerry Su"
+    started_at: "2026-10-20"
     owns: [".gitignore"]
     notes: >
       Make this clone your own public repo early (a new GitHub repo, then
