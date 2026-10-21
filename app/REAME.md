@@ -72,8 +72,8 @@ Used to estimate short-term within-build standard deviation. `n` is the number o
 
 Returns a dictionary with `c4`, `A3`, `B3`, and `B4` based on the subgroup size, rather than hard-coding factors for a specific sample size. For n = 3, factors are approximately `c4 = 0.8862`, `A3 = 1.954`, `B3 = 0`, and `B4 = 2.568`.
 
-### `analyze(df, lsl, subgroup_col="subgroup", order_col="order"
-value_col="value", min_builds=25, cpk_target=1.33)`
+### analyze(df, lsl, subgroup_col="subgroup", order_col="order"
+value_col="value", min_builds=25, cpk_target=1.33)
 
 **Inputs:** A pandas DataFrame containing one measurement per row, a numeric LSL, column-name mappings, a minimum build count, and a Cpk target. The API supplies the LPBF mapping: `build_id`, `build_date`, `uts_mpa`.
 
