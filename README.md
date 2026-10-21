@@ -7,144 +7,250 @@ healthcare systems, and energy systems!*
 
 ---
 
-Your team picks a prompt, creates the data, and ships a working quality-control
-tool. **👉 [Register on Devpost](https://six-sigma-hackathon.devpost.com/)**
-(required, even if you don't have a team yet).
+# AeroQual
 
-### 📍 When & where
+### Titanium Additive Manufacturing Quality Dashboard
 
-| | 🏫 On-campus (24 hours) | 🌐 Virtual DL Challenge (7 days) |
-|---|---|---|
-| **Who** | on-campus students (required unless excused) | distance-learning students, and anyone who can't attend in person |
-| **Runs** | Fri Oct 16, 3 PM → Sat Oct 17, 3 PM ET | Fri Oct 16, 3 PM → Fri Oct 23, 3 PM ET |
-| **Where** | Upson Hall 116 | online |
-| **Submissions due** | Sat Oct 17, **1 PM ET** sharp | Fri Oct 23, **3 PM ET** |
-| **Showcase** | Sat Oct 17, 2-3 PM (must attend) | — |
+**Team:** Sigma Airlines  
+**Event:** Cornell SYSEN 5300 Six Sigma Hackathon, Virtual DL Challenge (2026)  
+**Challenge:** Prompt 1, *Industrial Systems: 3D Printing for Aerospace*  
+**Repository:** https://github.com/zaurbabayev222/team-sigma
 
-Submit on **[Devpost](https://six-sigma-hackathon.devpost.com/)**: your repo
-link plus a demo. Full run of show: [🗓️ Schedule](docs/schedule.md).
+> **Development status (October 21, 2026):** The Python statistical engine and FastAPI backend are implemented. The synthetic datasets/codebook (H-02), React dashboard and dataset walkthrough (H-05), and public Posit Connect deployment (H-06) are not yet marked complete in `CONTRACT.yaml`. This README documents working source-code interfaces, planned deliverables, and the remaining verification steps separately. Do not treat planned features as deployed features.
 
----
+## 1. What is AeroQual?
 
-### Quick Links
+AeroQual is a quality-monitoring prototype for aerospace contractors that 3D-print titanium brackets. It helps a **quality engineer** interpret tensile-test results after each build and answer three questions:
 
-- [🗓️ Schedule of Events](docs/schedule.md)
-- [💬 Prompts](docs/prompts.md) — *revealed at the start of the event*
-- [🔢 Evaluation Criteria](docs/criteria.md)
-- [📚 Resources for Building Your Tool](docs/resources.md)
-- [🧰 Starter Templates](demos/README.md)
-- [🤖 Agent Start Tutorial](docs/start.md) — type `/superagent` and your agent reads it for you
-- [⁉️ FAQ](#️-frequently-asked-questions)
+1. **Is the printing process stable?** X-bar and S control-chart calculations flag unusual changes in strength averages or within-build variation.
+2. **Can the process meet the customer's minimum strength?** Lower-side Cpk and Ppk summarize capability and overall process performance relative to a user-entered lower specification limit (LSL).
+3. **How many tested coupons fail?** The tool reports the number and proportion of tensile-strength measurements below the LSL, with recorded process conditions to help investigate flagged builds.
 
----
+The initial process profile is **laser powder bed fusion (LPBF)**. Statistical calculations in `app/qc.py` are independent of the printing technology; the LPBF-specific column mapping and optional process settings live in `app/profiles/lpbf.py`.
 
-> ### 📘🤖 New here? Read the [step-by-step start tutorial](docs/start.md) first
-> Ten minutes, for the whole team: set up your agent, **plan with `/superagent` on your
-> strongest model**, then **switch to a cheaper model** that builds and checks each task with
-> helper agents. **[→ docs/start.md](docs/start.md)**
+**Intended use:** Support engineering investigation and process improvement. This prototype does **not** certify aerospace hardware, approve product release, or establish an industry-wide material acceptance limit. All numerical examples and planned demonstration datasets are synthetic or illustrative.
 
+## 2. Features and implementation status
 
-### 💡 The Challenge
+| Component | What it provides | Status in task ledger |
+| --- | --- | --- |
+| Python statistics (`app/qc.py`) | X-bar/S limits, flagged builds, lower-side Cpk/Ppk, failure rate, normality p-value, verdict | H-03: done |
+| FastAPI (`app/app.py`) | CSV upload, built-in dataset lookup, analysis JSON, API documentation | H-04: done |
+| Sample datasets (`data/`) | Stable-capable, stable-incapable, unstable-shift scenarios and data dictionary | H-02: pending |
+| React dashboard (`app/frontend/`) and walkthrough (`demo/`) | Visualization and interpretation of test scenarios | H-05: pending |
+| Posit Connect | Public deployment | H-06: pending |
 
-Your team tackles one real-world quality control and reliability problem.
+An API response includes the numerical chart series and limits even if the React charting page is not yet available.
 
-- 🧩 Prompts are released **at kickoff** — each tied to a dataset you design and
-  build yourself
-- 📊 **The statistics are the graded core.** Statistical process control,
-  process capability, reliability modeling, failure analysis. The app is the
-  delivery vehicle for the analysis, not the point
-- 🧱 Ship a a dashboard / web app (React), plus **one** of: an R package or Python library AND/OR a public REST API
-  (FastAPI or plumber).
-- 🚀 Deploy it live to the course **Posit Connect** server
-- 🔢 Every project is scored 0-100 by the event staff.
-  [Read the criteria](docs/criteria.md)
+## 3. Inputs
 
----
+The API accepts a **CSV with one row per tensile-test coupon**, plus a customer-defined LSL in MPa.
 
-### 🤖 Build with AI — bring your own agent
+| Field | Required? | Data type / unit | Description |
+| --- | --- | --- | --- |
+| `build_id` | Yes | Text | Identifies the printing build/subgroup. |
+| `build_date` | Yes | `YYYY-MM-DD` | Orders builds chronologically for control-chart output. |
+| `uts_mpa` | Yes | Numeric, MPa | Ultimate tensile strength from the coupon's tensile test. |
+| `chamber_oxygen_ppm` | No | Numeric, ppm | Chamber oxygen recorded in the printer log. |
+| `powder_reuse_count` | No | Numeric count | Number of powder reuses. |
+| `laser_power_w` | No | Numeric, W | Laser power setting. |
 
-AI-assisted development is **expected and encouraged**. Use whatever you already
-have. The skill being tested is steering a capable assistant toward
-statistically correct work — which is exactly the skill this course is about.
+Parameters supplied **separately from the CSV**:
 
-- [🧠 AI coding agents](docs/agents.md) — the popular ones, and how to pick
-- [🎙️ Tools](docs/tools.md) — Wispr Flow (talk to your agent) and Open Design
-- [`CLAUDE.md`](CLAUDE.md) / [`AGENTS.md`](AGENTS.md) — what the event is, the
-  repo map, the deploy target, the four-script contract
-- [`.claude/skills/superagent/`](.claude/skills/superagent/SKILL.md) — the one
-  skill you need: type `/superagent` and it routes to every other skill and
-  template for you. They all live in [`.claude/skills/`](.claude/skills/) if you
-  want to read them
+| Parameter | Required? | Default | Interpretation |
+| --- | --- | --- | --- |
+| `lsl` | Yes | None | Lower specification limit, in MPa, supplied by the customer. |
+| `min_builds` | No | `25` | Minimum number of builds before a capability verdict is assessable. |
+| `cpk_target` | No | `1.33` | User-adjustable minimum acceptable lower-side Cpk. It is **not** a universal aerospace standard. |
 
-Two rules: everything you ship is **public and reproducible**, and you must be
-able to **explain every number your tool prints**.
+**Input rules:** The current engine requires at least two builds and at least two coupons per build, with the **same number of coupons in each build**. The planned demonstrations use three coupons per build. `uts_mpa` must be present, numeric, and finite on every row; a missing or invalid measurement produces an error rather than a pass. Keep the same date for rows belonging to the same build and use ISO dates for predictable sorting. A measurement **equal to the LSL passes**; only measurements strictly below the LSL count as failures.
 
----
+Example CSV structure (illustrative only):
 
-### ⁉️ Frequently Asked Questions
+```csv
+build_id,build_date,uts_mpa,chamber_oxygen_ppm,powder_reuse_count,laser_power_w
+B01,2026-10-01,990,120,1,200
+B01,2026-10-01,1000,120,1,200
+B01,2026-10-01,1010,120,1,200
+B02,2026-10-02,1005,118,1,200
+B02,2026-10-02,1010,118,1,200
+B02,2026-10-02,1015,118,1,200
+```
 
-- **Who can participate?** Cornell students who are (a) in the Systems
-  Engineering MEng/MS program, OR (b) enrolled in SYSEN 5300 / MAE 5390, OR
-  (c) enrolled in SYSEN 5900. Teams of **2 to 5**.
+This is a minimal, two-build input example. It can be analyzed with a user-specified `lsl`, but its capability verdict will be `not assessable` under the default 25-build minimum. It is **not** the promised H-02 dataset collection.
 
-- **On-campus or virtual?** On-campus students do the 24-hour event in Upson
-  Hall 116 (required unless excused). Distance-learning students, and anyone
-  who can't attend in person, do the 7-day Virtual DL Challenge.
-  [Dates above](#-when--where).
+## 4. Run locally or in GitHub Codespaces
 
-- **What are the deadlines?** On-campus: submissions due Sat Oct 17, 1 PM ET
-  sharp; showcase Sat Oct 17, 2-3 PM (must attend). DL: submissions due
-  Fri Oct 23, 3 PM ET.
+Use a terminal in the **repository root**. The steps below also work inside the browser-based GitHub Codespaces editor, without installing Git locally on your Mac.
 
-- **What do we win?** On-campus winners: dinner for the team at the Statler
-  Dining Room. DL winners: bragging rights — infamy for all time.
+**Prerequisites:** Python 3 with a version compatible with the pinned `app/requirements.txt` dependencies, `pip`, and a Bash-compatible shell. Internet access is required when installing dependencies for the first time.
 
-- **Do I need Six Sigma experience?** No. Trainings are provided during the
-  event, and many of the analyses can be learned in a few minutes. The
-  [course textbook](https://timothyfraser.com/sigma/) is open to everyone.
+### First-time setup
 
-- **Do I have to be a coding wizard?** No. Some prior experience in R or Python
-  is enough, and AI assistants close a lot of the gap. A winning project is a
-  smart, correct solution to a quality-control problem — not fancy code.
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r app/requirements.txt
+```
 
-- **What if I can't find team members?** Register on
-  [Devpost](https://six-sigma-hackathon.devpost.com/) anyway; we will match
-  you with a team.
+### Start the backend (one command after setup)
 
-- **Do I have to be there the whole 24 hours?** A successful team works most of
-  it. Step out, sleep, stagger breaks — just keep someone on the team present.
+```bash
+bash app/testme.sh
+```
 
-- **Can a teammate join the on-campus event remotely?** No. Anyone who can't
-  attend in person does the Virtual DL Challenge instead.
+The script starts Uvicorn and exposes the FastAPI app on **port 8000**. In Codespaces, select the forwarded port 8000 to open the API in a browser. Locally, visit:
 
-- **What do we submit?** On Devpost: a link to your public GitHub repository
-  and a demo of a working prototype, deployed live to Posit Connect. At least
-  one team member needs a working (non-Cornell) GitHub account.
+- API health: http://127.0.0.1:8000/health
+- Interactive API documentation: http://127.0.0.1:8000/docs
+- Dataset catalog: http://127.0.0.1:8000/datasets
 
-- **What software do I need?** Install R or Python and at least one coding
-  interface (RStudio, VSCode, Cursor, Positron, ...) **before** the event
-  starts. If you plan to use an AI assistant, set it up beforehand too.
+Stop the server with `Ctrl+C`. No `git pull` is required to run an already-open Codespace; use `git pull` when you want to retrieve changes from the shared repository.
 
-- **What language should I use?** R, Python, or both. Code must be fully
-  reproducible and public.
+**Important:** `/datasets` currently returns an empty list if `app/data/` does not contain CSV files. When H-02 datasets are added under `data/`, copy them to the application's deployable data folder with `bash app/sync_data.sh` before using the built-in dataset endpoint.
 
-- **How are products evaluated?** Scored 0-100 by event staff on
-  [the criteria](docs/criteria.md): tool implementation (50), tool design
-  (25), documentation (25).
+## 5. Run a known-answer analysis
 
----
+The repository's `SPEC.md`, section 4, provides a four-build example with 12 coupons and a lower specification limit of **980 MPa**. You can run the following commands in a *second terminal* while the API server is running. This creates a temporary CSV outside the repository so it does not modify the team's H-02 deliverables.
 
-### 👥 How to Join
+```bash
+cat > /tmp/aeroqual-known-answer.csv <<'CSV'
+build_id,build_date,uts_mpa
+B1,2026-10-01,990
+B1,2026-10-01,1000
+B1,2026-10-01,1010
+B2,2026-10-02,1005
+B2,2026-10-02,1010
+B2,2026-10-02,1015
+B3,2026-10-03,975
+B3,2026-10-03,990
+B3,2026-10-03,1005
+B4,2026-10-04,990
+B4,2026-10-04,1000
+B4,2026-10-04,1010
+CSV
 
-[Register on Devpost](https://six-sigma-hackathon.devpost.com/) — registration
-is required. Form a team of 2 to 5, or register solo and we'll match you.
+curl -sS -X POST http://127.0.0.1:8000/analyze \
+  -F 'file=@/tmp/aeroqual-known-answer.csv;type=text/csv' \
+  -F 'lsl=980'
+```
 
----
+**Expected checks** (rounded, from the approved known-answer example):
 
-### 📚 Sign Up to Mentor
+| Result | Expected value |
+| --- | --- |
+| Number of builds and coupons | 4 builds, 12 coupons |
+| X-bar grand mean | 1000 MPa |
+| Average within-build standard deviation | 10 MPa |
+| X-bar lower / upper limits | 980.46 / 1019.54 MPa |
+| S-chart lower / upper limits | 0 / 25.68 MPa |
+| Lower-side Cpk / Ppk | 0.591 / 0.571 |
+| Coupon failures | 1 of 12 (8.3%) |
+| Flagged builds | None |
+| Verdict | `not assessable`, because 4 builds are fewer than the default 25 |
 
-Faculty, postdocs, PhD students, and developers are welcome as mentors.
-[Details here](docs/mentors.md).
+The example is an **arithmetic validation**, not proof that a production process is acceptable. These expected results come from `SPEC.md`; rerun the command in your Codespace to verify your checkout.
+
+## 6. Interpret the analysis
+
+- **X-bar chart:** Each point is the mean tensile strength within a build. A mean below the lower control limit or above the upper control limit flags that build as potentially affected by special-cause variation.
+- **S chart:** Each point is the sample standard deviation of coupons within a build. A standard deviation above the S-chart upper limit flags unusually high within-build variation.
+- **Cpk (lower side):** Compares the build-mean grand average with the LSL using estimated short-term within-build variation. The code uses `Cpk = (grand_mean - LSL) / (3 × sigma_short)`.
+- **Ppk (lower side):** Uses the overall sample standard deviation of all coupons in the denominator, reflecting total observed variation.
+- **Failure rate:** `count(uts_mpa < LSL) / total_coupon_count`. This is the observed coupon failure fraction, not a forecast of future defects.
+- **Shapiro-Wilk `p` value:** An additional normality diagnostic. A small p-value provides evidence against a normal distribution; it is not, by itself, a guarantee of normality or process stability.
+
+**Control limits and specification limits are different.** Control limits are estimated from observed process variation. The user-entered LSL is an external customer requirement.
+### Verdict logic
+
+The backend returns a `verdict` plus a text `reason`:
+
+1. **`not assessable`** if variation is zero so Cpk/Ppk are undefined, if any build is out of control, or if fewer than `min_builds` builds are present (checked in that order).
+2. **`capable`** if the process passes those checks and `Cpk >= cpk_target`.
+3. **`not capable`** if the process passes the preliminary checks but `Cpk < cpk_target`.
+
+Numeric Cpk/Ppk values can still appear when the verdict is `not assessable`; do **not** interpret them as an approval. Optional LPBF parameters are descriptive investigation clues, not evidence of causality.
+
+For formulas, response fields, and detailed endpoint documentation, see **[app/README.md](app/README.md)**.
+
+## 7. REST API quick reference
+
+| Method | Route | Purpose |
+| --- | --- | --- |
+| `GET` | `/` | Service welcome message and documentation location. |
+| `GET` | `/health` | Returns `{ "status": "ok" }`. |
+| `GET` | `/datasets` | Lists `.csv` datasets currently bundled in `app/data/`. |
+| `GET` | `/analyze?dataset=NAME&lsl=VALUE` | Analyzes a bundled CSV (only after files are synced). |
+| `POST` | `/analyze` | Analyzes an uploaded CSV via multipart form-data. |
+| `GET` | `/docs` | Interactive FastAPI / OpenAPI documentation. |
+
+For both analysis routes, `min_builds` defaults to 25 and `cpk_target` to 1.33. Uploaded CSV requests send `file`, `lsl`, `min_builds`, and `cpk_target` as form fields. GET analysis accepts these as query parameters.
+
+## 8. Test the code
+
+After activating the virtual environment and installing requirements:
+
+```bash
+python -m pytest tests -q
+```
+
+This exercises the Python QC engine and API test suite. The task ledger records prior passing checks for H-03/H-04, but a new contributor should rerun this command on the current branch. Test execution is **not** equivalent to a verified public deployment or a complete React UI.
+
+For details on Python functions, response keys, errors, and example programmatic usage, see [Backend and API documentation](app/README.md).
+
+## 9. Demonstration datasets and walkthrough
+
+The release plan calls for three **synthetic** datasets, each with 30 builds and three tensile-test coupons per build:
+
+| Planned CSV | Intended behavior |
+| --- | --- |
+| `data/stable_capable.csv` | Stable process, lower-side Cpk at or above target. |
+| `data/stable_incapable.csv` | Stable process, but lower-side Cpk below target. |
+| `data/unstable_shift.csv` | A planted change from approximately build 20 and an unstable-process verdict. |
+
+H-02 owns the CSV files and their units/column codebook at `data/README.md`. H-05 owns the step-by-step results and demo at `demo/README.md`, as well as the React frontend at `app/frontend/`.
+
+**Demo walkthrough:** [demo/README.md](demo/README.md) (**pending H-05**; link will work after the team creates the file). Do not invent numeric results or screenshots before these datasets and the running dashboard have been verified.
+
+## 10. Live deployment
+
+**Posit Connect public URL:** **PENDING H-06**. Replace this status with the actual working, publicly accessible URL after the team validates it from a signed-out browser. **Do not paste a placeholder URL into the final Devpost submission.**
+
+The backend's existing scripts are `app/manifestme.sh` and `app/deployme.sh`. Deployment preparation copies available CSV files with `app/sync_data.sh`. The H-06 owner is responsible for deployment configuration, credentials, and an HTTP-200 accessibility check; never store deployment API keys in this public repository.
+
+## 11. Project layout
+
+```text
+team-sigma/
+├── README.md                 # Project overview and contributor quick start (H-07)
+├── SPEC.md                   # Binding MVP requirements and statistics
+├── PROJECT_OVERVIEW.md       # Product context
+├── CONTRACT.yaml             # Task ownership and completion checks
+├── app/
+│   ├── README.md             # Function, API, and backend documentation (H-07)
+│   ├── qc.py                 # Statistical engine
+│   ├── app.py                # FastAPI endpoints
+│   ├── profiles/lpbf.py      # LPBF column mappings and optional parameters
+│   ├── requirements.txt     # Pinned Python dependencies
+│   ├── testme.sh             # Launch the API on port 8000
+│   ├── sync_data.sh          # Copy demo CSVs into app/data/
+│   ├── manifestme.sh         # Write a Posit Connect manifest
+│   └── deployme.sh           # Deploy FastAPI to Posit Connect
+├── tests/                    # Statistical and API tests
+├── data/                     # Planned H-02 datasets and codebook
+└── demo/                     # Planned H-05 demonstration and interpretation
+```
+
+`data/`, `demo/`, and `app/frontend/` are planned outputs and may not exist on the branch being viewed. Their presence and results must be confirmed before final delivery.
+
+## 12. Reproducibility and project limits
+
+For a fresh review, clone the public repository, create a Python virtual environment, install the pinned dependencies, run `python -m pytest tests -q`, launch `bash app/testme.sh`, and run the sample upload above. After H-02/H-05/H-06, also verify each dataset, demonstrate the React dashboard, and test the public URL.
+
+The first release supports the LPBF profile, lower-bound strength specifications, equal-size build subgroups, X-bar/S special-cause flags, and descriptive comparisons of optional process parameters. It intentionally does not implement regression, ML forecasts, FMEA, hardware certification, mixed-size subgroups, or additional printing-process profiles.
+
+**Project references:** [SPEC.md](SPEC.md) · [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) · [Task ledger](CONTRACT.yaml) · [Evaluation criteria](docs/criteria.md) · [Hackathon event](https://six-sigma-hackathon.devpost.com/).
+
 
 ---
 
