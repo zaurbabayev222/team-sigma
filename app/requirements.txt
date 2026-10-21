@@ -2,3 +2,7 @@ pandas==3.0.6
 numpy==2.4.4
 scipy==1.17.1
 pytest==9.1.1
+fastapi==0.156.4
+uvicorn==0.54.0
+python-multipart==0.0.32
+httpx==0.28.1

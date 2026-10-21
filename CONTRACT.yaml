@@ -74,7 +74,7 @@ tasks:
   - id: H-04
     title: Working tool - one demo copied to app/ and wired to the H-03 function
     points: "25 - Tool Implementation: an effective, working tool (does it run?)"
-    status: in_progress
+    status: done
     owner: "Zaur Babayev (agent)"
     started_at: "2026-10-20 23:21 UTC"
     owns: ["app/"]
@@ -86,7 +86,7 @@ tasks:
       The testme script in app/ starts the tool with one command, and a call
       on one data/ file (endpoint, function call or app upload) returns the
       same numbers as the H-03 known-answer test.
-    result: ""
+    result: "app/app.py FastAPI + LPBF profile calling analyze(); testme starts it; POST /analyze on the SPEC example returns Cpk 0.591, Ppk 0.571 (same as H-03); pytest tests 22 passed"
 
   - id: H-05
     title: Demonstration of the tool on every test dataset
