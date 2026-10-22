@@ -11,7 +11,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -102,9 +102,11 @@ def run_analysis(df, lsl, min_builds, cpk_target):
 
 
 @app.get("/")
-async def root():
-    """Root endpoint."""
-    return {"message": "AeroQual API is running!", "docs": "/docs"}
+async def root(request: Request):
+    """Send visitors to the dashboard. On Posit Connect the app lives under a path
+    prefix (root_path), so the redirect must include it."""
+    prefix = request.scope.get("root_path", "").rstrip("/")
+    return RedirectResponse(url=prefix + "/dashboard/")
 
 
 @app.get("/health")

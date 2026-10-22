@@ -27,7 +27,7 @@ Keep the backend running separately and open Vite's printed URL. Remove the over
 
 | Method | Path | Behavior |
 | --- | --- | --- |
-| GET | `/` | `{"message":"AeroQual API is running!","docs":"/docs"}` |
+| GET | `/` | Redirects to `/dashboard/` (keeps the Connect path prefix) |
 | GET | `/health` | `{"status":"ok"}` |
 | GET | `/datasets` | `{"datasets":["stable_capable","stable_incapable","unstable_shift"]}` after CSV synchronization |
 | GET | `/analyze` | Analyze bundled CSV using query parameters |

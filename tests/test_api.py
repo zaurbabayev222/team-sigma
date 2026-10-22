@@ -24,6 +24,18 @@ def test_health():
     assert client.get("/health").json() == {"status": "ok"}
 
 
+def test_root_redirects_to_dashboard():
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code in (302, 307)
+    assert response.headers["location"] == "/dashboard/"
+
+
+def test_root_redirect_keeps_connect_path_prefix():
+    prefixed = TestClient(app, root_path="/content/abc")
+    response = prefixed.get("/", follow_redirects=False)
+    assert response.headers["location"] == "/content/abc/dashboard/"
+
+
 def test_datasets_is_a_list():
     assert isinstance(client.get("/datasets").json()["datasets"], list)
 
