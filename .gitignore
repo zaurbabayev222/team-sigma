@@ -1,19 +1,9 @@
+
+# R / RStudio
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-.env
-.posit/
-__pycache__/
-*.pyc
-node_modules/
-dist/
-rsconnect/
-.opencode/model-ladder-state.json
-
-.claude/settings.local.json
-
-# Extra R / RStudio entries from the original team-sigma repo
 .Rapp.history
 .RDataTmp
 .Renviron
@@ -21,3 +11,43 @@ rsconnect/
 *_cache/
 *.utf8.md
 *.knit.md
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# JavaScript / React
+node_modules/
+dist/
+coverage/
+
+# Posit / Deployment
+.posit/
+rsconnect/
+
+# Environment variables and sensitive files
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.p12
+*.pfx
+*.key
+
+# Local development settings
+.opencode/model-ladder-state.json
+.claude/settings.local.json
+
+# macOS temporary files
+.DS_Store
+
+# Runtime logs
+*.log
