@@ -1,257 +1,157 @@
-![](docs/images/banner_thin.png)
+﻿# AeroQual
 
-# 🎯 Cornell Six Sigma Hackathon
+Titanium additive manufacturing quality dashboard by **Sigma Airlines**, Cornell SYSEN 5300 Six Sigma Hackathon, Virtual DL Challenge.
 
-*Tackle real-world quality control problems drawn from industrial engineering,
-healthcare systems, and energy systems!*
+AeroQual helps a quality engineer review tensile-test coupons after each build: detect changes in process stability, assess lower-side strength capability, count observed failures, and inspect recorded conditions for flagged builds. The current release uses a **laser powder bed fusion (LPBF)** profile, React/Vite dashboard and FastAPI backend. Python calculates every QC result.
 
----
+**Status:** the dashboard, API and three synthetic datasets work locally. Public Posit Connect deployment and independent fresh-clone teammate reproduction remain unverified. This prototype does not certify hardware or authorize release. All demonstration data and example limits are synthetic or illustrative.
 
-# AeroQual
+## Run in Positron on Windows PowerShell
 
-### Titanium Additive Manufacturing Quality Dashboard
+Open this repository folder in Positron and use its PowerShell terminal, starting in the repository root. Install Python and Node.js/npm first. Deployment targets Python **3.12** and Node **22**; local preview also succeeded with Python **3.13.15** and Node **24.20.0**. Internet access is required for uncached dependencies. Check availability with `python --version`, `node --version`, and `npm.cmd --version`.
 
-**Team:** Sigma Airlines  
-**Event:** Cornell SYSEN 5300 Six Sigma Hackathon, Virtual DL Challenge (2026)  
-**Challenge:** Prompt 1, *Industrial Systems: 3D Printing for Aerospace*  
-**Repository:** https://github.com/zaurbabayev222/team-sigma
+First-time setup (no virtual-environment activation or execution-policy change needed):
 
-> **Development status (October 21, 2026):** The Python statistical engine and FastAPI backend are implemented. The synthetic datasets/codebook (H-02), React dashboard and dataset walkthrough (H-05), and public Posit Connect deployment (H-06) are not yet marked complete in `CONTRACT.yaml`. This README documents working source-code interfaces, planned deliverables, and the remaining verification steps separately. Do not treat planned features as deployed features.
-
-## 1. What is AeroQual?
-
-AeroQual is a quality-monitoring prototype for aerospace contractors that 3D-print titanium brackets. It helps a **quality engineer** interpret tensile-test results after each build and answer three questions:
-
-1. **Is the printing process stable?** X-bar and S control-chart calculations flag unusual changes in strength averages or within-build variation.
-2. **Can the process meet the customer's minimum strength?** Lower-side Cpk and Ppk summarize capability and overall process performance relative to a user-entered lower specification limit (LSL).
-3. **How many tested coupons fail?** The tool reports the number and proportion of tensile-strength measurements below the LSL, with recorded process conditions to help investigate flagged builds.
-
-The initial process profile is **laser powder bed fusion (LPBF)**. Statistical calculations in `app/qc.py` are independent of the printing technology; the LPBF-specific column mapping and optional process settings live in `app/profiles/lpbf.py`.
-
-**Intended use:** Support engineering investigation and process improvement. This prototype does **not** certify aerospace hardware, approve product release, or establish an industry-wide material acceptance limit. All numerical examples and planned demonstration datasets are synthetic or illustrative.
-
-## 2. Features and implementation status
-
-| Component | What it provides | Status in task ledger |
-| --- | --- | --- |
-| Python statistics (`app/qc.py`) | X-bar/S limits, flagged builds, lower-side Cpk/Ppk, failure rate, normality p-value, verdict | H-03: done |
-| FastAPI (`app/app.py`) | CSV upload, built-in dataset lookup, analysis JSON, API documentation | H-04: done |
-| Sample datasets (`data/`) | Stable-capable, stable-incapable, unstable-shift scenarios and data dictionary | H-02: pending |
-| React dashboard (`app/frontend/`) and walkthrough (`demo/`) | Visualization and interpretation of test scenarios | H-05: pending |
-| Posit Connect | Public deployment | H-06: pending |
-
-An API response includes the numerical chart series and limits even if the React charting page is not yet available.
-
-## 3. Inputs
-
-The API accepts a **CSV with one row per tensile-test coupon**, plus a customer-defined LSL in MPa.
-
-| Field | Required? | Data type / unit | Description |
-| --- | --- | --- | --- |
-| `build_id` | Yes | Text | Identifies the printing build/subgroup. |
-| `build_date` | Yes | `YYYY-MM-DD` | Orders builds chronologically for control-chart output. |
-| `uts_mpa` | Yes | Numeric, MPa | Ultimate tensile strength from the coupon's tensile test. |
-| `chamber_oxygen_ppm` | No | Numeric, ppm | Chamber oxygen recorded in the printer log. |
-| `powder_reuse_count` | No | Numeric count | Number of powder reuses. |
-| `laser_power_w` | No | Numeric, W | Laser power setting. |
-
-Parameters supplied **separately from the CSV**:
-
-| Parameter | Required? | Default | Interpretation |
-| --- | --- | --- | --- |
-| `lsl` | Yes | None | Lower specification limit, in MPa, supplied by the customer. |
-| `min_builds` | No | `25` | Minimum number of builds before a capability verdict is assessable. |
-| `cpk_target` | No | `1.33` | User-adjustable minimum acceptable lower-side Cpk. It is **not** a universal aerospace standard. |
-
-**Input rules:** The current engine requires at least two builds and at least two coupons per build, with the **same number of coupons in each build**. The planned demonstrations use three coupons per build. `uts_mpa` must be present, numeric, and finite on every row; a missing or invalid measurement produces an error rather than a pass. Keep the same date for rows belonging to the same build and use ISO dates for predictable sorting. A measurement **equal to the LSL passes**; only measurements strictly below the LSL count as failures.
-
-Example CSV structure (illustrative only):
-
-```csv
-build_id,build_date,uts_mpa,chamber_oxygen_ppm,powder_reuse_count,laser_power_w
-B01,2026-10-01,990,120,1,200
-B01,2026-10-01,1000,120,1,200
-B01,2026-10-01,1010,120,1,200
-B02,2026-10-02,1005,118,1,200
-B02,2026-10-02,1010,118,1,200
-B02,2026-10-02,1015,118,1,200
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r app/requirements.txt
+npm.cmd --prefix app/frontend ci --no-audit --no-fund
+Copy-Item -Path data/*.csv -Destination app/data/
+npm.cmd --prefix app/frontend run build
 ```
 
-This is a minimal, two-build input example. It can be analyzed with a user-specified `lsl`, but its capability verdict will be `not assessable` under the default 25-build minimum. It is **not** the promised H-02 dataset collection.
+Start both the API and built dashboard with one command:
 
-## 4. Run locally or in GitHub Codespaces
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn app.app:app --host 127.0.0.1 --port 8000
+```
 
-Use a terminal in the **repository root**. The steps below also work inside the browser-based GitHub Codespaces editor, without installing Git locally on your Mac.
+Keep the terminal running. Open **[the dashboard](http://127.0.0.1:8000/dashboard/)**. [API documentation](http://127.0.0.1:8000/docs) provides interactive requests; [health](http://127.0.0.1:8000/health) returns `{"status":"ok"}`. Stop with `Ctrl+C`. On subsequent starts, use only the launch command unless files changed. Rebuild after frontend changes and repeat the copy after dataset changes.
 
-**Prerequisites:** Python 3 with a version compatible with the pinned `app/requirements.txt` dependencies, `pip`, and a Bash-compatible shell. Internet access is required when installing dependencies for the first time.
+If Node is installed in its usual Windows location but is missing from PATH, reopen Positron or set it for this terminal session:
 
-### First-time setup
+```powershell
+$env:Path = 'C:\Program Files\nodejs;' + $env:Path
+```
+
+### Bash alternative
+
+On Linux/macOS or configured Git Bash, with Python and npm on PATH:
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r app/requirements.txt
-```
-
-### Start the backend (one command after setup)
-
-```bash
 bash app/testme.sh
 ```
 
-The script starts Uvicorn and exposes the FastAPI app on **port 8000**. In Codespaces, select the forwarded port 8000 to open the API in a browser. Locally, visit:
+`testme.sh` copies datasets, runs `npm ci`, builds React and starts Uvicorn on port 8000. It requires Bash; Windows PowerShell alone cannot execute it. It binds all local interfaces; the PowerShell command above binds loopback only.
 
-- API health: http://127.0.0.1:8000/health
-- Interactive API documentation: http://127.0.0.1:8000/docs
-- Dataset catalog: http://127.0.0.1:8000/datasets
+## Use the dashboard
 
-Stop the server with `Ctrl+C`. No `git pull` is required to run an already-open Codespace; use `git pull` when you want to retrieve changes from the shared repository.
+1. Select an **Example dataset**, or upload your coupon CSV. An upload takes precedence; use **Clear upload** to return to examples.
+2. Enter **Minimum strength, LSL (MPa)** from the customer specification. The demo default **895 MPa** is illustrative, not a titanium acceptance standard.
+3. Click **Analyze builds**. Review the verdict/reason, Cpk/Ppk, failure counts, X-bar/S charts, flagged-build table, distribution-bin table and recorded process parameters.
 
-**Important:** `/datasets` currently returns an empty list if `app/data/` does not contain CSV files. When H-02 datasets are added under `data/`, copy them to the application's deployable data folder with `bash app/sync_data.sh` before using the built-in dataset endpoint.
+The dashboard uses defaults of 25 builds and Cpk target 1.33. These settings are configurable through the API, not dashboard controls. Red points identify builds flagged by either chart; the table explains each flag.
 
-## 5. Run a known-answer analysis
+## Inputs and parameters
 
-The repository's `SPEC.md`, section 4, provides a four-build example with 12 coupons and a lower specification limit of **980 MPa**. You can run the following commands in a *second terminal* while the API server is running. This creates a temporary CSV outside the repository so it does not modify the team's H-02 deliverables.
+The CSV has one row per tested coupon. Keep comparable test conditions and one consistent ISO date per build.
 
-```bash
-cat > /tmp/aeroqual-known-answer.csv <<'CSV'
-build_id,build_date,uts_mpa
-B1,2026-10-01,990
-B1,2026-10-01,1000
-B1,2026-10-01,1010
-B2,2026-10-02,1005
-B2,2026-10-02,1010
-B2,2026-10-02,1015
-B3,2026-10-03,975
-B3,2026-10-03,990
-B3,2026-10-03,1005
-B4,2026-10-04,990
-B4,2026-10-04,1000
-B4,2026-10-04,1010
-CSV
+| CSV column | Required | Units / format | Source |
+| --- | --- | --- | --- |
+| `build_id` | Yes | Text, shared by coupons in the build | Build traveler |
+| `build_date` | Yes | `YYYY-MM-DD` | Build log |
+| `uts_mpa` | Yes | Finite numeric MPa | Tensile-test report |
+| `chamber_oxygen_ppm` | No | Numeric ppm | Printer log |
+| `powder_reuse_count` | No | Nonnegative integer count | Powder record |
+| `laser_power_w` | No | Numeric W | Printer settings |
 
-curl -sS -X POST http://127.0.0.1:8000/analyze \
-  -F 'file=@/tmp/aeroqual-known-answer.csv;type=text/csv' \
-  -F 'lsl=980'
+At least two builds and two coupons per build are required, with equal coupon counts across builds. Blank, nonnumeric or infinite strength values cause an error, never a pass. Optional parameters are descriptive and do not affect capability. Extra columns are not analyzed.
+
+| Separate parameter | Required | Default | Meaning |
+| --- | --- | --- | --- |
+| `lsl` | Yes | None in API; 895 in dashboard | Customer lower strength limit, MPa |
+| `min_builds` | No | 25 | Minimum builds for a capability verdict |
+| `cpk_target` | No | 1.33 | Configured lower-side Cpk target |
+
+Supply a positive integer `min_builds` and meaningful positive `cpk_target`; current code does not enforce those domain bounds. Dates are sorted as strings using the first date per build. Valid ISO dates, consistent dates, nonblank identifiers and correct units remain caller responsibilities. See [the codebook](data/README.md) and [API/function reference](app/README.md).
+
+## Synthetic demonstration
+
+Each file contains **30 builds with 3 coupons each (90 total)**. Live API checks with LSL 895 MPa and default settings reproduce:
+
+| Dataset | Cpk (lower) | Ppk (lower) | Failures | Flagged builds | Verdict |
+| --- | ---: | ---: | ---: | ---: | --- |
+| `stable_capable` | 1.683472 | 1.788871 | 0/90 | 0 | capable |
+| `stable_incapable` | 0.311961 | 0.331492 | 17/90 | 0 | not capable |
+| `unstable_shift` | 1.292337 | 0.711731 | 0/90 | 11 | not assessable |
+
+Stability alone does not establish capability; zero observed failures alone does not establish capability. In the unstable example, strength and oxygen changes are planted together from B020. Their association is synthetic, not validated manufacturing physics.
+
+The [complete walkthrough](demo/README.md) records chart limits, flags, parameters and interpretation. On Windows use the setup above and checker below instead of its `/tmp`-based Bash examples.
+
+## Interpret the statistics
+
+Each build is a subgroup. X-bar monitors build means; S monitors within-build sample SD. Limits are estimated from the **whole submitted file**, without a separately approved baseline. A mean outside X-bar limits or S above its upper limit flags a build. Lower S-limit violations and run/trend rules are not implemented.
+
+Lower-side `cpk` uses within-build sigma estimated as average build SD divided by c4. Lower-side `ppk` uses overall coupon sample SD. These correspond to Cpl/Ppl terminology; the existing interface retains Cpk/Ppk labels. There is no fabricated upper strength limit. Failure rate counts coupons strictly below LSL; equality passes.
+
+Verdict precedence is **not assessable** for undefined variation, then any flagged build, then too few builds; otherwise **capable** when Cpk meets the target, or **not capable**. Numeric indices may still appear for unstable data and are not an approval.
+
+Interpretation assumes meaningful build subgroups, comparable approximately normal strengths and a suitable measurement system. The pooled Shapiro-Wilk p-value is diagnostic only: it does not prove normality or gate the verdict. Repeated coupons are not independent builds. Control limits describe observed variation; the customer LSL is a separate requirement. The parameter table's “usual range” is the observed range of unflagged build means, not a validated operating window or a causal recommendation.
+
+## API examples
+
+From a second PowerShell terminal while the app runs:
+
+```powershell
+Invoke-RestMethod 'http://127.0.0.1:8000/datasets'
+Invoke-RestMethod 'http://127.0.0.1:8000/analyze?dataset=stable_capable&lsl=895'
+curl.exe --fail --silent --show-error http://127.0.0.1:8000/analyze -F 'file=@tests/fixtures/spec_example.csv' -F 'lsl=980'
 ```
 
-**Expected checks** (rounded, from the approved known-answer example):
+Use `curl.exe` explicitly because Windows PowerShell may alias `curl`. The known-answer upload returns 4 builds, 12 coupons, Cpk about 0.591, Ppk about 0.571, one failure, no flags and `not assessable` because fewer than 25 builds were supplied. See [app/README.md](app/README.md) for every route, parameter, response field and error.
 
-| Result | Expected value |
+## Verification
+
+Run from the repository root after setup:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests app/test_api.py -q
+npm.cmd --prefix app/frontend test
+.\.venv\Scripts\python.exe demo/check.py --base-url http://127.0.0.1:8000
+.\.venv\Scripts\python.exe data/validate.py
+```
+
+The scenario checker needs the running server; omit `--base-url` for core-only checks. It does not rewrite results unless `--output` is supplied. Frontend tests check rendering and request wiring using fixtures; the live checker compares all core fields using the integrated datasets.
+
+Local Windows verification on October 21, 2026: **28 Python tests and 5 subtests passed**, **5 frontend tests passed**, the frontend build succeeded, and all three live scenario/API comparisons passed. Python tests emitted a Starlette/httpx deprecation warning. The browser reported a missing favicon (404), without affecting analysis.
+
+**Known reproducibility issue:** `data/validate.py` reports `FAIL: stable_capable.csv: seeded regeneration differs` on this Windows checkout. All three CSV files use CRLF while the generator emits LF; their contents match after newline normalization. This is a failed byte-level check, not a successful validator run. Track a fix with the dataset owner rather than regenerating data to conceal it. Independent fresh-clone human reproduction is still pending.
+
+## Troubleshooting
+
+| Symptom | Check |
 | --- | --- |
-| Number of builds and coupons | 4 builds, 12 coupons |
-| X-bar grand mean | 1000 MPa |
-| Average within-build standard deviation | 10 MPa |
-| X-bar lower / upper limits | 980.46 / 1019.54 MPa |
-| S-chart lower / upper limits | 0 / 25.68 MPa |
-| Lower-side Cpk / Ppk | 0.591 / 0.571 |
-| Coupon failures | 1 of 12 (8.3%) |
-| Flagged builds | None |
-| Verdict | `not assessable`, because 4 builds are fewer than the default 25 |
+| Dashboard 404 | Build React before starting Python; restart after creating a missing `app/frontend/dist/`. |
+| Empty dataset selector | Copy `data/*.csv` to `app/data/`, then refresh. |
+| Port 8000 occupied | Reuse the running preview or stop the server you previously started before restarting. |
+| Missing command/module | Check Node/npm PATH and use the `.venv` Python explicitly. |
+| Upload rejected | Check the error, required columns, finite strength and equal coupon counts. |
 
-The example is an **arithmetic validation**, not proof that a production process is acceptable. These expected results come from `SPEC.md`; rerun the command in your Codespace to verify your checkout.
+## Deployment and project map
 
-## 6. Interpret the analysis
+**Public Posit Connect URL: not yet verified (H-06).** Local preview is not evidence of public deployment. The current workflow validates pushes/PRs; publication uses its manual path and a confirmed existing target. Follow the [deployment handoff](.github/scripts/README.md). Keep credentials in environment settings or repository secrets. Do not invoke publishing scripts to preview the app.
 
-- **X-bar chart:** Each point is the mean tensile strength within a build. A mean below the lower control limit or above the upper control limit flags that build as potentially affected by special-cause variation.
-- **S chart:** Each point is the sample standard deviation of coupons within a build. A standard deviation above the S-chart upper limit flags unusually high within-build variation.
-- **Cpk (lower side):** Compares the build-mean grand average with the LSL using estimated short-term within-build variation. The code uses `Cpk = (grand_mean - LSL) / (3 × sigma_short)`.
-- **Ppk (lower side):** Uses the overall sample standard deviation of all coupons in the denominator, reflecting total observed variation.
-- **Failure rate:** `count(uts_mpa < LSL) / total_coupon_count`. This is the observed coupon failure fraction, not a forecast of future defects.
-- **Shapiro-Wilk `p` value:** An additional normality diagnostic. A small p-value provides evidence against a normal distribution; it is not, by itself, a guarantee of normality or process stability.
-
-**Control limits and specification limits are different.** Control limits are estimated from observed process variation. The user-entered LSL is an external customer requirement.
-### Verdict logic
-
-The backend returns a `verdict` plus a text `reason`:
-
-1. **`not assessable`** if variation is zero so Cpk/Ppk are undefined, if any build is out of control, or if fewer than `min_builds` builds are present (checked in that order).
-2. **`capable`** if the process passes those checks and `Cpk >= cpk_target`.
-3. **`not capable`** if the process passes the preliminary checks but `Cpk < cpk_target`.
-
-Numeric Cpk/Ppk values can still appear when the verdict is `not assessable`; do **not** interpret them as an approval. Optional LPBF parameters are descriptive investigation clues, not evidence of causality.
-
-For formulas, response fields, and detailed endpoint documentation, see **[app/README.md](app/README.md)**.
-
-## 7. REST API quick reference
-
-| Method | Route | Purpose |
-| --- | --- | --- |
-| `GET` | `/` | Service welcome message and documentation location. |
-| `GET` | `/health` | Returns `{ "status": "ok" }`. |
-| `GET` | `/datasets` | Lists `.csv` datasets currently bundled in `app/data/`. |
-| `GET` | `/analyze?dataset=NAME&lsl=VALUE` | Analyzes a bundled CSV (only after files are synced). |
-| `POST` | `/analyze` | Analyzes an uploaded CSV via multipart form-data. |
-| `GET` | `/docs` | Interactive FastAPI / OpenAPI documentation. |
-
-For both analysis routes, `min_builds` defaults to 25 and `cpk_target` to 1.33. Uploaded CSV requests send `file`, `lsl`, `min_builds`, and `cpk_target` as form fields. GET analysis accepts these as query parameters.
-
-## 8. Test the code
-
-After activating the virtual environment and installing requirements:
-
-```bash
-python -m pytest tests -q
-```
-
-This exercises the Python QC engine and API test suite. The task ledger records prior passing checks for H-03/H-04, but a new contributor should rerun this command on the current branch. Test execution is **not** equivalent to a verified public deployment or a complete React UI.
-
-For details on Python functions, response keys, errors, and example programmatic usage, see [Backend and API documentation](app/README.md).
-
-## 9. Demonstration datasets and walkthrough
-
-The release plan calls for three **synthetic** datasets, each with 30 builds and three tensile-test coupons per build:
-
-| Planned CSV | Intended behavior |
+| Location | Purpose |
 | --- | --- |
-| `data/stable_capable.csv` | Stable process, lower-side Cpk at or above target. |
-| `data/stable_incapable.csv` | Stable process, but lower-side Cpk below target. |
-| `data/unstable_shift.csv` | A planted change from approximately build 20 and an unstable-process verdict. |
+| `app/qc.py` | Framework-independent statistics |
+| `app/app.py`, `app/profiles/lpbf.py` | API and LPBF mapping |
+| `app/frontend/` | React/Vite dashboard |
+| `data/`, `demo/` | Synthetic CSVs, codebook, walkthrough and checker |
+| `tests/`, `app/test_api.py` | Statistical and API tests |
+| `.github/` | Deployment validation and publishing tools |
 
-H-02 owns the CSV files and their units/column codebook at `data/README.md`. H-05 owns the step-by-step results and demo at `demo/README.md`, as well as the React frontend at `app/frontend/`.
-
-**Demo walkthrough:** [demo/README.md](demo/README.md) (**pending H-05**; link will work after the team creates the file). Do not invent numeric results or screenshots before these datasets and the running dashboard have been verified.
-
-## 10. Live deployment
-
-**Posit Connect public URL:** **PENDING H-06**. Replace this status with the actual working, publicly accessible URL after the team validates it from a signed-out browser. **Do not paste a placeholder URL into the final Devpost submission.**
-
-The backend's existing scripts are `app/manifestme.sh` and `app/deployme.sh`. Deployment preparation copies available CSV files with `app/sync_data.sh`. The H-06 owner is responsible for deployment configuration, credentials, and an HTTP-200 accessibility check; never store deployment API keys in this public repository.
-
-## 11. Project layout
-
-```text
-team-sigma/
-├── README.md                 # Project overview and contributor quick start (H-07)
-├── SPEC.md                   # Binding MVP requirements and statistics
-├── PROJECT_OVERVIEW.md       # Product context
-├── CONTRACT.yaml             # Task ownership and completion checks
-├── app/
-│   ├── README.md             # Function, API, and backend documentation (H-07)
-│   ├── qc.py                 # Statistical engine
-│   ├── app.py                # FastAPI endpoints
-│   ├── profiles/lpbf.py      # LPBF column mappings and optional parameters
-│   ├── requirements.txt     # Pinned Python dependencies
-│   ├── testme.sh             # Launch the API on port 8000
-│   ├── sync_data.sh          # Copy demo CSVs into app/data/
-│   ├── manifestme.sh         # Write a Posit Connect manifest
-│   └── deployme.sh           # Deploy FastAPI to Posit Connect
-├── tests/                    # Statistical and API tests
-├── data/                     # Planned H-02 datasets and codebook
-└── demo/                     # Planned H-05 demonstration and interpretation
-```
-
-`data/`, `demo/`, and `app/frontend/` are planned outputs and may not exist on the branch being viewed. Their presence and results must be confirmed before final delivery.
-
-## 12. Reproducibility and project limits
-
-For a fresh review, clone the public repository, create a Python virtual environment, install the pinned dependencies, run `python -m pytest tests -q`, launch `bash app/testme.sh`, and run the sample upload above. After H-02/H-05/H-06, also verify each dataset, demonstrate the React dashboard, and test the public URL.
-
-The first release supports the LPBF profile, lower-bound strength specifications, equal-size build subgroups, X-bar/S special-cause flags, and descriptive comparisons of optional process parameters. It intentionally does not implement regression, ML forecasts, FMEA, hardware certification, mixed-size subgroups, or additional printing-process profiles.
-
-**Project references:** [SPEC.md](SPEC.md) · [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) · [Task ledger](CONTRACT.yaml) · [Evaluation criteria](docs/criteria.md) · [Hackathon event](https://six-sigma-hackathon.devpost.com/).
-
-
----
-
-![](docs/images/banner_icons.png)
+Current scope excludes other selectable printing processes, unequal subgroups, regression, ANOVA, FMEA, Pareto analysis, predictive models and automated parameter recommendations. See [SPEC](SPEC.md), [decisions](docs/decisions.md), [task ledger](CONTRACT.yaml) and [rubric](docs/criteria.md). Starter provenance is documented in [demos](demos/README.md) and the deployment handoff; see the [MIT license](LICENSE).

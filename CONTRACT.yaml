@@ -137,13 +137,7 @@ tasks:
       how each function or endpoint works, how to run it in one command, the
       live URL, and links demo/README.md. A teammate who did not write the
       code follows it from a fresh clone and it works.
-    result: "Updated the main README.md with AeroQual's project overview, 
-    target users, input requirements, statistical methods, setup instructions, 
-    API usage, testing procedures, and project structure. 
-    Added app/README.md to document the Python functions and API endpoints.
-    The documentation is drafted and pending final verification.
-    The live deployment URL, demo links, and fresh-clone reproducibility
-    test will be updated after the remaining development tasks are completed."
+    result: "Jerry Su documentation updated with Codex assistance: Windows startup, current dashboard/scenarios, API/function reference and limitations; 28 Python tests plus 5 subtests, 5 frontend tests and three live API comparisons pass; Windows CRLF dataset validation fails; live URL and independent fresh-clone teammate walkthrough pending"
 
   - id: H-08
     title: Reproducible public repo, submitted on Devpost
