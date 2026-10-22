@@ -137,7 +137,11 @@ tasks:
       how each function or endpoint works, how to run it in one command, the
       live URL, and links demo/README.md. A teammate who did not write the
       code follows it from a fresh clone and it works.
-    result: "Windows quick start, API/function reference, usability workflow and rubric evidence updated; 30 Python tests plus 5 subtests, 6 frontend tests, five bundle tests and data validator pass; public URL and independent fresh-clone walkthrough pending"
+    result: >
+      Windows quick start, API/function reference, usability workflow 
+      and rubric evidence updated; 30 Python tests plus 5 subtests, 
+      6 frontend tests, five bundle tests and data validator pass; 
+      public URL and independent fresh-clone walkthrough pending
   - id: H-08
     title: Reproducible public repo, submitted on Devpost
     points: "5 - Tool Documentation: fully reproducible code, posted publicly to GitHub"
@@ -153,7 +157,14 @@ tasks:
       git clone of the public repo into an empty folder, then the app/
       testme script and the H-03 tests both pass with no extra steps; git
       grep -i "api_key" finds no real key; the Devpost entry links the repo.
-    result: ""
+    result: >
+      Updated .gitignore to exclude unnecessary local files,
+      Python caches, virtual environments, build artifacts,
+      and sensitive configuration files.
+      Confirmed that the team repository is publicly accessible
+      on GitHub. Fresh-clone reproducibility testing,
+      application validation, security checks, and Devpost
+      submission are still pending.
 
   - id: H-09
     title: Cross-platform reproducibility and documentation consistency
