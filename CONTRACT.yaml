@@ -126,7 +126,7 @@ tasks:
     title: README and function documentation
     points: "10 - Tool Documentation: excellent, easy-to-follow documentation"
     status: in_progress
-    owner: "Jerry Su"
+    owner: "Jerry Su (agent)"
     started_at: "2026-10-20"
     owns: ["README.md", "app/README.md"]
     notes: >
@@ -142,7 +142,7 @@ tasks:
     title: Reproducible public repo, submitted on Devpost
     points: "5 - Tool Documentation: fully reproducible code, posted publicly to GitHub"
     status: in_progress
-    owner: "Jerry Su"
+    owner: "Jerry Su (agent)"
     started_at: "2026-10-20"
     owns: [".gitignore"]
     notes: >
