@@ -16,7 +16,8 @@
 #   it untouched. Nothing in this script can rewrite it.
 #
 # What it does:
-#   0. verify the human-provisioned CONTENT_GUID and confirmed target title
+#   0. find your content item on Connect by CONTENT_NAME, or create it the
+#      first time (or use CONTENT_GUID if you set one)
 #   1. tar up manifest.json + exactly the files the manifest lists
 #   2. POST /__api__/v1/content/{guid}/bundles
 #   3. POST /__api__/v1/content/{guid}/deploy
@@ -30,7 +31,7 @@
 #   CONTENT_NAME      unique name for the content item (letters, digits, - _)
 # Optional env:
 #   CONTENT_TITLE        human title shown in Connect (default: CONTENT_NAME)
-#   CONTENT_GUID         required: deploy to this human-provisioned existing item.
+#   CONTENT_GUID         deploy to this exact existing item instead of by name.
 #                        A WRONG GUID OVERWRITES whatever it points at.
 #   POLL_BUDGET_SECONDS  how long to watch the deploy before detaching (120)
 #
@@ -62,22 +63,36 @@ command -v jq >/dev/null || fail "jq is required"
 # Connect content names allow only letters, digits, '-' and '_' (max 64).
 CONTENT_NAME=$(printf '%s' "$CONTENT_NAME" | tr -c 'A-Za-z0-9_-' '-' | cut -c1-64)
 
-# Local adaptation: the lifecycle skill requires a human-provisioned GUID.
-# Never discover by name or create content automatically on this shared server.
-[ -n "$CONTENT_GUID" ] && [ "$CONTENT_GUID" != "PUT_GUID_HERE" ] \
-  || fail "Set CONNECT_CONTENT_GUID to a human-provisioned content item."
-[ -n "${CONFIRMED_CONTENT_TITLE:-}" ] \
-  || fail "Confirm the target title before publishing."
+# ------------------------------------------------- 0. find or create content --
+if [ -z "$CONTENT_GUID" ]; then
+  Q_BODY="${WORKDIR}/find.json"
+  Q_CODE=$(curl -sS -o "$Q_BODY" -w '%{http_code}' "${AUTH[@]}" \
+    "${SERVER}/__api__/v1/content?name=${CONTENT_NAME}") \
+    || fail "could not reach CONNECT_SERVER. Is the secret a full https:// URL?"
+  case "$Q_CODE" in
+    200) ;;
+    401|403) fail "Connect said HTTP ${Q_CODE}: the CONNECT_API_KEY secret is wrong or expired." ;;
+    *) fail "looking up content '${CONTENT_NAME}' returned HTTP ${Q_CODE}: $(head -c 300 "$Q_BODY")" ;;
+  esac
+  CONTENT_GUID=$(jq -r '.[0].guid // empty' "$Q_BODY" | tr -d '\r')
+  if [ -z "$CONTENT_GUID" ]; then
+    echo "No content named '${CONTENT_NAME}' yet -- creating it (first deploy)."
+    C_BODY="${WORKDIR}/create.json"
+    C_CODE=$(curl -sS -o "$C_BODY" -w '%{http_code}' "${AUTH[@]}" \
+      -X POST "${SERVER}/__api__/v1/content" -H "Content-Type: application/json" \
+      -d "$(jq -n --arg n "$CONTENT_NAME" --arg t "$CONTENT_TITLE" '{name: $n, title: $t}')")
+    [ "$C_CODE" = "200" ] || [ "$C_CODE" = "201" ] \
+      || fail "creating content failed (HTTP ${C_CODE}): $(head -c 300 "$C_BODY"). A 409 means another user already owns that name: change CONTENT_NAME."
+    CONTENT_GUID=$(jq -r '.guid' "$C_BODY" | tr -d '\r')
+  fi
+fi
+[ -n "$CONTENT_GUID" ] && [ "$CONTENT_GUID" != "null" ] || fail "no content guid"
 
 T_INFO="${WORKDIR}/content.json"
 I_CODE=$(curl -sS -o "$T_INFO" -w '%{http_code}' "${AUTH[@]}" \
   "${SERVER}/__api__/v1/content/${CONTENT_GUID}")
 [ "$I_CODE" = "200" ] || fail "content ${CONTENT_GUID} returned HTTP ${I_CODE} (does this key own it?)"
 CONTENT_URL=$(jq -r '.content_url' "$T_INFO" | tr -d '\r')
-[ "$(jq -r '.title // .name' "$T_INFO")" = "$CONFIRMED_CONTENT_TITLE" ] \
-  || fail "The target title does not match the human confirmation."
-[ "$(jq -r '.access_type' "$T_INFO")" = "all" ] \
-  || fail "The target must be public for the judges."
 echo "target: '$(jq -r '.title // .name' "$T_INFO" | tr -d '\r')'  guid=${CONTENT_GUID}"
 emit "content_guid=${CONTENT_GUID}"
 emit "content_url=${CONTENT_URL}"

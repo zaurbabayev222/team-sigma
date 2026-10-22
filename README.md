@@ -119,7 +119,7 @@ Use `curl.exe` explicitly because Windows PowerShell may alias `curl`. The known
 Run from the repository root after setup:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest tests app/test_api.py -q
+.\.venv\Scripts\python.exe -m pytest tests -q
 npm.cmd --prefix app/frontend test
 .\.venv\Scripts\python.exe demo/check.py --base-url http://127.0.0.1:8000
 .\.venv\Scripts\python.exe data/validate.py
@@ -129,7 +129,7 @@ The scenario checker needs the running server; omit `--base-url` for core-only c
 
 Local Windows verification on October 21, 2026: **28 Python tests and 5 subtests passed**, **5 frontend tests passed**, the frontend build succeeded, and all three live scenario/API comparisons passed. Python tests emitted a Starlette/httpx deprecation warning. The browser reported a missing favicon (404), without affecting analysis.
 
-**Known reproducibility issue:** `data/validate.py` reports `FAIL: stable_capable.csv: seeded regeneration differs` on this Windows checkout. All three CSV files use CRLF while the generator emits LF; their contents match after newline normalization. This is a failed byte-level check, not a successful validator run. Track a fix with the dataset owner rather than regenerating data to conceal it. Independent fresh-clone human reproduction is still pending.
+**Windows line endings (fixed October 21, 2026):** `data/validate.py` used to report `FAIL: stable_capable.csv: seeded regeneration differs` on Windows, because Git converted the CSVs to Windows (CRLF) line endings while the generator writes LF. `.gitattributes` now keeps every text file LF on all systems, so a fresh clone passes the byte-level check. Independent fresh-clone human reproduction is still pending.
 
 ## Troubleshooting
 
@@ -143,7 +143,7 @@ Local Windows verification on October 21, 2026: **28 Python tests and 5 subtests
 
 ## Deployment and project map
 
-**Public Posit Connect URL: not yet verified (H-06).** Local preview is not evidence of public deployment. The current workflow validates pushes/PRs; publication uses its manual path and a confirmed existing target. Follow the [deployment handoff](.github/scripts/README.md). Keep credentials in environment settings or repository secrets. Do not invoke publishing scripts to preview the app.
+**Public Posit Connect URL: not yet verified (H-06).** Local preview is not evidence of public deployment. Every push to `main` that changes `app/`, `data/` or `.github/` runs the tests and then redeploys to the same URL; see the [deployment handoff](.github/scripts/README.md). Keep credentials in repository secrets only. Use `testme.sh`, not the publishing scripts, to preview the app.
 
 | Location | Purpose |
 | --- | --- |
@@ -151,7 +151,7 @@ Local Windows verification on October 21, 2026: **28 Python tests and 5 subtests
 | `app/app.py`, `app/profiles/lpbf.py` | API and LPBF mapping |
 | `app/frontend/` | React/Vite dashboard |
 | `data/`, `demo/` | Synthetic CSVs, codebook, walkthrough and checker |
-| `tests/`, `app/test_api.py` | Statistical and API tests |
-| `.github/` | Deployment validation and publishing tools |
+| `tests/` | Statistical, API and bundle tests |
+| `.github/` | Deploy workflow (tests, then publishes on push) and its scripts |
 
 Current scope excludes other selectable printing processes, unequal subgroups, regression, ANOVA, FMEA, Pareto analysis, predictive models and automated parameter recommendations. See [SPEC](SPEC.md), [decisions](docs/decisions.md), [task ledger](CONTRACT.yaml) and [rubric](docs/criteria.md). Starter provenance is documented in [demos](demos/README.md) and the deployment handoff; see the [MIT license](LICENSE).

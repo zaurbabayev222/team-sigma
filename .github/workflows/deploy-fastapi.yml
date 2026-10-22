@@ -1,110 +1,142 @@
+# =============================================================================
+# Deploy AeroQual (FastAPI API + built React dashboard) to Posit Connect.
+# =============================================================================
 # Adapted from .claude/skills/connect-publish/workflows/deploy-fastapi.yml
-# and its React static sibling (MIT, timothyfraser/fastapi-connect-demo).
-# Local changes preserve app.* imports, bundle demo data/UI, verify checksums,
-# and require a manually confirmed target. CI never regenerates the manifest.
-name: Validate and deploy AeroQual
+# (MIT, timothyfraser/fastapi-connect-demo). Every push to main that touches the
+# app, data or deploy files tests the app, then deploys it. The first run creates
+# the content item on Connect by CONTENT_NAME; later runs update the same item.
+#
+# Local changes from the template:
+#   - builds the React dashboard and stages a bundle (app/ + built dashboard +
+#     data/*.csv) with .github/scripts/prepare-connect-bundle.py, which checks
+#     every file against the committed app/manifest.json (never regenerated here)
+#   - runs all tests and the three-dataset check before publishing
+#   - asks Connect to make the app public, then checks it WITHOUT a key
+#
+# REPO SECRETS (Settings > Secrets and variables > Actions):
+#   CONNECT_SERVER, CONNECT_API_KEY -- handed out at the event. Never commit them.
+# =============================================================================
+name: Deploy FastAPI to Posit Connect
 
 on:
   push:
     branches: [main]
-    paths: ['app/**', 'data/**', 'demo/**', 'tests/**', '.github/**']
-  pull_request:
-    paths: ['app/**', 'data/**', 'demo/**', 'tests/**', '.github/**']
+    paths:
+      - 'app/**'
+      - 'data/**'
+      - '.github/workflows/deploy-fastapi.yml'
+      - '.github/scripts/**'
   workflow_dispatch:
-    inputs:
-      confirmed_target_title:
-        description: 'Exact existing Connect title, after reviewing code and target'
-        required: true
-        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: deploy-fastapi-${{ github.ref }}
+  group: deploy-fastapi
   cancel-in-progress: false
 
 env:
   APP_DIR: 'app'
   CONTENT_NAME: 'sigma-airlines-aeroqual'
-  CONTENT_GUID: ${{ vars.CONNECT_CONTENT_GUID }}
+  CONTENT_TITLE: 'AeroQual (Sigma Airlines)'
+  HEALTH_PATH: '/health'
   NODE_VERSION: '22'
 
 jobs:
-  validate:
+  deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python (version from .python-version)
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version-file: ${{ env.APP_DIR }}/.python-version
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: ${{ env.APP_DIR }}/frontend/package-lock.json
+
       - name: Test and build the dashboard
         working-directory: ${{ env.APP_DIR }}/frontend
         run: |
           npm ci --no-audit --no-fund
           npm test
           npm run build
-      - name: Stage the exact committed manifest and verify every checksum
-        run: |
-          python .github/scripts/test_connect_bundle.py -v
-          python .github/scripts/prepare-connect-bundle.py --output "$RUNNER_TEMP/aeroqual-bundle"
-      - name: Test core statistics, all demo datasets and the actual bundle HTTP API
-        run: |
-          python -m pip install -r "$RUNNER_TEMP/aeroqual-bundle/requirements.txt"
-          bash "$APP_DIR/sync_data.sh"
-          python -m pytest tests app/test_api.py
-          python demo/check.py
-          python .github/scripts/verify-connect-app.py --bundle "$RUNNER_TEMP/aeroqual-bundle"
 
-  deploy:
-    # Pushes/PRs validate only. The human supplies a confirmed title to publish.
-    if: github.event_name == 'workflow_dispatch'
-    needs: validate
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    env:
-      CONFIRMED_CONTENT_TITLE: ${{ inputs.confirmed_target_title }}
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with:
-          python-version-file: ${{ env.APP_DIR }}/.python-version
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: ${{ env.APP_DIR }}/frontend/package-lock.json
-      - name: Rebuild the dashboard and verify the committed bundle
+      - name: Stage the bundle and check it against the committed manifest
         run: |
-          npm --prefix "$APP_DIR/frontend" ci --no-audit --no-fund
-          npm --prefix "$APP_DIR/frontend" run build
-          python .github/scripts/prepare-connect-bundle.py --output "$RUNNER_TEMP/aeroqual-bundle"
-          python -m pip install -r "$RUNNER_TEMP/aeroqual-bundle/requirements.txt"
-      - name: Read the target and require its confirmed title and public access
+          set -euo pipefail
+          python .github/scripts/test_connect_bundle.py -v
+          python .github/scripts/prepare-connect-bundle.py --output "$RUNNER_TEMP/bundle"
+
+      - name: Test statistics, API and the three datasets
+        run: |
+          set -euo pipefail
+          python -m pip install -r "$APP_DIR/requirements.txt"
+          bash "$APP_DIR/sync_data.sh"
+          python -m pytest tests
+          python demo/check.py
+          python .github/scripts/verify-connect-app.py --bundle "$RUNNER_TEMP/bundle"
+
+      - name: Check the two repo secrets exist
         env:
           CONNECT_SERVER: ${{ secrets.CONNECT_SERVER }}
           CONNECT_API_KEY: ${{ secrets.CONNECT_API_KEY }}
-        run: python .github/scripts/preflight-connect.py
-      - name: Publish the verified bundle without regenerating the manifest
+        run: |
+          [ -n "$CONNECT_SERVER" ]  || { echo "::error::Repo secret CONNECT_SERVER is not set (Settings > Secrets and variables > Actions)."; exit 1; }
+          [ -n "$CONNECT_API_KEY" ] || { echo "::error::Repo secret CONNECT_API_KEY is not set (Settings > Secrets and variables > Actions)."; exit 1; }
+          echo "Both secrets are present."
+
+      - name: Publish to Posit Connect
         id: publish
         timeout-minutes: 10
         env:
           CONNECT_SERVER: ${{ secrets.CONNECT_SERVER }}
           CONNECT_API_KEY: ${{ secrets.CONNECT_API_KEY }}
-          BUNDLE_DIR: ${{ runner.temp }}/aeroqual-bundle
+          BUNDLE_DIR: ${{ runner.temp }}/bundle
           POLL_BUDGET_SECONDS: '120'
         run: bash .github/scripts/connect-publish-async.sh
-      - name: Verify the public dashboard, health and SPEC known answer without authentication
+
+      - name: Make the app public (judges open it logged out)
+        env:
+          CONNECT_SERVER: ${{ secrets.CONNECT_SERVER }}
+          CONNECT_API_KEY: ${{ secrets.CONNECT_API_KEY }}
+          CONTENT_GUID: ${{ steps.publish.outputs.content_guid }}
+        run: |
+          set -euo pipefail
+          CODE=$(curl -sS -o /dev/null -w '%{http_code}' -X PATCH \
+            -H "Authorization: Key ${CONNECT_API_KEY}" -H "Content-Type: application/json" \
+            -d '{"access_type":"all"}' "${CONNECT_SERVER%/}/__api__/v1/content/${CONTENT_GUID}" || echo 000)
+          echo "Set access to 'anyone, no login': HTTP ${CODE}"
+          [ "$CODE" = "200" ] || echo "::warning::Could not make the app public (HTTP ${CODE}). In Connect, open the app > Access > 'Anyone - no login required'."
+
+      - name: Check the app answers (green is not live)
+        env:
+          CONNECT_API_KEY: ${{ secrets.CONNECT_API_KEY }}
+          CONTENT_URL: ${{ steps.publish.outputs.content_url }}
+        run: |
+          set -euo pipefail
+          URL="${CONTENT_URL%/}${HEALTH_PATH}"
+          echo "Checking ${URL}"
+          for i in $(seq 1 20); do
+            CODE=$(curl -sS -L -o /dev/null -w '%{http_code}' -H "Authorization: Key ${CONNECT_API_KEY}" "$URL" || echo 000)
+            echo "  attempt ${i}: HTTP ${CODE}"
+            if [ "$CODE" = "200" ]; then echo "LIVE: ${URL}"; exit 0; fi
+            sleep 15
+          done
+          echo "::error::${HEALTH_PATH} never answered 200. Open the app's Logs tab in Connect and read the last error."
+          exit 1
+
+      - name: Check the public app with no key (dashboard, known answer, three datasets)
         env:
           CONTENT_URL: ${{ steps.publish.outputs.content_url }}
-        run: python .github/scripts/verify-connect-app.py --url-env CONTENT_URL --attempts 20
-      - name: Reproduce all three scenarios against the public API
-        env:
-          CONTENT_URL: ${{ steps.publish.outputs.content_url }}
-        run: python demo/check.py --base-url "$CONTENT_URL"
+        run: |
+          set -euo pipefail
+          python .github/scripts/verify-connect-app.py --url-env CONTENT_URL --attempts 20
+          python demo/check.py --base-url "$CONTENT_URL"

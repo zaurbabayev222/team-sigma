@@ -76,7 +76,8 @@ def stage(root, destination):
     for name in (*DATASETS, 'README.md'):
         copy_file(root / 'data' / name, destination / 'data' / name)
     copy_file(root / 'app/.python-version', destination / '.python-version')
-    (destination / 'requirements.txt').write_text('\n'.join(dict.fromkeys(requirements)) + '\n')
+    # newline='\n': on Windows, write_text would otherwise write CRLF and break the checksum.
+    (destination / 'requirements.txt').write_text('\n'.join(dict.fromkeys(requirements)) + '\n', newline='\n')
 
 
 def verify(destination):

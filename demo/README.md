@@ -170,5 +170,5 @@ npm --prefix app/frontend run build
 Frontend tests use labeled fixtures and mocked HTTP responses to check rendering and API wiring. For the statistics and real HTTP API tests:
 
 ```bash
-/tmp/aeroqual-venv/bin/python -m pytest tests app/test_api.py
+/tmp/aeroqual-venv/bin/python -m pytest tests
 ```

@@ -153,10 +153,9 @@ Shapiro-Wilk uses pooled coupon values when total variation is positive; it does
 | `testme.sh` | Bash: sync CSVs, install/build frontend, start API |
 | `sync_data.sh` | Copy root `data/*.csv` into runtime `app/data/` |
 | `manifestme.sh` | Build frontend and generate a local manifest using the shared bundle tool |
-| `deployme.sh` | Preflight a confirmed existing target, prepare bundle and publish; requires Bash 4+ |
+| `deployme.sh` | Prepare the bundle and publish from your own machine (the push-to-deploy workflow does this too); requires Bash 4+ |
 | `requirements.txt` | Pinned direct Python application/test dependencies |
-| `requirements-api.txt` | Includes `requirements.txt` |
 
-Do not generate manifests or publish for local preview. See the [deployment handoff](../.github/scripts/README.md). The manifest targets Python 3.12 and checksums runtime files; source/data/dependency or built-asset changes require reviewed manifest regeneration before publication. Public deployment is unverified.
+Every push to `main` that changes `app/`, `data/` or `.github/` tests and redeploys the app; see the [deployment handoff](../.github/scripts/README.md). The manifest targets Python 3.12 and checksums runtime files: after a source, data, dependency or dashboard change, re-write it with `bash app/manifestme.sh` and commit it with the change. Use `testme.sh`, not the publishing scripts, for local preview. Public deployment is unverified.
 
-Run the commands in the [root verification section](../README.md#verification) for Python/frontend tests and live API parity. It records actual outputs, the Windows CRLF validator failure, and pending independent human reproduction. Local tests do not establish public deployment.
+Run the commands in the [root verification section](../README.md#verification) for Python/frontend tests and live API parity. It records actual outputs and pending independent human reproduction. Local tests do not establish public deployment.
