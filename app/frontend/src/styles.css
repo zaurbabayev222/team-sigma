@@ -502,3 +502,8 @@ a {
 .chart-scroll,.table-scroll {
   width:100%;
 }
+
+.process-choice {
+  max-width: 32rem;
+  margin-bottom: 20px;
+}

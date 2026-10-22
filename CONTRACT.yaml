@@ -50,8 +50,9 @@ tasks:
     started_at: "2026-10-21 00:53 UTC"
     owns: ["data/"]
     definition_of_done: >
-      ls data/*.csv lists 2 or 3 files (e.g. in control, planted shift, edge
-      case), and data/README.md names every one of them and describes every
+      ls data/stable_capable.csv data/stable_incapable.csv data/unstable_shift.csv
+      lists the three original LPBF examples (supplementary WAAM files are H-10),
+      and data/README.md names every one of them and describes every
       column with units and how the data would be collected for real.
     result: "Three seeded synthetic CSVs and codebook restored; reproducibility, schema, planted-shift and edge-case checks pass against the pulled core; ready for check-in"
 
@@ -163,3 +164,13 @@ tasks:
     notes: "Authorized by the user's approval of the usability/documentation plan; normalize text line endings only in existing data/runtime inputs; no statistical or dataset-value changes; review completed before local commit; no push or deployment without release confirmation."
     definition_of_done: "python data/validate.py; python .github/scripts/test_connect_bundle.py -v; git diff --check; documentation links resolve and QC/API source is unchanged"
     result: "LF staging and data reproducibility verified; upstream 782ab93 owner/deployment/test relocation changes retained; five bundle tests, data validator, documentation links, no QC/API diff and compatibility checks pass"
+
+  - id: H-10
+    title: Add WAAM profile, process selection and validated synthetic scenarios
+    status: done
+    owner: "Codex assisting Sigma Airlines"
+    started_at: "2026-10-22T01:08:46.577940+00:00"
+    owns: ["SPEC.md", "PROJECT_OVERVIEW.md", "README.md", "app/README.md", "docs/decisions.md", "docs/architecture.md", "app/app.py", "app/profiles/", "app/frontend/", "app/manifest.json", "data/", "demo/", "tests/test_process_profiles.py", "tests/test_bundle_api.py", ".github/scripts/prepare-connect-bundle.py", ".github/scripts/test_connect_bundle.py", ".github/scripts/README.md", ".github/workflows/deploy-fastapi.yml"]
+    notes: "User approved LPBF plus WAAM increment; keep qc.py and legacy LPBF API defaults unchanged; X-bar/S only for defensible equal-size build subgroups; no parameter-to-strength prediction; local review completed and user authorized commit/push on 2026-10-22; qualifying push invokes existing deployment workflow."
+    definition_of_done: "python -m pytest tests; python data/validate.py; python data/validate_waam.py; npm --prefix app/frontend test; npm --prefix app/frontend run build; all six scenarios pass API/browser checks and manifest/bundle verification"
+    result: "LPBF/WAAM selector, profile metadata, upload validation and three seeded WAAM fixtures implemented; 37 Python tests, 8 frontend tests, both validators, five bundle tests, six browser/API scenarios and 18-file manifest/isolated bundle pass; qc.py unchanged; user approved commit/push; public deployment verification remains H-06"

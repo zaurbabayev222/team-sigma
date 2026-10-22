@@ -16,6 +16,9 @@ SCENARIOS = {
     'stable_capable.csv': 'capable',
     'stable_incapable.csv': 'not capable',
     'unstable_shift.csv': 'not assessable',
+    'waam_stable_capable.csv': 'capable',
+    'waam_stable_incapable.csv': 'not capable',
+    'waam_unstable_shift.csv': 'not assessable',
 }
 
 
@@ -51,13 +54,13 @@ def main():
         result = analyze(frame, args.lsl, subgroup_col='build_id', order_col='build_date', value_col='uts_mpa')
         assert result['n_builds'] == 30 and result['n_per_build'] == 3, f'{name}: expected 30 builds x 3 coupons'
         assert result['verdict'] == verdict, f'{name}: expected {verdict}, got {result["verdict"]}: {result["reason"]}'
-        if name == 'unstable_shift.csv':
+        if name.endswith('unstable_shift.csv'):
             assert any(build['flagged'] for build in result['builds']), 'shift must flag builds'
             assert 'unstable' in result['reason'].lower(), 'shift must explain instability'
         else:
             assert not any(build['flagged'] for build in result['builds']), f'{name}: stable scenario has flags'
         if args.base_url:
-            address = args.base_url.rstrip('/') + '/analyze?' + urlencode({'dataset': Path(name).stem, 'lsl': args.lsl})
+            address = args.base_url.rstrip('/') + '/analyze?' + urlencode({'dataset': Path(name).stem, 'lsl': args.lsl, 'process_type': 'waam' if name.startswith('waam_') else 'lpbf'})
             with urlopen(address, timeout=30) as response:
                 compare(result, json.load(response))
         results[name] = result
@@ -65,7 +68,7 @@ def main():
     if args.output:
         args.output.write_text(json.dumps({'lsl': args.lsl, 'results': results}, indent=2, allow_nan=False) + '\n')
         print(f'Captured actual results: {args.output}')
-    print('PASS: all three synthetic scenarios' + (' and API parity.' if args.base_url else '. API/browser reproduction still required.'))
+    print('PASS: all six synthetic scenarios (LPBF + WAAM)' + (' and API parity.' if args.base_url else '. API/browser reproduction still required.'))
 
 
 if __name__ == '__main__':

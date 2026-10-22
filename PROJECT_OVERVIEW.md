@@ -3,7 +3,7 @@
 
 **Cornell SYSEN 5300 — Six Sigma Hackathon** · Team **Sigma Airlines** · Virtual DL Challenge (7 days)
 **Prompt:** 1, "Industrial Systems, 3D Printing for Aerospace"
-**Status:** Release 1 scope agreed 2026-10-19; in development
+**Status:** LPBF and WAAM implemented and locally verified; public release and independent teammate checks pending
 **Initial demonstration:** synthetic laser powder bed fusion (LPBF) data. LPBF is **not** a requirement of the prompt.
 
 > This overview is the big picture. The binding definition of release 1 is [`SPEC.md`](SPEC.md); the
@@ -27,7 +27,7 @@ knows where to look first.
 
 The platform is designed to be **technology-agnostic**: the statistics never know which printing
 process produced the data, and each process is described by one small *process profile*. Release 1
-ships the LPBF profile only; other processes are added later as new profiles.
+initially shipped LPBF only. The approved H-10 increment adds WAAM through the shared registry and selected-process API; further methods remain future work.
 
 ## Problem statement and objectives
 
@@ -45,13 +45,13 @@ do not adequately connect process and environmental conditions to final strength
 | Area | Release 1 |
 |---|---|
 | User | The contractor's quality engineer reviewing tensile-test results per finished build |
-| Process | LPBF only, through one process profile |
+| Process | LPBF and WAAM, each through its selected process profile |
 | Required inputs | `build_id`, `build_date`, `uts_mpa` per coupon, customer minimum strength (LSL, MPa) |
-| Optional inputs | `chamber_oxygen_ppm`, `powder_reuse_count`, `laser_power_w` |
+| Optional inputs | LPBF: oxygen, powder reuse, laser power; WAAM: arc current/voltage, wire feed, travel speed, shielding gas flow; units in the codebook |
 | Statistics | X-bar and S chart by build; Cpk and Ppk (lower side); coupon failure rate; verdict |
 | Verdict | "not assessable" if a build is flagged or fewer than 25 builds; else "capable" if Cpk ≥ 1.33 (a setting); else "not capable" |
-| Delivery | FastAPI (Python) backend + React (Vite, plain JavaScript) dashboard, deployed on Posit Connect |
-| Data | Three synthetic datasets, 30 builds × 3 coupons, fixed seeds, with a codebook |
+| Delivery | FastAPI (Python) backend + React (Vite, plain JavaScript) dashboard, targeting the course Posit Connect server |
+| Data | Six synthetic datasets (three per process), 30 builds × 3 coupons, fixed seeds, with a codebook |
 
 ## Statistical engine
 
@@ -95,7 +95,7 @@ CSV upload -> process profile -> statistics (app/qc.py) -> FastAPI -> React page
 | LPBF | Laser power, chamber oxygen, powder reuse | Release 1 |
 | Electron beam powder bed fusion (EB-PBF) | Beam power, scan speed, vacuum pressure, build temperature | Future profile |
 | Directed energy deposition (DED) | Energy-source power, feed rate, travel speed, shielding | Future profile |
-| Wire arc additive manufacturing (WAAM) | Arc current, voltage, wire feed rate, travel speed | Future profile |
+| Wire arc additive manufacturing (WAAM) | Arc current, voltage, wire feed, travel speed, shielding gas flow | H-10 implemented; local checks pass |
 | Binder jetting with sintering | Binder saturation, green density, furnace profile | Future profile |
 
 Unsupported fields stay absent, never silently set to zero.
@@ -104,7 +104,7 @@ Unsupported fields stay absent, never silently set to zero.
 
 Release 1 is one page:
 
-- Dataset selector and the customer minimum (LSL) input, with a **SYNTHETIC DEMO DATA** banner.
+- Process selector, dataset/upload selection and customer minimum (LSL), with explicit synthetic-example labels.
 - X-bar and S charts of tensile strength (MPa) by build, flagged builds in red.
 - Cpk, Ppk and failure rate, with the verdict and its reason.
 - Parameter table for flagged builds, when the optional columns are present.
@@ -119,7 +119,9 @@ Three reproducible LPBF datasets, each 30 builds × 3 coupons, fixed seeds, docu
 3. **`unstable_shift.csv`:** chamber oxygen rises from build 20 and strength drops; builds are
    flagged and the verdict is "not assessable".
 
-The relationships are plausible for demonstration but **not** empirically validated physics. All
+Three additional WAAM files use the same scenario names prefixed with `waam_`. The unstable WAAM example plants a strength and shielding-gas decrease from W020; the codebook documents all six expected outcomes.
+
+The relationships are constructed for demonstration but **not** empirically validated physics. All
 limits, including example strength and oxygen values, are illustrative and replaceable.
 
 ## Roadmap
@@ -131,7 +133,7 @@ limits, including example strength and oxygen values, are illustrative and repla
 | Later | Traceability columns (machine, lot, heat treatment, orientation) and filters | Optional columns, no engine change |
 | Later | Two-sided Cpk on dimensional deviation (an upper limit input) | Engine extension |
 | Later | Unequal coupons per build | Engine extension (per-build constants) |
-| Later | Other process profiles (EB-PBF, DED, WAAM, binder jetting) | New profile files |
+| Later | Other process profiles (EB-PBF, other DED variants, binder jetting) | New profile files |
 | Later | Regression, ANOVA, FMEA prioritization | Only with a clear use case |
 
 ## Safety and interpretation boundaries
@@ -144,3 +146,7 @@ not a requirement of the prompt.
 
 **Project vision:** turn additive manufacturing process and test data into traceable, statistically
 defensible engineering insight, across titanium 3D-printing technologies.
+
+## H-10: approved WAAM increment
+
+The user approved LPBF plus WAAM process selection with three synthetic scenarios per process. Shared measured-strength calculations and sampling assumptions are unchanged. Five optional WAAM measurements describe arc current/voltage, wire feed, travel speed and shielding gas flow with explicit units. Process-tag mismatches and nonempty foreign-profile fields are rejected. This is not a predictive model or a process-setting optimizer. SPEC section 10 is the updated contract; the codebook documents constructed WAAM examples and their limitations.

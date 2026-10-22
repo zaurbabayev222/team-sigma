@@ -1,4 +1,6 @@
-# Synthetic LPBF build logs — H-02 codebook
+# Synthetic titanium build logs — H-02 codebook
+
+The original LPBF collection is described first; the [WAAM extension](#waam-extension-h-10) below documents its three supplementary files.
 
 **Every measurement in these files is invented for software testing.** No printer, contractor,
 laboratory or customer supplied these data. The values, dates, operating settings, and **895 MPa
@@ -89,3 +91,50 @@ builds, within-build parameter consistency, the precise planted shifts, frozen o
 flag lists. It also checks that zero variation returns undefined capability and that one build,
 unequal coupons or missing strength raise clear errors. The independent SPEC known-answer test
 and other statistic tests remain in `tests/`; this task does not change the statistics implementation.
+
+## WAAM extension (H-10)
+
+The three LPBF files and their frozen generation above remain unchanged. A second profile adds **three synthetic WAAM files**, for six examples in total. Each WAAM file contains 30 builds W001-W030, October 1-30, 2026, and three coupons per build. They are stylized software-verification fixtures, not real titanium test results, a fitted model, or recommended production settings.
+
+| WAAM file | Intended scenario at illustrative LSL 895 MPa | Cpk (lower) | Ppk (lower) | Failures | Flags |
+| --- | --- | ---: | ---: | ---: | ---: |
+| `waam_stable_capable.csv` | stable and capable | 1.911108 | 1.891083 | 0/90 | 0 |
+| `waam_stable_incapable.csv` | stable, not capable | 0.307909 | 0.304683 | 18/90 | 0 |
+| `waam_unstable_shift.csv` | unstable; capability conclusion withheld | 1.376709 | 0.579596 | 5/90 | 18 |
+
+### WAAM column dictionary
+
+| Column | Type / unit | Meaning and real collection source |
+| --- | --- | --- |
+| `process_type` | Text, `waam` | Selected manufacturing process; source process/job record. Optional for user uploads, but included in these fixtures. Mixed, missing or mismatched values in a supplied tag column are rejected. |
+| `build_id` | Text | Build traveler identifier; repeated for each tested coupon in that build. |
+| `build_date` | ISO date | Agreed build completion date from production records. |
+| `uts_mpa` | Numeric MPa | Measured coupon ultimate tensile strength from a calibrated tensile-test report. |
+| `arc_current_a` | Numeric A | Agreed summary of measured arc current from the welding power-source log. Distinguish measurement from commanded setpoint. |
+| `arc_voltage_v` | Numeric V | Arc-voltage measurement at an agreed measurement point and time interval. |
+| `wire_feed_rate_m_min` | Numeric m/min | Wire-feed measurement or recorded setpoint, provenance retained in source records. |
+| `travel_speed_mm_s` | Numeric mm/s | Torch/robot travel speed from the motion log. |
+| `shielding_gas_flow_l_min` | Numeric L/min | Recorded flow from a calibrated gas-flow measurement. Gas composition and shielding configuration must be retained in source records. |
+
+Only build ID/date and strength are required; the five process measurements are optional context. LPBF fields are not required. Nonempty recognized fields from a different process profile are rejected; all-null placeholders may be omitted or left null. Extra unrelated columns do not enter the analysis. No implicit unit conversion occurs: convert mm/min to mm/s or m/min explicitly before upload and retain collection provenance.
+
+Parameter choices and units are informed by published experimental reporting, including [the titanium pulsed-arc WAAM study](https://pmc.ncbi.nlm.nih.gov/articles/PMC11442374/) and [the hot-wire titanium study](https://pmc.ncbi.nlm.nih.gov/articles/PMC7962131/). These references support the measurement vocabulary only. We do not borrow their acceptance criteria, recommend their settings, or represent the generator's associations as their findings.
+
+### WAAM generation and independent checks
+
+`generate_waam.py` uses seed **5302** for 90 independent normal draws with mean 960 MPa and standard deviation 12 MPa, rounded to 0.001 MPa, grouped consecutively into three coupons per build. Seed **5303** generates optional process context. The stable reference has Shapiro-Wilk p = 0.309038; this diagnostic does not prove normality. Independent sample-SD arithmetic checks validate the outputs. These illustrative distributions do not model real coupon correlations or manufacturing variability; do not infer actual production defect probabilities from them.
+
+The incapable case subtracts 55 MPa from every reference strength. From W020 onward the unstable case subtracts 50 MPa and 5 L/min from the reference strength and shielding-gas flow. All other values remain identical. The association is planted for investigation demonstration, not a causal model. Full-log limits flag 18 builds: W003, W004, W005, W010, W014, W016, W017 and W020-W030. The late strength shift moves the center line, so earlier reference builds can also fall outside retrospective limits. These are not prospective limits frozen from a stable qualification baseline.
+
+Synthetic baseline parameter distributions are independent uniform jitter around 125 A (+/-4), 12 V (+/-0.4), 1.5 m/min (+/-0.08), 4 mm/s (+/-0.2), and 18 L/min (+/-0.8). All are illustrative and require replacement with measured or qualified records for engineering use. Build parameters repeat across the three coupon rows. Cpk uses within-build sample SDs corrected by c4; Ppk uses the overall sample SD, so their estimates can differ even for this stable reference.
+
+From the repository root (use the project's Python executable in PowerShell):
+
+```powershell
+.\.venv\Scripts\python.exe data/generate_waam.py --check
+.\.venv\Scripts\python.exe data/validate_waam.py
+```
+
+The generator writes only its three named WAAM files when `--check` is omitted. The validator checks byte reproduction, schema, units-as-column-contract, grouping, tags, dates, frozen outcomes and shift location. It independently checks arithmetic with Python's standard-library sample SD and the closed form c4=sqrt(pi)/2 for n=3; it does not treat matching the core alone as proof of correctness. Original `generate.py --check` and `validate.py` remain the LPBF checks.
+
+For either process, real capability assessment requires justified rational subgroups, comparable alloy/orientation/post-processing/testing conditions and a suitable measurement system. Do not pool different processes or test populations. Process selection does not predict strength, qualify a welding procedure, or certify a bracket.

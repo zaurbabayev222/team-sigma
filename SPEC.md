@@ -20,7 +20,7 @@ The examples after each `FILL IN` show the shape of an answer. They are not hint
 
 ## 2. User and use case (rubric: scope 5, user and use case 5)
 - **User:** the contractor's quality engineer who reviews tensile-test results for each finished
-  titanium build on a laser powder bed fusion (LPBF) printer.
+  titanium build using laser powder bed fusion (LPBF) or wire arc additive manufacturing (WAAM).
 - **Decision the tool helps them make, and when:** after each new build is tested, (1) whether the
   printing process has changed and needs investigating before the next build, and (2) whether the
   process is capable of meeting the customer's minimum strength, and if not, which recorded process
@@ -35,6 +35,8 @@ cannot measure costs points.
 
 | Input | Type and units | Where the user gets it |
 |---|---|---|
+| Printing process (required) | `lpbf` or `waam` | manufacturing record; selected in dashboard or API |
+| `process_type` (optional CSV column) | consistent selected process ID | manufacturing record |
 | `builds.csv`, one row per tested coupon | CSV file | their tensile-test log |
 | `build_id` (required) | text | build traveler / printer job name |
 | `build_date` (required) | date, YYYY-MM-DD; sets the build order | printer job log |
@@ -42,11 +44,16 @@ cannot measure costs points.
 | Customer minimum strength, LSL (required) | numeric, MPa; typed in, not in the CSV | customer specification |
 | `chamber_oxygen_ppm` (optional) | numeric, ppm | printer log |
 | `powder_reuse_count` (optional) | integer, times the powder was reused | powder lot record |
-| `laser_power_w` (optional) | numeric, W | printer job settings |
+| `laser_power_w` (LPBF optional) | numeric, W | printer job settings |
+| `arc_current_a` (WAAM optional) | numeric, A | welding power-source log |
+| `arc_voltage_v` (WAAM optional) | numeric, V | welding power-source log |
+| `wire_feed_rate_m_min` (WAAM optional) | numeric, m/min | wire feeder log |
+| `travel_speed_mm_s` (WAAM optional) | numeric, mm/s | motion controller log |
+| `shielding_gas_flow_l_min` (WAAM optional) | numeric, L/min | gas flow record |
 
 Every build has the same number of coupons (3 in our datasets). A blank `uts_mpa` is an error that
-names the row, never a pass. The optional columns come from the LPBF *process profile*
-(`app/profiles/lpbf.py`); the statistics never read them.
+names the row, never a pass. The optional columns come from the selected *process profile*
+(`app/profiles/lpbf.py` or `app/profiles/waam.py`); the statistics never read them.
 
 ## 4. The statistics, and why (rubric: valid QC analysis 25)
 Say the method in words before any code exists. Load the `stats-first-steering` skill first.
@@ -98,8 +105,8 @@ Fixed for every team:
   computes every number; React only displays them.
 - **Starting demo:** `demos/fastapi/` copied into `app/`, with `demos/reactfront/` as `app/frontend/`.
 - **Built to expand:** the statistics in `app/qc.py` see only generic columns (subgroup id, order,
-  value, lower limit). Everything specific to LPBF lives in one process profile, `app/profiles/lpbf.py`
-  (its optional parameters, units and labels). Adding EB-PBF, DED or WAAM later means adding one profile
+  value, lower limit). Process-specific fields live in `app/profiles/lpbf.py` or `app/profiles/waam.py`
+  (its optional parameters, units and labels). Adding EB-PBF or other DED variants later means adding and registering a profile
   file, not changing the statistics. See [`docs/decisions.md`](docs/decisions.md).
 
 Fixed for every team:
@@ -119,7 +126,7 @@ Fixed for every team:
   parameter's value for the flagged builds next to its usual range.
 
 ## 7. Test datasets and codebook (rubric: demo 10, datasets 5, codebook 5)
-2-3 small CSVs in `data/`, invented but shaped like real field data, each showing one behavior.
+The original three LPBF CSVs in `data/` remain the core rubric demonstration; H-10 adds three supplementary synthetic WAAM CSVs, one per scenario. Each file demonstrates one behavior.
 `data/README.md` is the codebook: every file, every column with units, and what it would take to
 collect this data for real.
 - **Datasets:** 30 builds × 3 coupons each, fixed random seeds, all clearly labeled synthetic:
@@ -136,8 +143,20 @@ collect this data for real.
 ## 9. Out of scope
 What we will NOT build, so nobody (human or agent) builds it by accident.
 - Default: logins, databases, real customer data, a second statistic before the first one is tested.
-- Other printing processes (EB-PBF, DED, WAAM, binder jetting) in the first release: the design
-  leaves room for them as profiles (section 5), but none are built now.
+- Processes other than LPBF and WAAM (EB-PBF, other DED variants, binder jetting) remain out of scope for this increment.
 - Regression, ANOVA, FMEA, machine learning or forecasting; two-sided Cpk on dimensions; filters by
   machine or lot; files with unequal coupons per build. Later, only after the core passes review.
 - Certifying parts: the tool supports a decision, it does not release hardware.
+
+## 10. Approved WAAM increment (H-10)
+
+The user approved process selection, a WAAM profile, three synthetic WAAM scenarios and verification while retaining the LPBF baseline. All formulas, verdict rules and the section 4 known-answer and degenerate checks remain unchanged. The analysis assesses measured tensile strength; it does not predict strength from manufacturing settings.
+
+- Select `process_type=lpbf` or `waam`. Existing clients that omit it retain LPBF behavior. A dataset from one process cannot be analyzed under the other process selection.
+- Required columns remain `build_id`, `build_date`, `uts_mpa`; LSL is entered separately. Optional CSV `process_type`, when supplied, must consistently match the selection. Mixed processes are rejected rather than pooled. Nonempty recognized fields exclusive to another profile are rejected to prevent accidental mislabeling; a generic three-column file relies on the user's declared process.
+- WAAM optional columns: `arc_current_a` (A), `arc_voltage_v` (V), `wire_feed_rate_m_min` (m/min), `travel_speed_mm_s` (mm/s), `shielding_gas_flow_l_min` (L/min). LPBF fields are not required for WAAM.
+- Treat each build as one rational subgroup with the same number of comparable coupons. Do not mix alloys, test orientations, heat-treatment conditions or testing methods in one assessment. A process name alone does not justify this sampling design.
+- Retain the three original LPBF CSVs and add `waam_stable_capable.csv`, `waam_stable_incapable.csv`, `waam_unstable_shift.csv`, each 30 builds x 3 coupons. The expanded demonstration has three scenarios per process; it does not replace the rubric's original three LPBF examples.
+- WAAM data are seeded synthetic normal-reference fixtures, not measurements or a trained manufacturing model. All example strengths, parameters and LSL 895 MPa are illustrative. No operating window, causal effect or aerospace threshold is asserted.
+- Known answer for both profile adapters: the section 4 CSV at LSL 980 must reproduce Cpk 0.591, Ppk 0.571, one of twelve failures and a withheld conclusion for four builds. Constant data must withhold capability; missing strength, one build and unequal subgroups must reject.
+- Unit-bearing profile metadata drives upload guidance and parameter labels. Existing `cpk`/`ppk` result keys and LPBF identifiers remain compatible. UI results retain selected process, dataset/file and LSL; switching process clears the selected upload and marks older results stale.

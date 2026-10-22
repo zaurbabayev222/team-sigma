@@ -6,13 +6,15 @@ export async function getJson(path, options) {
   if (!response.ok) throw new Error(typeof body.detail === 'string' ? body.detail : JSON.stringify(body.detail || body))
   return body
 }
-export const listDatasets = () => getJson('datasets')
-export function analyzeDataset(dataset, lsl) {
-  return getJson(`analyze?${new URLSearchParams({ dataset, lsl })}`)
+export const listProfiles = () => getJson('profiles')
+export const listDatasets = (processType = 'lpbf') => getJson(processType === 'lpbf' ? 'datasets' : `datasets?${new URLSearchParams({process_type: processType})}`)
+export function analyzeDataset(dataset, lsl, processType = 'lpbf') {
+  return getJson(`analyze?${new URLSearchParams({ dataset, lsl, ...(processType === 'lpbf' ? {} : {process_type: processType}) })}`)
 }
-export function analyzeUpload(file, lsl) {
+export function analyzeUpload(file, lsl, processType = 'lpbf') {
   const body = new FormData()
   body.append('file', file)
   body.append('lsl', lsl)
+  body.append('process_type', processType)
   return getJson('analyze', { method: 'POST', body })
 }

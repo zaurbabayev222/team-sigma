@@ -25,14 +25,14 @@ if APP_DIR not in sys.path:
     sys.path.insert(0, APP_DIR)
 
 from qc import analyze  # noqa: E402
-from profiles.lpbf import PROFILE  # noqa: E402
+from profiles import DATASETS, PROFILES, get_profile  # noqa: E402
 
 # Datasets live in the data folder next to this file (copied by sync_data.sh).
 DATA_DIR = os.path.join(APP_DIR, "data")
 
 app = FastAPI(
     title="AeroQual API",
-    description="Process control and capability of tensile strength by build (LPBF titanium).",
+    description="Process control and capability of tensile strength by build (LPBF and WAAM titanium).",
     version="1.0.0",
 )
 
@@ -45,16 +45,16 @@ app.add_middleware(
 )
 
 
-def parameter_summary(df, result):
+def parameter_summary(df, result, profile):
     """Describe the optional process parameters (min / max / mean only, no statistics).
 
     The usual range is over build-level means of builds that are NOT flagged.
     """
-    columns = [p["column"] for p in PROFILE["parameters"] if p["column"] in df.columns]
+    columns = [p["column"] for p in profile["parameters"] if p["column"] in df.columns]
     if not columns:
         return {"columns": [], "usual_range": {}, "flagged_builds": []}
 
-    table = pd.DataFrame({"build_id": df[PROFILE["subgroup_col"]].astype(str)})
+    table = pd.DataFrame({"build_id": df[profile["subgroup_col"]].astype(str)})
     for col in columns:
         table[col] = pd.to_numeric(df[col], errors="coerce")
     per_build = table.groupby("build_id", sort=False).mean()  # one mean per build
@@ -76,26 +76,28 @@ def parameter_summary(df, result):
     return {"columns": columns, "usual_range": usual_range, "flagged_builds": flagged}
 
 
-def run_analysis(df, lsl, min_builds, cpk_target):
-    """Check the columns, call analyze(), and add the profile and parameter info."""
-    for col in (PROFILE["subgroup_col"], PROFILE["order_col"], PROFILE["value_col"]):
+def run_analysis(df, lsl, min_builds, cpk_target, process_type="lpbf"):
+    """Check the profile, call analyze(), and add process context."""
+    profile = resolve_profile(process_type)
+    validate_process(df, profile)
+    for col in (profile["subgroup_col"], profile["order_col"], profile["value_col"]):
         if col not in df.columns:
             raise HTTPException(status_code=400, detail=f"missing column '{col}'")
     try:
         result = analyze(
             df, lsl,
-            subgroup_col=PROFILE["subgroup_col"],
-            order_col=PROFILE["order_col"],
-            value_col=PROFILE["value_col"],
+            subgroup_col=profile["subgroup_col"],
+            order_col=profile["order_col"],
+            value_col=profile["value_col"],
             min_builds=min_builds,
             cpk_target=cpk_target,
         )
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error))
-    result["profile"] = {k: PROFILE[k] for k in ("name", "label", "value_label", "value_unit")}
-    result["parameters"] = parameter_summary(df, result)
+    result["profile"] = {k: profile[k] for k in ("name", "label", "value_label", "value_unit", "parameters")}
+    result["parameters"] = parameter_summary(df, result, profile)
     # Add plot-ready bins without changing any existing H-04 response fields.
-    counts, edges = np.histogram(pd.to_numeric(df[PROFILE["value_col"]]), bins="auto")
+    counts, edges = np.histogram(pd.to_numeric(df[profile["value_col"]]), bins="auto")
     result["histogram"] = [{"lower": float(edges[i]), "upper": float(edges[i + 1]),
                             "count": int(count)} for i, count in enumerate(counts)]
     return result
@@ -115,36 +117,69 @@ async def health():
     return {"status": "ok"}
 
 
-@app.get("/datasets")
-async def datasets():
-    """List the built-in datasets (CSV file names without .csv)."""
-    if not os.path.isdir(DATA_DIR):
-        return {"datasets": []}
-    names = [f[:-4] for f in os.listdir(DATA_DIR) if f.endswith(".csv")]
-    return {"datasets": sorted(names)}
+def resolve_profile(process_type):
+    try:
+        return get_profile(process_type)
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from None
+
+
+def validate_process(df, profile):
+    """Never pool process tags or silently accept another profile's known fields."""
+    name = profile['name']
+    if 'process_type' in df.columns:
+        tags = df['process_type'].astype('string').str.strip().str.lower()
+        if tags.isna().any() or not tags.eq(name).all():
+            raise HTTPException(status_code=400, detail=f"CSV process_type must consistently match selected process '{name}'; mixed or blank process tags are not allowed")
+    allowed = {p['column'] for p in profile['parameters']}
+    foreign = sorted({p['column'] for other in PROFILES.values() if other['name'] != name
+                      for p in other['parameters']} - allowed)
+    wrong = [column for column in foreign if column in df.columns and df[column].notna().any()]
+    if wrong:
+        raise HTTPException(status_code=400, detail=f"Columns {', '.join(wrong)} belong to another process profile; select the matching process or remove those columns")
+
+
+@app.get('/profiles')
+async def profiles():
+    """UI metadata; no universal strength thresholds or process operating windows."""
+    return {'profiles': list(PROFILES.values())}
+
+
+@app.get('/datasets')
+async def datasets(process_type: str = 'lpbf'):
+    """Process-specific built-in examples; legacy requests default to LPBF."""
+    resolve_profile(process_type)
+    names = [name for name in DATASETS[process_type]
+             if os.path.isfile(os.path.join(DATA_DIR, name + '.csv'))]
+    return {'datasets': sorted(names)}
 
 
 @app.get("/analyze")
-def analyze_dataset(dataset: str, lsl: float, min_builds: int = 25, cpk_target: float = 1.33):
+def analyze_dataset(dataset: str, lsl: float, min_builds: int = 25, cpk_target: float = 1.33,
+                    process_type: str = "lpbf"):
     """Analyze a built-in dataset, e.g. /analyze?dataset=stable_capable&lsl=900."""
+    resolve_profile(process_type)
     # Only letters, digits, _ and - are allowed: no slashes, no "..".
     if not re.fullmatch(r"[A-Za-z0-9_-]+", dataset):
         raise HTTPException(status_code=404, detail=f"unknown dataset '{dataset}'")
+    if dataset not in DATASETS[process_type]:
+        raise HTTPException(status_code=404, detail=f"unknown dataset for selected process '{process_type}': '{dataset}'")
     path = os.path.join(DATA_DIR, dataset + ".csv")
     if not os.path.isfile(path):
         raise HTTPException(status_code=404, detail=f"unknown dataset '{dataset}'")
-    return run_analysis(pd.read_csv(path), lsl, min_builds, cpk_target)
+    return run_analysis(pd.read_csv(path), lsl, min_builds, cpk_target, process_type)
 
 
 @app.post("/analyze")
 def analyze_upload(file: UploadFile = File(...), lsl: float = Form(...),
-                   min_builds: int = Form(25), cpk_target: float = Form(1.33)):
+                   min_builds: int = Form(25), cpk_target: float = Form(1.33),
+                   process_type: str = Form("lpbf")):
     """Analyze an uploaded CSV (multipart form: file, lsl, min_builds, cpk_target)."""
     try:
         df = pd.read_csv(io.BytesIO(file.file.read()))
     except Exception:
         raise HTTPException(status_code=400, detail="could not read the file as a CSV table")
-    return run_analysis(df, lsl, min_builds, cpk_target)
+    return run_analysis(df, lsl, min_builds, cpk_target, process_type)
 
 
 @app.get("/__docs__/")
@@ -153,7 +188,7 @@ async def docs_redirect():
     return RedirectResponse(url="/docs")
 
 
-# Keep GET / as the existing API health message; serve H-05 separately.
+# Root redirects to the built dashboard; API routes remain under the same prefix.
 FRONTEND_DIR = Path(APP_DIR) / "frontend" / "dist"
 if FRONTEND_DIR.is_dir():
     app.mount("/dashboard", StaticFiles(directory=FRONTEND_DIR, html=True), name="dashboard")

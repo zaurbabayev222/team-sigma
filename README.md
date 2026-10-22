@@ -2,9 +2,9 @@
 
 Titanium additive manufacturing quality dashboard by **Sigma Airlines**, Cornell SYSEN 5300 Six Sigma Hackathon, Virtual DL Challenge.
 
-AeroQual helps a quality engineer review tensile-test coupons after each build: detect changes in process stability, assess lower-side strength capability, count observed failures, and inspect recorded conditions for flagged builds. The current release uses a **laser powder bed fusion (LPBF)** profile, React/Vite dashboard and FastAPI backend. Python calculates every QC result.
+AeroQual helps a quality engineer review tensile-test coupons after each build: detect changes in process stability, assess lower-side strength capability, count observed failures, and inspect recorded conditions for flagged builds. The application supports **laser powder bed fusion (LPBF)** and **wire arc additive manufacturing (WAAM)** profiles through a React/Vite dashboard and FastAPI backend. Python calculates every QC result.
 
-**Status:** the dashboard, API and three synthetic datasets work locally. Public Posit Connect deployment and independent fresh-clone teammate reproduction remain unverified. This prototype does not certify hardware or authorize release. All demonstration data and example limits are synthetic or illustrative.
+**Status:** the dashboard, API and six synthetic datasets (three per process) work locally. Public Posit Connect deployment and independent fresh-clone teammate reproduction remain unverified. This prototype does not certify hardware or authorize release. All demonstration data and example limits are synthetic or illustrative.
 
 ## Run in Positron on Windows PowerShell
 
@@ -49,7 +49,7 @@ bash app/testme.sh
 
 ## Use the dashboard
 
-1. Select **Stable and capable**, **Stable but not capable**, or **Unstable process shift**, or upload your coupon CSV. An upload takes precedence; use **Clear upload** to return to examples.
+1. Select **Printing process** (LPBF or WAAM), then **Stable and capable**, **Stable but not capable**, or **Unstable process shift**, or upload your coupon CSV. An upload takes precedence; use **Clear upload** to return to examples. Changing process clears the upload and marks previous results stale.
 2. Enter **Minimum strength, LSL (MPa)** from the customer specification. The demo default **895 MPa** is illustrative, not a titanium acceptance standard.
 3. Click **Analyze builds**. Review the labeled dataset/file and LSL, then read the separate stability, capability and observed-failure summaries. Expand the full backend reason when needed.
 4. Inspect X-bar/S charts and the combined **Build investigation** table. Hover or keyboard-focus a chart point; **View all build data** exposes every plotted value. Expand diagnostics, observed reference ranges or distribution bins for supporting detail.
@@ -59,21 +59,28 @@ The dashboard uses defaults of 25 builds and Cpk target 1.33. These settings are
 
 ## Inputs and parameters
 
-The CSV has one row per tested coupon. Keep comparable test conditions and one consistent ISO date per build.
+The CSV has one row per tested coupon. Select the process that produced it; do not mix processes, alloys, orientations or post-processing/test populations. Keep comparable test conditions and one consistent ISO date per build.
 
 | CSV column | Required | Units / format | Source |
 | --- | --- | --- | --- |
 | `build_id` | Yes | Text, shared by coupons in the build | Build traveler |
 | `build_date` | Yes | `YYYY-MM-DD` | Build log |
 | `uts_mpa` | Yes | Finite numeric MPa | Tensile-test report |
-| `chamber_oxygen_ppm` | No | Numeric ppm | Printer log |
-| `powder_reuse_count` | No | Nonnegative integer count | Powder record |
-| `laser_power_w` | No | Numeric W | Printer settings |
+| `chamber_oxygen_ppm` (LPBF) | No | Numeric ppm | Printer log |
+| `powder_reuse_count` (LPBF) | No | Nonnegative integer count | Powder record |
+| `laser_power_w` (LPBF) | No | Numeric W | Printer settings |
+| `arc_current_a` (WAAM) | No | Numeric A | Welding log |
+| `arc_voltage_v` (WAAM) | No | Numeric V | Welding log |
+| `wire_feed_rate_m_min` (WAAM) | No | Numeric m/min | Wire feeder log |
+| `travel_speed_mm_s` (WAAM) | No | Numeric mm/s | Motion controller log |
+| `shielding_gas_flow_l_min` (WAAM) | No | Numeric L/min | Gas flow record |
+| `process_type` | No | `lpbf` or `waam`, matching the selection on every row | Manufacturing record |
 
-At least two builds and two coupons per build are required, with equal coupon counts across builds. Blank, nonnumeric or infinite strength values cause an error, never a pass. Optional parameters are descriptive and do not affect capability. Extra columns are not analyzed.
+At least two builds and two coupons per build are required, with equal coupon counts across builds. Blank, nonnumeric or infinite strength values cause an error, never a pass. Optional parameters are descriptive and do not affect capability. Unrecognized extra columns are not analyzed; nonempty recognized fields from the other process are rejected.
 
 | Separate parameter | Required | Default | Meaning |
 | --- | --- | --- | --- |
+| `process_type` | No in API; select in dashboard | `lpbf` | Manufacturing process: `lpbf` or `waam` |
 | `lsl` | Yes | None in API; 895 in dashboard | Customer lower strength limit, MPa |
 | `min_builds` | No | 25 | Minimum builds for a capability verdict |
 | `cpk_target` | No | 1.33 | Configured lower-side Cpk target |
@@ -89,8 +96,13 @@ Each file contains **30 builds with 3 coupons each (90 total)**. Live API checks
 | `stable_capable` | 1.683472 | 1.788871 | 0/90 | 0 | capable |
 | `stable_incapable` | 0.311961 | 0.331492 | 17/90 | 0 | not capable |
 | `unstable_shift` | 1.292337 | 0.711731 | 0/90 | 11 | not assessable |
+| `waam_stable_capable` | 1.911108 | 1.891083 | 0/90 | 0 | capable |
+| `waam_stable_incapable` | 0.307909 | 0.304683 | 18/90 | 0 | not capable |
+| `waam_unstable_shift` | 1.376709 | 0.579596 | 5/90 | 18 | not assessable |
 
 Stability alone does not establish capability; zero observed failures alone does not establish capability. In the unstable example, strength and oxygen changes are planted together from B020. Their association is synthetic, not validated manufacturing physics.
+
+WAAM optional context uses `arc_current_a` (A), `arc_voltage_v` (V), `wire_feed_rate_m_min` (m/min), `travel_speed_mm_s` (mm/s), and `shielding_gas_flow_l_min` (L/min). These are descriptive measurements, not a strength-prediction model. LPBF optional fields in the table above are not required for WAAM. An optional CSV `process_type` column must consistently match the selection; nonempty known fields from the other process are rejected. Generic three-column files rely on the user's process declaration. Units must match the column names; no implicit conversion occurs.
 
 The [complete walkthrough](demo/README.md) provides a three-minute judging sequence, local desktop/mobile captures, exact chart limits, flags, parameters and interpretation. Its Windows commands use the same environment as this README.
 
@@ -109,7 +121,9 @@ Interpretation assumes meaningful build subgroups, comparable approximately norm
 From a second PowerShell terminal while the app runs:
 
 ```powershell
-Invoke-RestMethod 'http://127.0.0.1:8000/datasets'
+Invoke-RestMethod 'http://127.0.0.1:8000/profiles'
+Invoke-RestMethod 'http://127.0.0.1:8000/datasets?process_type=waam'
+Invoke-RestMethod 'http://127.0.0.1:8000/analyze?dataset=waam_stable_capable&lsl=895&process_type=waam'
 Invoke-RestMethod 'http://127.0.0.1:8000/analyze?dataset=stable_capable&lsl=895'
 curl.exe --fail --silent --show-error http://127.0.0.1:8000/analyze -F 'file=@tests/fixtures/spec_example.csv' -F 'lsl=980'
 ```
@@ -124,12 +138,15 @@ Run from the repository root after setup:
 .\.venv\Scripts\python.exe -m pytest tests -q
 npm.cmd --prefix app/frontend test
 .\.venv\Scripts\python.exe demo/check.py --base-url http://127.0.0.1:8000
+.\.venv\Scripts\python.exe data/generate.py --check
+.\.venv\Scripts\python.exe data/generate_waam.py --check
 .\.venv\Scripts\python.exe data/validate.py
+.\.venv\Scripts\python.exe data/validate_waam.py
 ```
 
 The scenario checker needs the running server; omit `--base-url` for core-only checks. It does not rewrite results unless `--output` is supplied. Frontend tests check rendering and request wiring using fixtures; the live checker compares all core fields using the integrated datasets.
 
-Local Windows verification on October 21, 2026: **30 Python tests and 5 subtests passed**, **6 frontend tests passed**, the frontend build succeeded, and all three live scenario/API comparisons passed. Python tests emitted a Starlette/httpx deprecation warning. The browser reported a missing favicon (404), without affecting analysis.
+Baseline local Windows verification before the WAAM increment: **30 Python tests and 5 subtests passed**, **6 frontend tests passed**, the frontend build succeeded, and all three live scenario/API comparisons passed. Python tests emitted a Starlette/httpx deprecation warning. The browser reported a missing favicon (404), without affecting analysis.
 
 **Cross-platform reproducibility:** the earlier Windows byte-check failure came from CRLF checkout endings, not changed measurements. Text files now declare LF endings in `.gitattributes`, runtime data copies were resynced, and the bundle tool writes LF requirements explicitly. `data/validate.py` now passes reproducibility, schema, scenario and edge-case checks without weakening its byte comparison. Existing clones may need a clean checkout to adopt the attributes. Independent fresh-clone human reproduction remains pending.
 
@@ -150,26 +167,34 @@ Local Windows verification on October 21, 2026: **30 Python tests and 5 subtests
 | Location | Purpose |
 | --- | --- |
 | `app/qc.py` | Framework-independent statistics |
-| `app/app.py`, `app/profiles/lpbf.py` | API and LPBF mapping |
+| `app/app.py`, `app/profiles/` | API, profile registry, LPBF and WAAM mappings |
 | `app/frontend/` | React/Vite dashboard |
 | `data/`, `demo/` | Synthetic CSVs, codebook, walkthrough and checker |
 | `tests/` | Statistical, API and bundle API tests (including `test_bundle_api.py`) |
 | `.github/` | Deployment validation and publishing tools |
 
-Current scope excludes other selectable printing processes, unequal subgroups, regression, ANOVA, FMEA, Pareto analysis, predictive models and automated parameter recommendations. See [SPEC](SPEC.md), [decisions](docs/decisions.md), [task ledger](CONTRACT.yaml) and [rubric](docs/criteria.md). Starter provenance is documented in [demos](demos/README.md) and the deployment handoff; see the [MIT license](LICENSE).
+Current scope excludes processes other than LPBF/WAAM, unequal subgroups, regression, ANOVA, FMEA, Pareto analysis, predictive models and automated parameter recommendations. See [SPEC](SPEC.md), [decisions](docs/decisions.md), [task ledger](CONTRACT.yaml) and [rubric](docs/criteria.md). Starter provenance is documented in [demos](demos/README.md) and the deployment handoff; see the [MIT license](LICENSE).
 
 ## Submission evidence and remaining checks
 
 | Rubric item | Evidence to review | Remaining action |
 | --- | --- | --- |
-| Effective working tool (25) | Local dashboard/API, upload workflow and three examples | Publish and verify a public course Connect URL |
+| Effective working tool (25) | Local dashboard/API, upload workflow and six examples (three per process) | Publish and verify a public course Connect URL |
 | Valid QC analysis (25) | SPEC formulas; known-answer and degenerate tests in `tests/` | Retain actual passing output and explain assumptions |
 | Prompt fit, user, minimal inputs (15) | SPEC use case; three required CSV columns plus customer LSL | Confirm the stated workflow with a quality-engineering reviewer |
 | Clear demonstration (10) | Three-minute walkthrough and real local captures in `demo/` | Independent teammate reproduction |
 | Documentation (10) | This quick start and API/function reference | Independent fresh-clone walkthrough |
-| Datasets and codebook (10) | Three labeled synthetic files; units, seeds and collection sources | Verify reproducibility on the supported checkout |
+| Datasets and codebook (10) | Six labeled synthetic files; units, seeds and collection sources | Verify reproducibility on the supported checkout |
 | Public reproducible repository (5) | GitHub source, lockfile and run/test commands | Fresh-clone verification and final Devpost links |
 
 Example known-answer evidence (LSL 980 MPa): X-bar center 1000 MPa; limits 980.456?1019.544 MPa; S center 10 MPa; upper limit 25.682 MPa; Cpk 0.591; Ppk 0.571; 1/12 failures; capability withheld for too few builds. Constant-data tests require undefined indices and a no-variation reason; one-build, unequal-count and missing-strength tests require rejection. These checks validate implementation against the stated examples, not hardware qualification.
 
-The release manifest was regenerated locally with rsconnect-python 1.32.0 under Python 3.12.15. All 14 runtime checksums and isolated bundle dashboard/assets, health, known-answer upload and three scenario comparisons passed. The candidate is prepared for review and release confirmation. Confirm server interpreter support before publication. Public deployment and independent human checks remain pending; no scores are claimed here.
+The WAAM release manifest was generated locally with rsconnect-python 1.32.0 under Python 3.12.15. All 18 runtime checksums, isolated dashboard/assets/health, known-answer upload and six scenario comparisons passed. The user approved committing and pushing this WAAM release; the existing workflow publishes qualifying pushes to main. Confirm server interpreter support before publication. Public deployment and independent human checks remain pending; no scores are claimed here.
+
+## WAAM sampling and compatibility
+
+WAAM selection reuses the measured-strength X-bar/S engine; it does not estimate strength from arc settings. Use equal-size rational build subgroups, comparable testing and a customer-provided LSL. A process name does not establish that these assumptions hold. If the sampling design does not fit, do not interpret the capability assessment.
+
+Legacy requests that omit `process_type` remain LPBF. `/profiles` describes supported measurements and units; `/datasets?process_type=waam` lists WAAM examples. GET analysis takes `process_type` as a query parameter and POST takes it as a multipart form field. Existing LPBF dataset IDs and core output keys remain unchanged. Full synthetic WAAM construction and its limitations are in the [codebook](data/README.md#waam-extension-h-10).
+
+H-10 local verification: **37 Python tests**, **8 frontend tests**, both dataset validators and five bundle tests pass. All six scenarios were exercised in the browser and through the API, including process switching, stale context, uploads, mismatch errors, delayed catalogs and mobile/keyboard use. The core statistical function is unchanged. These are local results; WAAM publication and independent teammate reproduction are still pending.

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { analyzeDataset, analyzeUpload, listDatasets } from './api'
+import { analyzeDataset, analyzeUpload, listDatasets, listProfiles } from './api'
 
 const number = (value, digits = 3) => value == null ? 'Undefined' : Number(value).toFixed(digits)
 const scenarios = {
@@ -7,6 +7,7 @@ const scenarios = {
   stable_incapable: ['Stable but not capable', 'A stable process operating too close to the minimum strength.'],
   unstable_shift: ['Unstable process shift', 'A planted strength drop: investigate stability before interpreting capability.'],
 }
+const scenarioFor = name => scenarios[name.replace(/^waam_/, '')]
 const labels = {
   chamber_oxygen_ppm: ['Chamber oxygen', 'ppm'],
   powder_reuse_count: ['Powder reuse', 'cycles'],
@@ -48,14 +49,14 @@ export function Results({ result, context }) {
   const flagged = result.builds.filter(build => build.flagged)
   const withheld = result.verdict === 'not assessable'
   const parameters = Array.isArray(result.parameters) ? result.parameters : (result.parameters?.columns || []).map(column => ({
-    column, label: labels[column]?.[0] || column, unit: labels[column]?.[1] || '',
+    column, label: result.profile?.parameters?.find(p => p.column === column)?.label || labels[column]?.[0] || column, unit: result.profile?.parameters?.find(p => p.column === column)?.unit || labels[column]?.[1] || '',
     reference_min: result.parameters.usual_range[column]?.min,
     reference_max: result.parameters.usual_range[column]?.max,
     flagged_builds: result.parameters.flagged_builds.map(build => ({build_id: build.build_id, values: [build.values[column]]})),
   }))
   const heading = flagged.length ? 'Process unstable — investigate flagged builds' : withheld ? 'More evidence needed for capability assessment' : result.verdict === 'capable' ? 'Process meets the configured capability target' : 'Stable process falls below the capability target'
   return <div className="results">
-    {context && <section className="analysis-context" aria-label="Analyzed inputs"><h2>Analysis results</h2><p><strong>{context.source}</strong> · LSL {context.lsl} MPa · {result.n_builds} builds · {result.n_coupons} tested coupons</p><p className="muted">{context.synthetic ? 'Synthetic demonstration data. Example requirements are illustrative.' : 'Uploaded data. Confirm its provenance, units and customer requirement.'}</p></section>}
+    {context && <section className="analysis-context" aria-label="Analyzed inputs"><h2>Analysis results</h2><p><strong>{context.processLabel || result.profile?.label || 'LPBF'}</strong> / {context.source} · LSL {context.lsl} MPa · {result.n_builds} builds · {result.n_coupons} tested coupons</p><p className="muted">{context.synthetic ? 'Synthetic demonstration data. Example requirements are illustrative.' : 'Uploaded data. Confirm its provenance, units and customer requirement.'}</p></section>}
     <section className={`assessment ${result.verdict === 'capable' ? 'good' : 'attention'}`} aria-label="Assessment summary">
       <p className="status-label">{withheld ? 'Capability conclusion withheld' : result.verdict === 'capable' ? 'Capable under configured checks' : 'Not capable under configured checks'}</p>
       <h2>{heading}</h2>
@@ -83,46 +84,55 @@ export function Results({ result, context }) {
 
 export default function App() {
   const uploadInput = useRef(null)
+  const [processType, setProcessType] = useState('lpbf'), [profiles, setProfiles] = useState([])
   const [datasets, setDatasets] = useState([]), [dataset, setDataset] = useState('')
   const [lsl, setLsl] = useState('895'), [file, setFile] = useState(null)
   const [analysis, setAnalysis] = useState(null), [error, setError] = useState(''), [catalogError, setCatalogError] = useState('')
   const [busy, setBusy] = useState(false), [loading, setLoading] = useState(true), [retry, setRetry] = useState(0)
   useEffect(() => {
     let ignore = false
-    setLoading(true); setCatalogError('')
-    listDatasets().then(body => {
+    setLoading(true); setCatalogError(''); setDatasets([]); setDataset('')
+    Promise.all([listProfiles(), listDatasets(processType)]).then(([metadata, body]) => {
       if (ignore) return
+      setProfiles(metadata.profiles || [])
       const names = (Array.isArray(body) ? body : body.datasets || []).map(item => typeof item === 'string' ? item : item.name)
       setDatasets(names); setDataset(current => names.includes(current) ? current : names[0] || '')
     }).catch(error => { if (!ignore) setCatalogError(error.message) }).finally(() => { if (!ignore) setLoading(false) })
     return () => { ignore = true }
-  }, [retry])
-  const stale = analysis && (analysis.file !== file || (!file && analysis.dataset !== dataset) || Number(analysis.lsl) !== Number(lsl))
+  }, [processType, retry])
+  const profile = profiles.find(item => item.name === processType)
+  function changeProcess(value) {
+    if (value === processType) return
+    setProcessType(value); setDataset(''); setDatasets([]); setFile(null); setError('')
+    if (uploadInput.current) uploadInput.current.value = ''
+  }
+  const stale = analysis && (analysis.processType !== processType || analysis.file !== file || (!file && analysis.dataset !== dataset) || Number(analysis.lsl) !== Number(lsl))
   async function run(event) {
     event.preventDefault(); setBusy(true); setError('')
-    const snapshot = {file, dataset, lsl, source: file ? file.name : scenarios[dataset]?.[0] || dataset, synthetic: !file}
+    const snapshot = {file, dataset, lsl, processType, processLabel: profile?.label || processType.toUpperCase(), source: file ? file.name : scenarioFor(dataset)?.[0] || dataset, synthetic: !file}
     try {
-      const result = await (file ? analyzeUpload(file, lsl) : analyzeDataset(dataset, lsl))
+      const result = await (file ? analyzeUpload(file, lsl, processType) : analyzeDataset(dataset, lsl, processType))
       setAnalysis({...snapshot, result})
     } catch (error) { setError(error.message); setAnalysis(null) } finally { setBusy(false) }
   }
   return <><a className="skip-link" href="#analysis-inputs">Skip to analysis inputs</a><main>
-    <header className="app-header"><div><h1>AeroQual</h1><p>Titanium build quality review</p></div><span className="profile-label">LPBF · Sigma Airlines</span></header>
+    <header className="app-header"><div><h1>AeroQual</h1><p>Titanium build quality review</p></div><span className="profile-label">{processType.toUpperCase()} · Sigma Airlines</span></header>
     <p className="intro">Review strength, process stability and capability against your customer’s minimum requirement.</p>
-    <form className="panel" id="analysis-inputs" onSubmit={run} aria-label="Analysis inputs"><h2>Choose your data</h2><fieldset disabled={busy}><legend className="sr-only">Dataset and strength requirement</legend><div className="controls">
-      <label>Example dataset<select value={dataset} disabled={!!file || loading || !datasets.length} onChange={event => setDataset(event.target.value)}><option value="" disabled>{loading ? 'Loading examples…' : 'Select an example'}</option>{datasets.map(name => <option key={name} value={name}>{scenarios[name]?.[0] || name}</option>)}</select></label>
+    <form className="panel" id="analysis-inputs" onSubmit={run} aria-label="Analysis inputs"><h2>Choose your data</h2><fieldset disabled={busy}><legend className="sr-only">Dataset and strength requirement</legend><div className="process-choice"><label>Printing process<select value={processType} onChange={event => changeProcess(event.target.value)} disabled={loading && !profiles.length}>{(profiles.length ? profiles : [{name: 'lpbf', label: 'Laser powder bed fusion (LPBF)'}]).map(item => <option key={item.name} value={item.name}>{`${item.name.toUpperCase()} - ${item.label.replace(` (${item.name.toUpperCase()})`, '')}`}</option>)}</select></label></div><div className="controls">
+      <label>Example dataset<select value={dataset} disabled={!!file || loading || !datasets.length} onChange={event => setDataset(event.target.value)}><option value="" disabled>{loading ? 'Loading examples…' : 'Select an example'}</option>{datasets.map(name => <option key={name} value={name}>{scenarioFor(name)?.[0] || name}</option>)}</select></label>
       <label>Or upload coupon CSV<input ref={uploadInput} type="file" accept=".csv,text/csv" aria-describedby="csv-help" onChange={event => { setFile(event.target.files[0] || null); setError('') }}/></label>
       <label>Minimum strength, LSL (MPa)<input type="number" step="any" required value={lsl} onChange={event => setLsl(event.target.value)} aria-describedby="lsl-help"/></label>
-      <button type="submit" disabled={busy || (!file && !dataset)}>{busy ? 'Analyzing…' : 'Analyze builds'}</button>
-    </div>{file ? <p>Selected upload: <strong>{file.name}</strong> <button className="text-button" type="button" onClick={() => { setFile(null); uploadInput.current.value = ''; setError('') }}>Clear upload</button></p> : <p className="scenario-note"><strong>Synthetic demonstration.</strong> {scenarios[dataset]?.[1] || 'Choose an example to explore the analysis.'}</p>}
+      <button type="submit" disabled={busy || (!file && (!dataset || loading))}>{busy ? 'Analyzing…' : 'Analyze builds'}</button>
+    </div>{file ? <p>Selected upload: <strong>{file.name}</strong> <button className="text-button" type="button" onClick={() => { setFile(null); uploadInput.current.value = ''; setError('') }}>Clear upload</button></p> : <p className="scenario-note"><strong>Synthetic demonstration.</strong> {scenarioFor(dataset)?.[1] || 'Choose an example to explore the analysis.'}</p>}
+    <p className="muted">Select the process that produced the measurements. Changing process clears your upload. The app assesses measured strength; it does not predict strength from printer settings.</p>
     <p className="muted" id="lsl-help">Enter the customer requirement. Example LSL 895 MPa is illustrative; it is not an aerospace acceptance standard.</p>
-    <details id="csv-help"><summary>CSV format and required measurements</summary><p>One row per tested coupon. Required columns: <code>build_id</code>, <code>build_date</code> (YYYY-MM-DD), <code>uts_mpa</code> (MPa). At least two builds, two coupons per build and equal coupon counts are required. Missing strength is an error.</p><p>Optional context: chamber_oxygen_ppm, powder_reuse_count, laser_power_w. Keep one date per build and use comparable test conditions.</p></details></fieldset>
+    <details id="csv-help"><summary>CSV format and required measurements</summary><p>One row per tested coupon. Required columns: <code>build_id</code>, <code>build_date</code> (YYYY-MM-DD), <code>uts_mpa</code> (MPa). At least two builds, two coupons per build and equal coupon counts are required. Missing strength is an error.</p><p>Optional {processType.toUpperCase()} context: {(profile?.parameters || []).map(p => `${p.column} (${p.unit})`).join(', ') || 'load the process profile to see supported fields'}. Keep one date per build and use comparable test conditions. Optional CSV process_type tags must match your selection; do not mix processes in one file.</p></details></fieldset>
     {catalogError && <div className="error" role="alert"><p>Could not load examples: {catalogError}. Check the API connection, then retry. You can still upload a CSV.</p><button type="button" onClick={() => setRetry(value => value + 1)}>Retry loading examples</button></div>}
     {!loading && !catalogError && !datasets.length && <p role="status">No built-in examples are available. Upload a CSV, or ask the app owner to sync the demonstration datasets.</p>}
     </form>
     <div role="status" aria-live="polite">{busy ? <p className="notice">Analyzing your data. Inputs are locked until the response arrives.</p> : stale ? <p className="notice">Inputs changed. Results below use the previous inputs shown in “Analysis results”. Select Analyze builds to refresh.</p> : analysis ? <p className="muted">Analysis complete. Results match the inputs shown below.</p> : null}</div>
     {error && <div role="alert" className="error"><h2>Unable to analyze this file</h2><p>{error}</p><p>Check the required columns, numeric strength and equal coupon counts, then select Analyze builds again. If the API is unavailable, confirm the server is running.</p></div>}
-    {analysis ? <Results key={`${analysis.source}-${analysis.lsl}`} result={analysis.result} context={analysis}/> : !busy && !error && <section className="empty-state"><h2>Your build review starts here</h2><p>Choose a synthetic example or upload test results, enter a minimum strength and select Analyze builds.</p><p>You’ll see observed failures, control charts and a capability assessment with its supporting evidence.</p></section>}
+    {analysis ? <Results key={`${analysis.processType}-${analysis.source}-${analysis.lsl}`} result={analysis.result} context={analysis}/> : !busy && !error && <section className="empty-state"><h2>Your build review starts here</h2><p>Choose a synthetic example or upload test results, enter a minimum strength and select Analyze builds.</p><p>You’ll see observed failures, control charts and a capability assessment with its supporting evidence.</p></section>}
     <footer>Decision support for quality engineers. Engineering sign-off and hardware release remain external.</footer>
   </main></>
 }

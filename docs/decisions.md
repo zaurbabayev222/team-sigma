@@ -140,3 +140,7 @@ React page       (draws whatever parameters the profile lists)
 Other things that can grow the same way, without touching the statistics: an upper limit (for a
 two-sided Cpk on dimensions), filters by machine or lot as optional columns, and unequal coupons per
 build (would switch the S-chart constants to per-build values).
+
+## H-10 update: user-approved LPBF plus WAAM
+
+This supersedes the LPBF-only scope decision above for the new increment; the original release history remains recorded. The user approved one additional process before adding more statistics. Keep qc.py unchanged, use a profile registry and explicit process selection, preserve legacy LPBF defaults, and add three reproducible WAAM demonstration files. The section 4 SPEC known answer must match under both adapters; sampling design remains equal-size, comparable build subgroups. No automatic strength requirement, qualified operating window, parameter adjustment or training claim is introduced. Generic measurement-only files use the user's declared process; supplied tags and recognized foreign-profile fields are checked to prevent accidental pooling.

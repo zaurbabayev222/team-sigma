@@ -29,10 +29,10 @@
       "checksum": "92bfc2e7046b5449347f74a2d108a155"
     },
     "app.py": {
-      "checksum": "be4c0d54cbb8f224d93269eed5232560"
+      "checksum": "936e8e02125ee3ff6ac6aad58bc0565f"
     },
     "data/README.md": {
-      "checksum": "88d92a5d6a81003c7efe26ae866beff5"
+      "checksum": "046c82d98e305c48ec70c062d0871335"
     },
     "data/stable_capable.csv": {
       "checksum": "42630fff3aaf0a21ad22e689ae6fe051"
@@ -43,20 +43,32 @@
     "data/unstable_shift.csv": {
       "checksum": "5d1f571db93872458fecdbe9765ec7d6"
     },
-    "frontend/dist/assets/index-CfWBCrTp.css": {
-      "checksum": "cccd199a77915f85a6476a9b4e6933fc"
+    "data/waam_stable_capable.csv": {
+      "checksum": "e827ce388d781287841f3bf66de60b11"
     },
-    "frontend/dist/assets/index-DFGzSMmI.js": {
-      "checksum": "8f7e7be0ee99ed67e9844c56b6714a06"
+    "data/waam_stable_incapable.csv": {
+      "checksum": "54ee4b539da572d0e91e7ecaf0e5d456"
+    },
+    "data/waam_unstable_shift.csv": {
+      "checksum": "a374871cc15d51a47e1f7fbde456cda6"
+    },
+    "frontend/dist/assets/index-BlgZ9ihF.js": {
+      "checksum": "69856ffb7d28e334b242807e989a0fdc"
+    },
+    "frontend/dist/assets/index-DonT6qJY.css": {
+      "checksum": "2db38cbe659eafe9e164cbaec870e53b"
     },
     "frontend/dist/index.html": {
-      "checksum": "e5decab5342085377e3b3bbf12a4c92f"
+      "checksum": "2747763de6069b32cd00cc5fb37aa02e"
     },
     "profiles/__init__.py": {
-      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+      "checksum": "86cd2daab98521c6e14e137fc35b6f7a"
     },
     "profiles/lpbf.py": {
-      "checksum": "2c38d9bf740a683cb5ade4fdf45a694e"
+      "checksum": "0c6d98dd168d44f3a075386bcabaf7e0"
+    },
+    "profiles/waam.py": {
+      "checksum": "566854531d52327385f13c5cb48e2b20"
     },
     "qc.py": {
       "checksum": "7dfe0f6f637ba9b663b7d5402eeb5e7d"

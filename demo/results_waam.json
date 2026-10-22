@@ -1,0 +1,1307 @@
+{
+  "process_type": "waam",
+  "lsl": 895,
+  "synthetic": true,
+  "results": {
+    "waam_stable_capable.csv": {
+      "n_builds": 30,
+      "n_per_build": 3,
+      "builds": [
+        {
+          "build_id": "W001",
+          "order": "2026-10-01",
+          "mean": 949.6846666666667,
+          "s": 5.375701008550765,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W002",
+          "order": "2026-10-02",
+          "mean": 949.5203333333333,
+          "s": 6.069842200035596,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W003",
+          "order": "2026-10-03",
+          "mean": 969.9263333333333,
+          "s": 11.958982495736542,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W004",
+          "order": "2026-10-04",
+          "mean": 970.4706666666667,
+          "s": 12.710435568198795,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W005",
+          "order": "2026-10-05",
+          "mean": 967.927,
+          "s": 8.426220208373403,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W006",
+          "order": "2026-10-06",
+          "mean": 961.1503333333334,
+          "s": 9.63063576994438,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W007",
+          "order": "2026-10-07",
+          "mean": 954.7586666666666,
+          "s": 5.5882009925675895,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W008",
+          "order": "2026-10-08",
+          "mean": 953.2883333333333,
+          "s": 7.3575110827870045,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W009",
+          "order": "2026-10-09",
+          "mean": 958.4586666666668,
+          "s": 7.019389313418519,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W010",
+          "order": "2026-10-10",
+          "mean": 969.379,
+          "s": 15.306567120030493,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W011",
+          "order": "2026-10-11",
+          "mean": 959.7710000000001,
+          "s": 6.584036224080126,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W012",
+          "order": "2026-10-12",
+          "mean": 959.208,
+          "s": 7.885936659649204,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W013",
+          "order": "2026-10-13",
+          "mean": 950.2276666666667,
+          "s": 6.322358921584028,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W014",
+          "order": "2026-10-14",
+          "mean": 962.2296666666667,
+          "s": 11.22536860567769,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W015",
+          "order": "2026-10-15",
+          "mean": 955.8090000000001,
+          "s": 10.83014293534488,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W016",
+          "order": "2026-10-16",
+          "mean": 973.3713333333334,
+          "s": 10.453172931379855,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W017",
+          "order": "2026-10-17",
+          "mean": 969.0736666666667,
+          "s": 18.93342426327927,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W018",
+          "order": "2026-10-18",
+          "mean": 960.0706666666666,
+          "s": 13.90611212141383,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W019",
+          "order": "2026-10-19",
+          "mean": 961.471,
+          "s": 10.314082460403329,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W020",
+          "order": "2026-10-20",
+          "mean": 962.313,
+          "s": 14.525428771640463,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W021",
+          "order": "2026-10-21",
+          "mean": 956.7316666666667,
+          "s": 3.8473308063296834,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W022",
+          "order": "2026-10-22",
+          "mean": 952.564,
+          "s": 20.184789000631138,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W023",
+          "order": "2026-10-23",
+          "mean": 950.9333333333334,
+          "s": 8.089908178300481,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W024",
+          "order": "2026-10-24",
+          "mean": 972.413,
+          "s": 15.658934286853585,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W025",
+          "order": "2026-10-25",
+          "mean": 965.9756666666667,
+          "s": 1.9218681883348936,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W026",
+          "order": "2026-10-26",
+          "mean": 956.779,
+          "s": 13.217502298089427,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W027",
+          "order": "2026-10-27",
+          "mean": 957.5353333333333,
+          "s": 18.684296356387918,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W028",
+          "order": "2026-10-28",
+          "mean": 965.3006666666666,
+          "s": 12.71840246781541,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W029",
+          "order": "2026-10-29",
+          "mean": 954.913,
+          "s": 5.94247053000683,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W030",
+          "order": "2026-10-30",
+          "mean": 965.6433333333333,
+          "s": 3.3436067850949898,
+          "flagged": false,
+          "reason": ""
+        }
+      ],
+      "xbar": {
+        "center": 960.5632666666666,
+        "lcl": 940.7564505774665,
+        "ucl": 980.3700827558666
+      },
+      "s_chart": {
+        "center": 10.134421951731335,
+        "lcl": 0.0,
+        "ucl": 26.026914396674666
+      },
+      "sigma_short": 11.435470600889083,
+      "sigma_total": 11.556566505185005,
+      "cpk": 1.9111082512444262,
+      "ppk": 1.8910826336193287,
+      "n_coupons": 90,
+      "n_failures": 0,
+      "failure_rate": 0.0,
+      "shapiro_p": 0.3090378457361912,
+      "verdict": "capable",
+      "reason": "Cpk 1.91 is at or above the target 1.33.",
+      "profile": {
+        "name": "waam",
+        "label": "Wire arc additive manufacturing (WAAM)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "arc_current_a",
+            "label": "Arc current",
+            "unit": "A"
+          },
+          {
+            "column": "arc_voltage_v",
+            "label": "Arc voltage",
+            "unit": "V"
+          },
+          {
+            "column": "wire_feed_rate_m_min",
+            "label": "Wire feed rate",
+            "unit": "m/min"
+          },
+          {
+            "column": "travel_speed_mm_s",
+            "label": "Travel speed",
+            "unit": "mm/s"
+          },
+          {
+            "column": "shielding_gas_flow_l_min",
+            "label": "Shielding gas flow",
+            "unit": "L/min"
+          }
+        ]
+      },
+      "parameters": {
+        "columns": [
+          "arc_current_a",
+          "arc_voltage_v",
+          "wire_feed_rate_m_min",
+          "travel_speed_mm_s",
+          "shielding_gas_flow_l_min"
+        ],
+        "usual_range": {
+          "arc_current_a": {
+            "min": 121.06,
+            "max": 128.993
+          },
+          "arc_voltage_v": {
+            "min": 11.621,
+            "max": 12.389000000000001
+          },
+          "wire_feed_rate_m_min": {
+            "min": 1.42,
+            "max": 1.575
+          },
+          "travel_speed_mm_s": {
+            "min": 3.82,
+            "max": 4.2
+          },
+          "shielding_gas_flow_l_min": {
+            "min": 17.242,
+            "max": 18.791
+          }
+        },
+        "flagged_builds": []
+      },
+      "histogram": [
+        {
+          "lower": 936.263,
+          "upper": 942.5485,
+          "count": 4
+        },
+        {
+          "lower": 942.5485,
+          "upper": 948.8340000000001,
+          "count": 11
+        },
+        {
+          "lower": 948.8340000000001,
+          "upper": 955.1195,
+          "count": 17
+        },
+        {
+          "lower": 955.1195,
+          "upper": 961.405,
+          "count": 16
+        },
+        {
+          "lower": 961.405,
+          "upper": 967.6905,
+          "count": 17
+        },
+        {
+          "lower": 967.6905,
+          "upper": 973.976,
+          "count": 11
+        },
+        {
+          "lower": 973.976,
+          "upper": 980.2615000000001,
+          "count": 9
+        },
+        {
+          "lower": 980.2615000000001,
+          "upper": 986.547,
+          "count": 5
+        }
+      ]
+    },
+    "waam_stable_incapable.csv": {
+      "n_builds": 30,
+      "n_per_build": 3,
+      "builds": [
+        {
+          "build_id": "W001",
+          "order": "2026-10-01",
+          "mean": 894.6846666666667,
+          "s": 5.375701008550765,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W002",
+          "order": "2026-10-02",
+          "mean": 894.5203333333333,
+          "s": 6.069842200035596,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W003",
+          "order": "2026-10-03",
+          "mean": 914.9263333333333,
+          "s": 11.958982495736542,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W004",
+          "order": "2026-10-04",
+          "mean": 915.4706666666667,
+          "s": 12.710435568198795,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W005",
+          "order": "2026-10-05",
+          "mean": 912.927,
+          "s": 8.426220208373403,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W006",
+          "order": "2026-10-06",
+          "mean": 906.1503333333334,
+          "s": 9.63063576994438,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W007",
+          "order": "2026-10-07",
+          "mean": 899.7586666666666,
+          "s": 5.5882009925675895,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W008",
+          "order": "2026-10-08",
+          "mean": 898.2883333333333,
+          "s": 7.3575110827870045,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W009",
+          "order": "2026-10-09",
+          "mean": 903.4586666666668,
+          "s": 7.019389313418519,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W010",
+          "order": "2026-10-10",
+          "mean": 914.379,
+          "s": 15.306567120030493,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W011",
+          "order": "2026-10-11",
+          "mean": 904.7710000000001,
+          "s": 6.584036224080126,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W012",
+          "order": "2026-10-12",
+          "mean": 904.208,
+          "s": 7.885936659649204,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W013",
+          "order": "2026-10-13",
+          "mean": 895.2276666666667,
+          "s": 6.322358921584028,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W014",
+          "order": "2026-10-14",
+          "mean": 907.2296666666667,
+          "s": 11.22536860567769,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W015",
+          "order": "2026-10-15",
+          "mean": 900.8090000000001,
+          "s": 10.83014293534488,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W016",
+          "order": "2026-10-16",
+          "mean": 918.3713333333334,
+          "s": 10.453172931379855,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W017",
+          "order": "2026-10-17",
+          "mean": 914.0736666666667,
+          "s": 18.93342426327927,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W018",
+          "order": "2026-10-18",
+          "mean": 905.0706666666666,
+          "s": 13.90611212141383,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W019",
+          "order": "2026-10-19",
+          "mean": 906.471,
+          "s": 10.314082460403329,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W020",
+          "order": "2026-10-20",
+          "mean": 907.313,
+          "s": 14.525428771640463,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W021",
+          "order": "2026-10-21",
+          "mean": 901.7316666666667,
+          "s": 3.8473308063296834,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W022",
+          "order": "2026-10-22",
+          "mean": 897.564,
+          "s": 20.184789000631138,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W023",
+          "order": "2026-10-23",
+          "mean": 895.9333333333334,
+          "s": 8.089908178300481,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W024",
+          "order": "2026-10-24",
+          "mean": 917.413,
+          "s": 15.658934286853585,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W025",
+          "order": "2026-10-25",
+          "mean": 910.9756666666667,
+          "s": 1.9218681883348936,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W026",
+          "order": "2026-10-26",
+          "mean": 901.779,
+          "s": 13.217502298089427,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W027",
+          "order": "2026-10-27",
+          "mean": 902.5353333333333,
+          "s": 18.684296356387918,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W028",
+          "order": "2026-10-28",
+          "mean": 910.3006666666666,
+          "s": 12.71840246781541,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W029",
+          "order": "2026-10-29",
+          "mean": 899.913,
+          "s": 5.94247053000683,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W030",
+          "order": "2026-10-30",
+          "mean": 910.6433333333333,
+          "s": 3.3436067850949898,
+          "flagged": false,
+          "reason": ""
+        }
+      ],
+      "xbar": {
+        "center": 905.5632666666666,
+        "lcl": 885.7564505774665,
+        "ucl": 925.3700827558666
+      },
+      "s_chart": {
+        "center": 10.134421951731335,
+        "lcl": 0.0,
+        "ucl": 26.026914396674666
+      },
+      "sigma_short": 11.435470600889083,
+      "sigma_total": 11.556566505185005,
+      "cpk": 0.30790939977713666,
+      "ppk": 0.304682959883376,
+      "n_coupons": 90,
+      "n_failures": 18,
+      "failure_rate": 0.2,
+      "shapiro_p": 0.3090378457361912,
+      "verdict": "not capable",
+      "reason": "Cpk 0.31 is below the target 1.33.",
+      "profile": {
+        "name": "waam",
+        "label": "Wire arc additive manufacturing (WAAM)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "arc_current_a",
+            "label": "Arc current",
+            "unit": "A"
+          },
+          {
+            "column": "arc_voltage_v",
+            "label": "Arc voltage",
+            "unit": "V"
+          },
+          {
+            "column": "wire_feed_rate_m_min",
+            "label": "Wire feed rate",
+            "unit": "m/min"
+          },
+          {
+            "column": "travel_speed_mm_s",
+            "label": "Travel speed",
+            "unit": "mm/s"
+          },
+          {
+            "column": "shielding_gas_flow_l_min",
+            "label": "Shielding gas flow",
+            "unit": "L/min"
+          }
+        ]
+      },
+      "parameters": {
+        "columns": [
+          "arc_current_a",
+          "arc_voltage_v",
+          "wire_feed_rate_m_min",
+          "travel_speed_mm_s",
+          "shielding_gas_flow_l_min"
+        ],
+        "usual_range": {
+          "arc_current_a": {
+            "min": 121.06,
+            "max": 128.993
+          },
+          "arc_voltage_v": {
+            "min": 11.621,
+            "max": 12.389000000000001
+          },
+          "wire_feed_rate_m_min": {
+            "min": 1.42,
+            "max": 1.575
+          },
+          "travel_speed_mm_s": {
+            "min": 3.82,
+            "max": 4.2
+          },
+          "shielding_gas_flow_l_min": {
+            "min": 17.242,
+            "max": 18.791
+          }
+        },
+        "flagged_builds": []
+      },
+      "histogram": [
+        {
+          "lower": 881.263,
+          "upper": 887.5485,
+          "count": 4
+        },
+        {
+          "lower": 887.5485,
+          "upper": 893.8340000000001,
+          "count": 11
+        },
+        {
+          "lower": 893.8340000000001,
+          "upper": 900.1195,
+          "count": 17
+        },
+        {
+          "lower": 900.1195,
+          "upper": 906.405,
+          "count": 16
+        },
+        {
+          "lower": 906.405,
+          "upper": 912.6905,
+          "count": 17
+        },
+        {
+          "lower": 912.6905,
+          "upper": 918.976,
+          "count": 11
+        },
+        {
+          "lower": 918.976,
+          "upper": 925.2615000000001,
+          "count": 9
+        },
+        {
+          "lower": 925.2615000000001,
+          "upper": 931.547,
+          "count": 5
+        }
+      ]
+    },
+    "waam_unstable_shift.csv": {
+      "n_builds": 30,
+      "n_per_build": 3,
+      "builds": [
+        {
+          "build_id": "W001",
+          "order": "2026-10-01",
+          "mean": 949.6846666666667,
+          "s": 5.375701008550765,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W002",
+          "order": "2026-10-02",
+          "mean": 949.5203333333333,
+          "s": 6.069842200035596,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W003",
+          "order": "2026-10-03",
+          "mean": 969.9263333333333,
+          "s": 11.958982495736542,
+          "flagged": true,
+          "reason": "mean above the X-bar upper limit"
+        },
+        {
+          "build_id": "W004",
+          "order": "2026-10-04",
+          "mean": 970.4706666666667,
+          "s": 12.710435568198795,
+          "flagged": true,
+          "reason": "mean above the X-bar upper limit"
+        },
+        {
+          "build_id": "W005",
+          "order": "2026-10-05",
+          "mean": 967.927,
+          "s": 8.426220208373403,
+          "flagged": true,
+          "reason": "mean above the X-bar upper limit"
+        },
+        {
+          "build_id": "W006",
+          "order": "2026-10-06",
+          "mean": 961.1503333333334,
+          "s": 9.63063576994438,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W007",
+          "order": "2026-10-07",
+          "mean": 954.7586666666666,
+          "s": 5.5882009925675895,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W008",
+          "order": "2026-10-08",
+          "mean": 953.2883333333333,
+          "s": 7.3575110827870045,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W009",
+          "order": "2026-10-09",
+          "mean": 958.4586666666668,
+          "s": 7.019389313418519,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W010",
+          "order": "2026-10-10",
+          "mean": 969.379,
+          "s": 15.306567120030493,
+          "flagged": true,
+          "reason": "mean above the X-bar upper limit"
+        },
+        {
+          "build_id": "W011",
+          "order": "2026-10-11",
+          "mean": 959.7710000000001,
+          "s": 6.584036224080126,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W012",
+          "order": "2026-10-12",
+          "mean": 959.208,
+          "s": 7.885936659649204,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W013",
+          "order": "2026-10-13",
+          "mean": 950.2276666666667,
+          "s": 6.322358921584028,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W014",
+          "order": "2026-10-14",
+          "mean": 962.2296666666667,
+          "s": 11.22536860567769,
+          "flagged": true,
+          "reason": "mean above the X-bar upper limit"
+        },
+        {
+          "build_id": "W015",
+          "order": "2026-10-15",
+          "mean": 955.8090000000001,
+          "s": 10.83014293534488,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W016",
+          "order": "2026-10-16",
+          "mean": 973.3713333333334,
+          "s": 10.453172931379855,
+          "flagged": true,
+          "reason": "mean above the X-bar upper limit"
+        },
+        {
+          "build_id": "W017",
+          "order": "2026-10-17",
+          "mean": 969.0736666666667,
+          "s": 18.93342426327927,
+          "flagged": true,
+          "reason": "mean above the X-bar upper limit"
+        },
+        {
+          "build_id": "W018",
+          "order": "2026-10-18",
+          "mean": 960.0706666666666,
+          "s": 13.90611212141383,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W019",
+          "order": "2026-10-19",
+          "mean": 961.471,
+          "s": 10.314082460403329,
+          "flagged": false,
+          "reason": ""
+        },
+        {
+          "build_id": "W020",
+          "order": "2026-10-20",
+          "mean": 912.313,
+          "s": 14.525428771640463,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "W021",
+          "order": "2026-10-21",
+          "mean": 906.7316666666667,
+          "s": 3.8473308063296834,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "W022",
+          "order": "2026-10-22",
+          "mean": 902.564,
+          "s": 20.184789000631138,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "W023",
+          "order": "2026-10-23",
+          "mean": 900.9333333333334,
+          "s": 8.089908178300481,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "W024",
+          "order": "2026-10-24",
+          "mean": 922.413,
+          "s": 15.658934286853585,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "W025",
+          "order": "2026-10-25",
+          "mean": 915.9756666666667,
+          "s": 1.9218681883348936,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "W026",
+          "order": "2026-10-26",
+          "mean": 906.779,
+          "s": 13.217502298089427,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "W027",
+          "order": "2026-10-27",
+          "mean": 907.5353333333333,
+          "s": 18.684296356387918,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "W028",
+          "order": "2026-10-28",
+          "mean": 915.3006666666666,
+          "s": 12.71840246781541,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "W029",
+          "order": "2026-10-29",
+          "mean": 904.913,
+          "s": 5.94247053000683,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        },
+        {
+          "build_id": "W030",
+          "order": "2026-10-30",
+          "mean": 915.6433333333333,
+          "s": 3.3436067850949898,
+          "flagged": true,
+          "reason": "mean below the X-bar lower limit"
+        }
+      ],
+      "xbar": {
+        "center": 942.2299333333333,
+        "lcl": 922.4231172441332,
+        "ucl": 962.0367494225334
+      },
+      "s_chart": {
+        "center": 10.134421951731335,
+        "lcl": 0.0,
+        "ucl": 26.026914396674666
+      },
+      "sigma_short": 11.435470600889083,
+      "sigma_total": 27.1625374895629,
+      "cpk": 1.3767086340886652,
+      "ppk": 0.5795964797898725,
+      "n_coupons": 90,
+      "n_failures": 5,
+      "failure_rate": 0.05555555555555555,
+      "shapiro_p": 0.00010396944104064196,
+      "verdict": "not assessable",
+      "reason": "Not assessable: process is unstable, builds out of control: W003, W004, W005, W010, W014, W016, W017, W020, W021, W022, W023, W024, W025, W026, W027, W028, W029, W030.",
+      "profile": {
+        "name": "waam",
+        "label": "Wire arc additive manufacturing (WAAM)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "arc_current_a",
+            "label": "Arc current",
+            "unit": "A"
+          },
+          {
+            "column": "arc_voltage_v",
+            "label": "Arc voltage",
+            "unit": "V"
+          },
+          {
+            "column": "wire_feed_rate_m_min",
+            "label": "Wire feed rate",
+            "unit": "m/min"
+          },
+          {
+            "column": "travel_speed_mm_s",
+            "label": "Travel speed",
+            "unit": "mm/s"
+          },
+          {
+            "column": "shielding_gas_flow_l_min",
+            "label": "Shielding gas flow",
+            "unit": "L/min"
+          }
+        ]
+      },
+      "parameters": {
+        "columns": [
+          "arc_current_a",
+          "arc_voltage_v",
+          "wire_feed_rate_m_min",
+          "travel_speed_mm_s",
+          "shielding_gas_flow_l_min"
+        ],
+        "usual_range": {
+          "arc_current_a": {
+            "min": 121.23,
+            "max": 128.259
+          },
+          "arc_voltage_v": {
+            "min": 11.621,
+            "max": 12.389000000000001
+          },
+          "wire_feed_rate_m_min": {
+            "min": 1.42,
+            "max": 1.569
+          },
+          "travel_speed_mm_s": {
+            "min": 3.82,
+            "max": 4.099
+          },
+          "shielding_gas_flow_l_min": {
+            "min": 17.256,
+            "max": 18.688
+          }
+        },
+        "flagged_builds": [
+          {
+            "build_id": "W003",
+            "values": {
+              "arc_current_a": 124.709,
+              "arc_voltage_v": 12.178000000000003,
+              "wire_feed_rate_m_min": 1.5360000000000003,
+              "travel_speed_mm_s": 4.044,
+              "shielding_gas_flow_l_min": 18.519
+            }
+          },
+          {
+            "build_id": "W004",
+            "values": {
+              "arc_current_a": 122.106,
+              "arc_voltage_v": 11.657000000000002,
+              "wire_feed_rate_m_min": 1.462,
+              "travel_speed_mm_s": 3.884,
+              "shielding_gas_flow_l_min": 17.336
+            }
+          },
+          {
+            "build_id": "W005",
+            "values": {
+              "arc_current_a": 128.993,
+              "arc_voltage_v": 11.845999999999998,
+              "wire_feed_rate_m_min": 1.57,
+              "travel_speed_mm_s": 4.02,
+              "shielding_gas_flow_l_min": 17.993
+            }
+          },
+          {
+            "build_id": "W010",
+            "values": {
+              "arc_current_a": 128.08,
+              "arc_voltage_v": 12.101,
+              "wire_feed_rate_m_min": 1.4319999999999997,
+              "travel_speed_mm_s": 3.845,
+              "shielding_gas_flow_l_min": 17.242
+            }
+          },
+          {
+            "build_id": "W014",
+            "values": {
+              "arc_current_a": 121.252,
+              "arc_voltage_v": 11.935,
+              "wire_feed_rate_m_min": 1.553,
+              "travel_speed_mm_s": 4.098,
+              "shielding_gas_flow_l_min": 18.46
+            }
+          },
+          {
+            "build_id": "W016",
+            "values": {
+              "arc_current_a": 121.283,
+              "arc_voltage_v": 11.895000000000001,
+              "wire_feed_rate_m_min": 1.5360000000000003,
+              "travel_speed_mm_s": 4.027,
+              "shielding_gas_flow_l_min": 17.755
+            }
+          },
+          {
+            "build_id": "W017",
+            "values": {
+              "arc_current_a": 127.11899999999999,
+              "arc_voltage_v": 11.657000000000002,
+              "wire_feed_rate_m_min": 1.518,
+              "travel_speed_mm_s": 4.105,
+              "shielding_gas_flow_l_min": 17.978
+            }
+          },
+          {
+            "build_id": "W020",
+            "values": {
+              "arc_current_a": 124.664,
+              "arc_voltage_v": 11.835,
+              "wire_feed_rate_m_min": 1.531,
+              "travel_speed_mm_s": 4.088,
+              "shielding_gas_flow_l_min": 12.964999999999998
+            }
+          },
+          {
+            "build_id": "W021",
+            "values": {
+              "arc_current_a": 124.577,
+              "arc_voltage_v": 12.071999999999997,
+              "wire_feed_rate_m_min": 1.4829999999999999,
+              "travel_speed_mm_s": 3.938,
+              "shielding_gas_flow_l_min": 13.788000000000002
+            }
+          },
+          {
+            "build_id": "W022",
+            "values": {
+              "arc_current_a": 124.646,
+              "arc_voltage_v": 12.38,
+              "wire_feed_rate_m_min": 1.575,
+              "travel_speed_mm_s": 4.035,
+              "shielding_gas_flow_l_min": 13.157000000000002
+            }
+          },
+          {
+            "build_id": "W023",
+            "values": {
+              "arc_current_a": 123.94099999999999,
+              "arc_voltage_v": 12.244,
+              "wire_feed_rate_m_min": 1.516,
+              "travel_speed_mm_s": 4.051,
+              "shielding_gas_flow_l_min": 13.314
+            }
+          },
+          {
+            "build_id": "W024",
+            "values": {
+              "arc_current_a": 121.30900000000001,
+              "arc_voltage_v": 12.132,
+              "wire_feed_rate_m_min": 1.567,
+              "travel_speed_mm_s": 4.056,
+              "shielding_gas_flow_l_min": 12.622
+            }
+          },
+          {
+            "build_id": "W025",
+            "values": {
+              "arc_current_a": 121.06,
+              "arc_voltage_v": 12.056,
+              "wire_feed_rate_m_min": 1.447,
+              "travel_speed_mm_s": 4.183,
+              "shielding_gas_flow_l_min": 12.88
+            }
+          },
+          {
+            "build_id": "W026",
+            "values": {
+              "arc_current_a": 123.692,
+              "arc_voltage_v": 12.122,
+              "wire_feed_rate_m_min": 1.51,
+              "travel_speed_mm_s": 3.8729999999999998,
+              "shielding_gas_flow_l_min": 13.791000000000002
+            }
+          },
+          {
+            "build_id": "W027",
+            "values": {
+              "arc_current_a": 128.559,
+              "arc_voltage_v": 12.237,
+              "wire_feed_rate_m_min": 1.551,
+              "travel_speed_mm_s": 4.2,
+              "shielding_gas_flow_l_min": 13.155
+            }
+          },
+          {
+            "build_id": "W028",
+            "values": {
+              "arc_current_a": 121.911,
+              "arc_voltage_v": 11.827999999999998,
+              "wire_feed_rate_m_min": 1.503,
+              "travel_speed_mm_s": 4.135,
+              "shielding_gas_flow_l_min": 12.966
+            }
+          },
+          {
+            "build_id": "W029",
+            "values": {
+              "arc_current_a": 122.123,
+              "arc_voltage_v": 12.15,
+              "wire_feed_rate_m_min": 1.462,
+              "travel_speed_mm_s": 3.8989999999999996,
+              "shielding_gas_flow_l_min": 13.092999999999998
+            }
+          },
+          {
+            "build_id": "W030",
+            "values": {
+              "arc_current_a": 123.271,
+              "arc_voltage_v": 12.149,
+              "wire_feed_rate_m_min": 1.492,
+              "travel_speed_mm_s": 3.917,
+              "shielding_gas_flow_l_min": 13.698
+            }
+          }
+        ]
+      },
+      "histogram": [
+        {
+          "lower": 886.263,
+          "upper": 898.5690000000001,
+          "count": 7
+        },
+        {
+          "lower": 898.5690000000001,
+          "upper": 910.875,
+          "count": 10
+        },
+        {
+          "lower": 910.875,
+          "upper": 923.181,
+          "count": 12
+        },
+        {
+          "lower": 923.181,
+          "upper": 935.4870000000001,
+          "count": 3
+        },
+        {
+          "lower": 935.4870000000001,
+          "upper": 947.793,
+          "count": 8
+        },
+        {
+          "lower": 947.793,
+          "upper": 960.099,
+          "count": 23
+        },
+        {
+          "lower": 960.099,
+          "upper": 972.405,
+          "count": 17
+        },
+        {
+          "lower": 972.405,
+          "upper": 984.711,
+          "count": 10
+        }
+      ]
+    }
+  }
+}

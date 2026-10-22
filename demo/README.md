@@ -1,10 +1,10 @@
 # AeroQual demonstration
 
-All examples are synthetic LPBF titanium coupon data. The illustrative lower strength limit is **895 MPa**, not a certified titanium requirement. Python calculates every QC statistic; the dashboard displays its response. See [the data codebook](../data/README.md) for provenance, units and seeded generation.
+Examples are synthetic LPBF and WAAM titanium coupon data. The original LPBF walkthrough is retained below, followed by the WAAM extension. The illustrative lower strength limit is **895 MPa**, not a certified titanium requirement. Python calculates every QC statistic; the dashboard displays its response. See [the data codebook](../data/README.md) for provenance, units and seeded generation.
 
 ## Verification status
 
-The datasets and API are now present. All three examples below were selected and analyzed in the running local AeroQual dashboard, with LSL **895 MPa**, a minimum of **25 builds** and Cpk target **1.33**. The tables record the numbers as displayed, including the dashboard's rounding. Each file contains **30 builds × 3 coupons = 90 coupons**, ordered B001–B030.
+The datasets and API are now present. The original three LPBF examples below were selected and analyzed in the running local AeroQual dashboard, with LSL **895 MPa**, a minimum of **25 builds** and Cpk target **1.33**. The tables record the numbers as displayed, including the dashboard's rounding. Each file contains **30 builds × 3 coupons = 90 coupons**, ordered B001–B030.
 
 [results.json](results.json) captures the full-precision Python core results for all three datasets. The displayed outputs below were checked against those results. Independent teammate reproduction is still required before H-05 is formally complete; local verification is not evidence of a public deployment.
 
@@ -12,7 +12,7 @@ The datasets and API are now present. All three examples below were selected and
 
 Follow the [root setup instructions](../README.md#run-in-positron-on-windows-powershell). The built dashboard and API share port 8000. Keep the server running and open [AeroQual locally](http://127.0.0.1:8000/dashboard/).
 
-Choose **Stable and capable**, **Stable but not capable**, or **Unstable process shift**. The underlying identifiers remain `stable_capable`, `stable_incapable`, and `unstable_shift`. Leave LSL at **895 MPa** and select **Analyze builds**. Alternatively upload the corresponding CSV from `data/`; use **Clear upload** to return to examples.
+Choose **Printing process: LPBF** for the original examples, then **Stable and capable**, **Stable but not capable**, or **Unstable process shift**. The underlying identifiers remain `stable_capable`, `stable_incapable`, and `unstable_shift`. Leave LSL at **895 MPa** and select **Analyze builds**. Alternatively upload the corresponding CSV from `data/`; use **Clear upload** to return to examples.
 
 From a second Windows PowerShell terminal at the repository root:
 
@@ -22,7 +22,7 @@ From a second Windows PowerShell terminal at the repository root:
 
 In Bash with the project environment active, use `python demo/check.py --base-url http://127.0.0.1:8000`. Omit `--base-url` for core-only checks. Add `--output demo/results.json` only when intentionally refreshing captured results after review; it overwrites that file.
 
-The checker compares every core value, chart limit, build flag and reason. Success ends with `PASS: all three synthetic scenarios and API parity.` No credentials are needed locally.
+The checker compares every core value, chart limit, build flag and reason. The expanded checker ends with `PASS: all six synthetic scenarios (LPBF + WAAM) and API parity.` No credentials are needed locally.
 
 ### Three-minute judging walkthrough
 
@@ -196,3 +196,34 @@ Captured from the running synthetic unstable scenario after the usability refine
 ![Desktop: unstable-process assessment, separated stability/capability/conformance summaries](screenshots/desktop-review.png)
 
 [Mobile assessment view](screenshots/mobile-review.png) (390 px viewport). Charts and wide data tables scroll inside their containers instead of expanding the page.
+
+## WAAM walkthrough (H-10)
+
+Select **Printing process: WAAM**, enter illustrative LSL **895 MPa**, and analyze each example. The original LPBF values above remain unchanged. Each WAAM example has 30 builds, 3 coupons per build, and 90 measurements. The process name and analyzed inputs appear above the results.
+
+| WAAM example | Cpk (lower) | Ppk (lower) | Failures | Flagged builds | Verdict |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Stable and capable | 1.911108 | 1.891083 | 0/90 | 0 | capable |
+| Stable but not capable | 0.307909 | 0.304683 | 18/90 | 0 | not capable |
+| Unstable process shift | 1.376709 | 0.579596 | 5/90 | 18 | not assessable |
+
+For the unstable example, start with W020-W030 in **Build investigation**; full-log limits also flag W003, W004, W005, W010, W014, W016 and W017 before the planted shift. Arc current, voltage, wire-feed rate, travel speed and shielding-gas flow appear with their units. No laser or powder measurements are required. The strength drop and shielding-gas change are planted together from W020 and are not causal evidence. The codebook explains the seeded normal reference and independent arithmetic checks.
+
+To upload an example, remain on WAAM and choose `data/waam_stable_capable.csv`. Wrong-profile tags or nonempty LPBF-only columns are rejected. Use **Clear upload** to return to examples. Switching back to LPBF clears the upload, refilters examples and marks any previous WAAM result stale. A generic measurement-only CSV relies on the user's selected process; it cannot identify the manufacturing method from strength values alone.
+
+From PowerShell, with the app running:
+
+```powershell
+.\.venv\Scripts\python.exe data/generate_waam.py --check
+.\.venv\Scripts\python.exe data/validate_waam.py
+.\.venv\Scripts\python.exe demo/check.py --base-url http://127.0.0.1:8000
+Invoke-RestMethod 'http://127.0.0.1:8000/analyze?dataset=waam_unstable_shift&lsl=895&process_type=waam'
+```
+
+The six-scenario checker compares every core field, including chart limits and all flags. The original results.json remains the historical LPBF capture; use results_waam.json for the WAAM full-precision capture. No hardware qualification or trained prediction is established by these examples. Independent human reproduction and public deployment verification of the WAAM revision remain pending.
+
+### WAAM local review captures
+
+[Process selection](screenshots/waam-selection.png), [build investigation with WAAM units](screenshots/waam-investigation.png), and [mobile assessment](screenshots/waam-mobile.png) were captured from the running local synthetic examples. They are not evidence of a public WAAM deployment.
+
+Local H-10 checks: 37 Python tests plus 8 subtests pass; 8 frontend tests and the build pass; both dataset validators and five bundle-contract tests pass. Browser checks cover all six scenarios, valid and mismatched uploads, stale process context, upload clearing, delayed catalog responses, keyboard inspection and mobile containment. The numerical engine in qc.py is unchanged. The dataset generators and manifests require no model training.

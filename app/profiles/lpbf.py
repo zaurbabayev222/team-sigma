@@ -1,7 +1,7 @@
 """Process profile for laser powder bed fusion (LPBF).
 
 Everything specific to one printing process lives in a file like this one.
-Adding a process later = add one more file like this; qc.py does not change.
+Add and register another profile for a new process; qc.py does not change.
 """
 PROFILE = {
     "name": "lpbf",

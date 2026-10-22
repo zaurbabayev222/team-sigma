@@ -10,7 +10,7 @@
 #   - builds the React dashboard and stages a bundle (app/ + built dashboard +
 #     data/*.csv) with .github/scripts/prepare-connect-bundle.py, which checks
 #     every file against the committed app/manifest.json (never regenerated here)
-#   - runs all tests and the three-dataset check before publishing
+#   - runs all tests and the six-dataset check before publishing
 #   - asks Connect to make the app public, then checks it WITHOUT a key
 #
 # REPO SECRETS (Settings > Secrets and variables > Actions):
@@ -75,7 +75,7 @@ jobs:
           python .github/scripts/test_connect_bundle.py -v
           python .github/scripts/prepare-connect-bundle.py --output "$RUNNER_TEMP/bundle"
 
-      - name: Test statistics, API and the three datasets
+      - name: Test statistics, API and the six datasets
         run: |
           set -euo pipefail
           python -m pip install -r "$APP_DIR/requirements.txt"
@@ -133,7 +133,7 @@ jobs:
           echo "::error::${HEALTH_PATH} never answered 200. Open the app's Logs tab in Connect and read the last error."
           exit 1
 
-      - name: Check the public app with no key (dashboard, known answer, three datasets)
+      - name: Check the public app with no key (dashboard, known answer, six datasets)
         env:
           CONTENT_URL: ${{ steps.publish.outputs.content_url }}
         run: |

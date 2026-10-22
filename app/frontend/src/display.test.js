@@ -2,7 +2,7 @@ import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it, vi, afterEach } from 'vitest'
 import { Results } from './App.jsx'
-import { API_URL, analyzeDataset, analyzeUpload } from './api'
+import { API_URL, analyzeDataset, analyzeUpload, listDatasets } from './api'
 
 // Display fixture only: statistics correctness belongs to the Python known-answer tests.
 const fixture = {n_builds:4,n_per_build:3,n_coupons:12,n_failures:1,failure_rate:1/12,cpk:.591,ppk:.571,sigma_short:11.284,sigma_total:11.677,shapiro_p:.5,verdict:'not assessable',reason:'Too few builds',builds:[{build_id:'B1',order:'2026-01-01',mean:1000,s:10,flagged:false}],xbar:{center:1000,lcl:980.46,ucl:1019.54},s_chart:{center:10,lcl:0,ucl:25.68}}
@@ -36,5 +36,25 @@ describe('API wiring', () => {
     const fetch=vi.fn().mockResolvedValue({ok:false,json:async()=>({detail:'blank uts_mpa at row 4'})}); vi.stubGlobal('fetch',fetch)
     await expect(analyzeUpload(new Blob(['bad']),895)).rejects.toThrow('blank uts_mpa at row 4')
     expect(fetch.mock.calls[0][1].body.get('lsl')).toBe('895')
+  })
+})
+
+describe('process-specific contracts', () => {
+  it('sends the selected WAAM process in catalog, analysis and upload requests', async () => {
+    const fetch=vi.fn().mockResolvedValue({ok:true,json:async()=>fixture});vi.stubGlobal('fetch',fetch)
+    await listDatasets('waam')
+    expect(fetch.mock.calls[0][0]).toBe(`${API_URL}/datasets?process_type=waam`)
+    await analyzeDataset('waam_stable_capable',895,'waam')
+    expect(fetch.mock.calls[1][0]).toContain('process_type=waam')
+    await analyzeUpload(new Blob(['test']),895,'waam')
+    expect(fetch.mock.calls[2][1].body.get('process_type')).toBe('waam')
+  })
+  it('renders parameter labels and units from the server profile', () => {
+    const result={...fixture,profile:{name:'waam',label:'Wire arc additive manufacturing (WAAM)',parameters:[{column:'arc_current_a',label:'Arc current',unit:'A'}]},
+      builds:[{...fixture.builds[0],build_id:'W020',flagged:true,reason:'mean below limit'}],
+      parameters:{columns:['arc_current_a'],usual_range:{arc_current_a:{min:121,max:129}},flagged_builds:[{build_id:'W020',values:{arc_current_a:125}}]}}
+    const html=renderToStaticMarkup(React.createElement(Results,{result,context:{source:'WAAM example',processLabel:result.profile.label,lsl:895,synthetic:true}}))
+    for(const value of ['Wire arc additive manufacturing','Arc current (A)','125.000','W020'])expect(html).toContain(value)
+    expect(html).not.toContain('Laser power')
   })
 })

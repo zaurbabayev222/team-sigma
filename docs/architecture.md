@@ -170,3 +170,9 @@ flowchart LR
 ```
 
 [Open this diagram as an image](images/diagram-parallel-work.png)
+
+## H-10 process selection
+
+The browser loads GET /profiles and the selected process catalog from GET /datasets?process_type=.... Profile metadata supplies optional parameter names and units. GET /analyze uses a query parameter; POST /analyze uses a multipart process_type field. Both default to LPBF for older clients. profiles/__init__.py registers LPBF/WAAM and their six explicit example IDs. app.py validates process compatibility, passes only subgroup/order/value mappings into the unchanged qc.analyze function, and appends selected-profile context and histogram bins. No process-specific statistical engine is duplicated.
+
+The upload snapshot includes process, dataset/file and LSL. Switching profiles clears an upload and marks older results stale. Example catalog cleanup ignores obsolete responses, so a delayed LPBF catalog cannot overwrite a WAAM selection. The deployment bundle includes both profile modules, registry and all six CSVs; isolated HTTP verification runs all six through demo/check.py.

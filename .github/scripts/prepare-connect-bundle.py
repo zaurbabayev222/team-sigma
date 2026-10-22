@@ -13,7 +13,8 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-DATASETS = ('stable_capable.csv', 'stable_incapable.csv', 'unstable_shift.csv')
+DATASETS = ('stable_capable.csv', 'stable_incapable.csv', 'unstable_shift.csv',
+            'waam_stable_capable.csv', 'waam_stable_incapable.csv', 'waam_unstable_shift.csv')
 
 
 def pinned_requirements(path, seen=None):

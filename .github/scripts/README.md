@@ -4,7 +4,7 @@ The workflow (`.github/workflows/deploy-fastapi.yml`) and `connect-publish-async
 repository's `connect-publish` templates, originally from
 [timothyfraser/fastapi-connect-demo](https://github.com/timothyfraser/fastapi-connect-demo) (MIT).
 The publisher script is the template copy, unchanged. The workflow adds three things to the
-template: it builds the React dashboard, stages a bundle (app source + built dashboard + the three
+template: it builds the React dashboard, stages a bundle (app source + built dashboard + the six
 `data/*.csv` files and codebook) with `prepare-connect-bundle.py`, and runs every test before it
 publishes.
 
@@ -21,7 +21,7 @@ Posit Connect**. You can also start it by hand there (**Run workflow**). The run
    runs update the same item, so the URL does not change;
 5. asks Connect to make the app public ("anyone, no login"). If the server refuses, the run warns:
    set it by hand in Connect (the app's **Access** panel);
-6. checks `/health`, then checks the dashboard, the SPEC known answer and all three datasets
+6. checks `/health`, then checks the dashboard, the SPEC known answer and all six datasets
    **without** a key, as a judge would see them.
 
 Secrets: `CONNECT_SERVER` and `CONNECT_API_KEY`, set by the repo owner in **Settings → Secrets and
@@ -58,7 +58,7 @@ bash -n .github/scripts/connect-publish-async.sh
 
 The local usability candidate retains the upstream push-to-deploy workflow and name-based publisher. The removed preflight script, manual-title input, requirements-api.txt and duplicate app/REAME.md are not restored. API integration tests now live in tests/test_bundle_api.py; run `python -m pytest tests`.
 
-A local manifest was generated with rsconnect-python 1.32.0 under Python 3.12.15 for 14 runtime files. The local candidate is prepared for review and has not been pushed or published. Confirm course-server runtime support before publishing. Qualifying pushes to main now attempt deployment automatically; review publisher configuration and release intent before pushing.
+A local manifest was generated with rsconnect-python 1.32.0 under Python 3.12.15 for 18 runtime files in the WAAM candidate. The local candidate is prepared for review and has not been pushed or published. Confirm course-server runtime support before publishing. Qualifying pushes to main now attempt deployment automatically; review publisher configuration and release intent before pushing.
 
 From Windows PowerShell at the repository root, after installing Python 3.12:
 
@@ -72,3 +72,7 @@ npm.cmd --prefix app/frontend run build
 ```
 
 Use a fresh unused output path. Requirements staging explicitly uses UTF-8 and LF on Windows. Never bypass stale-checksum or unexpected-file checks. Manifest generation is local-only and does not publish.
+
+## WAAM release candidate
+
+H-10 adds the WAAM module, explicit profile registry and three additional CSVs to the runtime bundle. The expanded local manifest was regenerated after the source, codebook and frontend changes; all 18 checksums, isolated HTTP behavior and all six LPBF/WAAM scenarios passed. Repeat generation after any further runtime changes. Legacy LPBF API defaults remain supported. No workflow publication is invoked by local tests. A later push to main still triggers deployment; review the expanded manifest before authorizing that push.
