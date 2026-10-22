@@ -14,7 +14,11 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 DATASETS = ('stable_capable.csv', 'stable_incapable.csv', 'unstable_shift.csv',
-            'waam_stable_capable.csv', 'waam_stable_incapable.csv', 'waam_unstable_shift.csv')
+            'waam_stable_capable.csv', 'waam_stable_incapable.csv', 'waam_unstable_shift.csv',
+            'ebpbf_stable_capable.csv', 'ebpbf_stable_incapable.csv', 'ebpbf_unstable_shift.csv',
+            'laser_ded_stable_capable.csv', 'laser_ded_stable_incapable.csv', 'laser_ded_unstable_shift.csv',
+            'lpbf_inspection_demo.csv', 'waam_inspection_demo.csv',
+            'ebpbf_inspection_demo.csv', 'laser_ded_inspection_demo.csv')
 
 
 def pinned_requirements(path, seen=None):

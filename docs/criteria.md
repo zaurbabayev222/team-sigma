@@ -1,4 +1,7 @@
 ![Hackathon Banner](images/banner_thin.png)
+
+Project evidence: [AeroQual rubric mapping](evaluation.md). The official criteria and weights below
+are unchanged; remaining review/publication/submission work is listed [separately](remaining-work.md).
 ---
 
 # 🏆  Evaluation Criteria

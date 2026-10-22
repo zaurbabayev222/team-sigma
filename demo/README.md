@@ -1,6 +1,62 @@
 # AeroQual demonstration
 
-Examples are synthetic LPBF and WAAM titanium coupon data. The original LPBF walkthrough is retained below, followed by the WAAM extension. The illustrative lower strength limit is **895 MPa**, not a certified titanium requirement. Python calculates every QC statistic; the dashboard displays its response. See [the data codebook](../data/README.md) for provenance, units and seeded generation.
+Examples are synthetic titanium coupon data for LPBF, WAAM, EB-PBF and powder-fed laser DED.
+Each method has capable, incapable, unstable and inspection examples: sixteen datasets in total.
+The original LPBF walkthrough is retained below, followed by extension evidence. The illustrative
+lower strength limit is **895 MPa**, not a certified titanium requirement. Python calculates every
+QC statistic; the dashboard displays its response. See [the data codebook](../data/README.md).
+
+## Interactive HTML walkthrough
+
+Open **[slidedeck/index.html](slidedeck/index.html)** in a browser. It is a self-contained file:
+no installation, network connection or server is required for the lessons. If viewing on GitHub,
+download the raw HTML first; GitHub's source preview does not execute the deck.
+
+For an HTTP preview from the repository root:
+
+```powershell
+python -m http.server 8010 --bind 127.0.0.1 --directory demo/slidedeck
+```
+
+Open <http://127.0.0.1:8010>. The server serves only the artifact folder, not the repository.
+The “Open local app” link expects a separately running dashboard at port **8001**. To use it:
+
+```powershell
+# Complete the root README setup first, then:
+python -m uvicorn app.app:app --host 127.0.0.1 --port 8001
+```
+
+The root README's default port 8000 also works; open that URL manually if using it.
+The deck is a captured training artifact, not a live API client or upload analyzer.
+All analysis results come from the existing API; JavaScript only handles presentation and chart geometry.
+CSV downloads reproduce the exact source files, with SHA-256 provenance in [deck-data.json](deck-data.json).
+
+| Lessons | What to try |
+| --- | --- |
+| 1–3 | Understand the use case, choose four methods/four scenarios, inspect required/optional inputs |
+| 4–5 | Separate stability/capability/failures; choose a build and inspect both control charts |
+| 6–7 | Select signal/defect categories; compare denominators and blank versus `none` |
+| 8–9 | Try full/single/range/empty date views; trace D024 to coupons and investigation checks |
+| 10–11 | Compare captured LSL 895/925/980 outputs; download CSVs and reproduce in the actual app |
+| 12–14 | Answer interpretation checks; inspect provenance and the open-ended remaining work |
+
+Use the outline, Previous/Next, arrow keys, Page Up/Down or Home/End. Keyboard navigation leaves form
+controls alone. “Print lessons” expands all 14 lessons for printing/PDF; interactive selections are
+represented by their current training state. On mobile, expand the lesson outline as needed.
+
+To refresh the artifact **after** starting an API built from the current sources and synced data:
+
+```powershell
+python demo/build_slidedeck.py --capture --base-url http://127.0.0.1:8001
+python demo/build_slidedeck.py --check
+python -m pytest tests/test_demo_artifact.py
+```
+
+Capture verifies all core fields against `app.qc.analyze`, records source/data hashes and embeds the
+actual responses. `--check` detects stale sources or a stale generated file; it never contacts the API.
+The artifact tests also check exact CSV bytes and unchanged control baselines in LSL/date experiments.
+Screenshots: [desktop](screenshots/walkthrough-desktop.png), [mobile](screenshots/walkthrough-mobile.png).
+Independent reproduction remains open; see [remaining-work.md](../docs/remaining-work.md).
 
 ## Verification status
 
@@ -227,3 +283,60 @@ The six-scenario checker compares every core field, including chart limits and a
 [Process selection](screenshots/waam-selection.png), [build investigation with WAAM units](screenshots/waam-investigation.png), and [mobile assessment](screenshots/waam-mobile.png) were captured from the running local synthetic examples. They are not evidence of a public WAAM deployment.
 
 Local H-10 checks: 37 Python tests plus 8 subtests pass; 8 frontend tests and the build pass; both dataset validators and five bundle-contract tests pass. Browser checks cover all six scenarios, valid and mismatched uploads, stale process context, upload clearing, delayed catalog responses, keyboard inspection and mobile containment. The numerical engine in qc.py is unchanged. The dataset generators and manifests require no model training.
+
+
+## H-11 to H-13: signal Pareto, investigation actions and four methods
+
+The original LPBF/WAAM walkthrough and captures above remain historical evidence for their unchanged core outputs. The current local review build additionally supports EB-PBF and powder-fed laser DED, with three examples each. The normal quick-start server uses port 8000; the active parallel review preview uses **http://127.0.0.1:8001/dashboard/**. Stop or reuse the server deliberately rather than starting two on one port.
+
+1. Select **EB-PBF**, then each of **Stable and capable**, **Stable but not capable** and **Unstable process shift**, with illustrative LSL 895 MPa. The corresponding Cpk/Ppk/failure/flag outcomes are below. No LPBF oxygen/laser fields are needed; EB-PBF labels and units come from its profile.
+2. Repeat with **Laser DED**. In its unstable example, capability is withheld and the Pareto shows **16 signals across 15 flagged builds**: low mean 10 (62.5%), high mean 5 (31.25%) and high S 1 (6.25%). Cumulative percentages are 62.5%, 93.75%, 100%. D024 contributes to both low mean and high S. Signals are not physical defects or coupon failures.
+3. Expand **Signal counts and affected builds** and verify IDs against the build table. The stable examples have no signal categories to rank. No-signal status alone does not establish capability.
+4. Read **Recommended investigation actions**. Stable incapability prompts coupon-record review and qualified capability studies; instability prompts investigation before interpreting capability. Expand **More investigation checks** to see baseline, diagnostic and process-record checks; affected-build disclosures show the supporting IDs. These are checks, not causal diagnoses or numerical setpoint recommendations.
+5. Upload `data/ebpbf_stable_capable.csv` under EB-PBF and `data/laser_ded_stable_capable.csv` under Laser DED. Compare with the builtins. Switch process and confirm the upload clears and the prior result is marked stale. Upload a tagged Laser DED CSV while EB-PBF is selected to verify a clear mismatch error.
+6. On mobile, scroll within the Pareto/table region; the page itself should not overflow. Tab to the table region and inspect all rows. Dataset/file, selected process and LSL remain visible in the analyzed-input snapshot.
+
+| Dataset | Cpk | Ppk | Failures / 90 | Flagged builds | Verdict |
+| --- | ---: | ---: | ---: | ---: | --- |
+| `ebpbf_stable_capable` | 2.542353 | 2.267525 | 0 | 0 | capable |
+| `ebpbf_stable_incapable` | 0.402748 | 0.359211 | 16 | 0 | not capable |
+| `ebpbf_unstable_shift` | 1.757831 | 0.535751 | 4 | 24 | not assessable |
+| `laser_ded_stable_capable` | 1.394480 | 1.423374 | 0 | 0 | capable |
+| `laser_ded_stable_incapable` | 0.231754 | 0.236557 | 22 | 0 | not capable |
+| `laser_ded_unstable_shift` | 0.863484 | 0.444494 | 12 | 15 | not assessable |
+
+Full-log limits can flag reference builds before the planted shifts. EB-PBF has 24 signals (13 high, 11 low); Laser DED has 16 (10 low, 5 high, 1 spread). The [codebook](../data/README.md#eb-pbf-and-powder-fed-laser-ded-h-13) explains seeds, exact affected IDs, shifts and independent arithmetic. Context associations are planted for demonstration, not validated physical effects. LSL 895 is illustrative for all examples.
+
+Run from the repository root after setup (replace port for your running server):
+
+```powershell
+.\.venv\Scripts\python.exe data/validate_additional.py
+.\.venv\Scripts\python.exe demo/check.py --base-url http://127.0.0.1:8001
+Invoke-RestMethod 'http://127.0.0.1:8001/analyze?dataset=laser_ded_unstable_shift&lsl=895&process_type=laser_ded'
+```
+
+`results_extensions.json` captures actual API summaries, Pareto rows and investigation actions for all twelve scenarios at LSL 895, min_builds 25 and cpk_target 1.33. It is supporting evidence, not a replacement for running the app. Original result captures remain unchanged. New actual local captures: [desktop Pareto](screenshots/signal-pareto-laser-ded.png), [investigation actions](screenshots/investigation-actions.png), [mobile Pareto](screenshots/signal-pareto-mobile.png). These show a local build, not proof of public deployment. Independent teammate reproduction remains pending.
+
+
+## H-14: interactive Pareto and inspection demo
+
+The previous twelve examples and evidence above remain available. Four separate **Inspection defect example** files add synthetic inspection classifications while preserving their source strength/settings. The current demonstration has sixteen runnable files, four per process. New actual API evidence is captured in `results_pareto.json` (all sixteen summaries and a one-day Laser DED view).
+
+1. Open the local preview at **http://127.0.0.1:8001/dashboard/** (or port 8000 if using the standard launch). Choose **Laser DED > Inspection defect example**, illustrative LSL 895 MPa, and **Analyze builds**. Read the full-log withheld verdict, Cpk 0.863484, Ppk 0.444494, 12/90 strength failures and 15 flagged builds.
+2. Read the signal Pareto: 16 occurrences on 15 builds, categories 10 low mean,5 high mean,1 high S. Read the separate inspection Pareto: 84/90 inspected,39 primary defects,45 explicit no-defect and6 unrecorded. Bars rank 20 Porosity,12 Lack of fusion,5 Cracking,2 Dimensional deviation; cumulative percentages 51.2821%,82.0513%,94.8718%,100%. The 80% reference is not a cause/severity claim.
+3. Click or keyboard-activate **S above UCL**. The table narrows to D024, both full strength charts outline that build, and related checks cite its signal. The overall chart denominator remains 16. Expand **Coupon records for D024**: data rows70,71,72 have strengths843.895,892.535,956.666 MPa; their synthetic inspection results are unrecorded,Porosity,none respectively.
+4. **Clear selection** restores flagged builds. Select **Porosity** using Enter or Space: 17 matching builds appear, including unflagged builds. The inspection denominator remains39; expand supporting counts/coupon rows and investigation checks. Recorded inspection defects and strength failures are distinct observations.
+5. Set both date fields to **2026-10-24** and **Apply date range**. One of30 builds remains in the Pareto window, with two signals on one build (low mean and high S),50% each. Selecting high S keeps that denominator. Full-log control limits, Cpk/Ppk, failure totals and verdict remain unchanged.
+6. Confirm a reversed date range produces an error and preserves the successful view; a future date range yields no builds without changing the full-log assessment. **Clear selection** keeps applied dates; **Reset Pareto view** clears both. Reanalyzing the dataset resets the view. Original LPBF fixtures cover different dates; use source dates rather than assuming October for all methods.
+7. Upload `data/laser_ded_inspection_demo.csv` and repeat a date/category selection to exercise multipart fields. Repeat the other three process inspection examples; each has the same fixed category inventory but an independently shuffled coupon assignment. Switch processes and verify upload clearing/stale input behavior as before.
+8. At mobile width, scroll inside the chart/table regions, activate a category by keyboard and inspect the exact-data table. Page-wide overflow should not occur. The table has a selected state, while the original red chart flags retain their meaning.
+
+Actual local captures: [inspection chart](screenshots/pareto-expanded-inspection.png), [single-day selected signal](screenshots/pareto-expanded-signal.png), [selected coupon context](screenshots/pareto-expanded-builds.png), [mobile chart](screenshots/pareto-expanded-mobile.png). These are local evidence, not proof of deployment or independent teammate reproduction.
+
+```powershell
+.\.venv\Scripts\python.exe data/generate_inspection.py --check
+.\.venv\Scripts\python.exe data/validate_inspection.py
+.\.venv\Scripts\python.exe demo/check.py --base-url http://127.0.0.1:8001
+```
+
+See [the interaction/API guide](../docs/pareto-explorer.md) and [inspection codebook](../data/README.md#synthetic-inspection-examples-h-14) for missing/none semantics, percentage denominators, date validation and independent known-answer checks. No inspection category is inferred from strength and no printer setpoint recommendation is generated.

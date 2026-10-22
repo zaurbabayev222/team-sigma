@@ -1,5 +1,17 @@
 # How AeroQual works
 
+## Current documentation and training surface
+
+The [offline walkthrough](../demo/slidedeck/index.html) is a documentation artifact outside `app/`.
+`demo/build_slidedeck.py` captures verified API outputs and exact synthetic CSVs into `deck-data.json`,
+then inlines the template, styles, JavaScript and data into one HTML file. It has no external library,
+network dependency or browser-side QC calculation. Actual uploads remain in the React/FastAPI app.
+The deck does not change the runtime bundle or deployment configuration. Current evidence and
+open-ended release gates are in [evaluation.md](evaluation.md) and [remaining-work.md](remaining-work.md).
+
+The diagrams below describe the original application foundation. Approved four-process/Pareto
+extensions are documented later in this file and in SPEC; original teammate mappings are historical.
+
 Sigma Airlines · release 1 · 2026-10-19
 
 Three pictures of the same app: who uses it ([use cases](#1-use-case-diagram)), what it does step by
@@ -176,3 +188,13 @@ flowchart LR
 The browser loads GET /profiles and the selected process catalog from GET /datasets?process_type=.... Profile metadata supplies optional parameter names and units. GET /analyze uses a query parameter; POST /analyze uses a multipart process_type field. Both default to LPBF for older clients. profiles/__init__.py registers LPBF/WAAM and their six explicit example IDs. app.py validates process compatibility, passes only subgroup/order/value mappings into the unchanged qc.analyze function, and appends selected-profile context and histogram bins. No process-specific statistical engine is duplicated.
 
 The upload snapshot includes process, dataset/file and LSL. Switching profiles clears an upload and marks older results stale. Example catalog cleanup ignores obsolete responses, so a delayed LPBF catalog cannot overwrite a WAAM selection. The deployment bundle includes both profile modules, registry and all six CSVs; isolated HTTP verification runs all six through demo/check.py.
+
+
+## H-11 to H-13: signal and investigation flow
+
+The API calls unchanged qc.analyze, then plain signals.signal_pareto and investigation.investigation_actions before serializing. React renders Python counts, percentages and action evidence; it computes only plot geometry/formatting. EB-PBF and powder-fed laser DED are registered profiles; dataset filtering, shared-field units and mismatch checks apply to all four. Twelve CSVs, both new helper modules and all four profile modules ship in the flat Connect bundle. See [the response contract](signal-investigation.md).
+
+
+## H-14: fixed-limit investigation views
+
+The API first performs complete-file analysis, then inspection_records/inspection_pareto and pareto_view produce read-only descriptive views. Filtering reuses original limits and includes inclusive source dates, scoped signal/inspection denominators, selected build/coupon context and focused actions. React submits the complete original dataset/file with optional view fields; no upload retention or database is added. A category selection narrows details, not the Pareto denominator. Four distinct synthetic inspection files supplement the unchanged twelve original CSVs. See [the view contract](pareto-explorer.md).

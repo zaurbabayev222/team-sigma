@@ -3,11 +3,17 @@
 
 **Cornell SYSEN 5300 — Six Sigma Hackathon** · Team **Sigma Airlines** · Virtual DL Challenge (7 days)
 **Prompt:** 1, "Industrial Systems, 3D Printing for Aerospace"
-**Status:** LPBF and WAAM implemented and locally verified; public release and independent teammate checks pending
+**Status:** LPBF, WAAM, EB-PBF, powder-fed laser DED and signal/investigation workflow implemented for local review; public release and independent teammate checks pending
 **Initial demonstration:** synthetic laser powder bed fusion (LPBF) data. LPBF is **not** a requirement of the prompt.
 
 > This overview is the big picture. The binding definition of release 1 is [`SPEC.md`](SPEC.md); the
 > reasons behind each choice are in [`docs/decisions.md`](docs/decisions.md).
+
+The current local candidate includes four process profiles, sixteen synthetic examples, signal and
+inspection Pareto exploration, fixed-baseline date views and evidence-linked investigation guidance.
+The [interactive walkthrough](demo/slidedeck/index.html) teaches these workflows without a running
+server. [Evaluation evidence](docs/evaluation.md) and [remaining work](docs/remaining-work.md) distinguish
+verified local behavior from independent review, publication and submission. No new owners are assigned.
 
 ## Executive summary
 
@@ -27,7 +33,7 @@ knows where to look first.
 
 The platform is designed to be **technology-agnostic**: the statistics never know which printing
 process produced the data, and each process is described by one small *process profile*. Release 1
-initially shipped LPBF only. The approved H-10 increment adds WAAM through the shared registry and selected-process API; further methods remain future work.
+initially shipped LPBF only. H-10 added WAAM, and H-13 adds EB-PBF and powder-fed laser DED through the shared registry and selected-process API; other methods remain future work.
 
 ## Problem statement and objectives
 
@@ -45,13 +51,13 @@ do not adequately connect process and environmental conditions to final strength
 | Area | Release 1 |
 |---|---|
 | User | The contractor's quality engineer reviewing tensile-test results per finished build |
-| Process | LPBF and WAAM, each through its selected process profile |
+| Process | LPBF, WAAM, EB-PBF and powder-fed laser DED, each through its selected profile |
 | Required inputs | `build_id`, `build_date`, `uts_mpa` per coupon, customer minimum strength (LSL, MPa) |
-| Optional inputs | LPBF: oxygen, powder reuse, laser power; WAAM: arc current/voltage, wire feed, travel speed, shielding gas flow; units in the codebook |
+| Optional inputs | Method-specific recorded process parameters and one primary inspection defect per coupon; all four profiles, units and missing-value semantics in the codebook |
 | Statistics | X-bar and S chart by build; Cpk and Ppk (lower side); coupon failure rate; verdict |
 | Verdict | "not assessable" if a build is flagged or fewer than 25 builds; else "capable" if Cpk ≥ 1.33 (a setting); else "not capable" |
 | Delivery | FastAPI (Python) backend + React (Vite, plain JavaScript) dashboard, targeting the course Posit Connect server |
-| Data | Six synthetic datasets (three per process), 30 builds × 3 coupons, fixed seeds, with a codebook |
+| Data | Sixteen synthetic datasets (four per process), 30 builds × 3 coupons, fixed seeds, with a codebook |
 
 ## Statistical engine
 
@@ -93,8 +99,8 @@ CSV upload -> process profile -> statistics (app/qc.py) -> FastAPI -> React page
 | Process profile | Example optional parameters | Status |
 |---|---|---|
 | LPBF | Laser power, chamber oxygen, powder reuse | Release 1 |
-| Electron beam powder bed fusion (EB-PBF) | Beam power, scan speed, vacuum pressure, build temperature | Future profile |
-| Directed energy deposition (DED) | Energy-source power, feed rate, travel speed, shielding | Future profile |
+| Electron beam powder bed fusion (EB-PBF) | Beam current/voltage, scan speed, preheat, chamber pressure | H-13 local candidate |
+| Powder-fed laser DED | Laser power, powder feed, travel speed, shielding, standoff | H-13 local candidate |
 | Wire arc additive manufacturing (WAAM) | Arc current, voltage, wire feed, travel speed, shielding gas flow | H-10 implemented; local checks pass |
 | Binder jetting with sintering | Binder saturation, green density, furnace profile | Future profile |
 
@@ -119,7 +125,7 @@ Three reproducible LPBF datasets, each 30 builds × 3 coupons, fixed seeds, docu
 3. **`unstable_shift.csv`:** chamber oxygen rises from build 20 and strength drops; builds are
    flagged and the verdict is "not assessable".
 
-Three additional WAAM files use the same scenario names prefixed with `waam_`. The unstable WAAM example plants a strength and shielding-gas decrease from W020; the codebook documents all six expected outcomes.
+Three additional WAAM files use the same scenario names prefixed with `waam_`. The unstable WAAM example plants a strength and shielding-gas decrease from W020; the codebook documents these six outcomes plus six additional EB-PBF/laser DED examples.
 
 The relationships are constructed for demonstration but **not** empirically validated physics. All
 limits, including example strength and oxygen values, are illustrative and replaceable.
@@ -133,7 +139,7 @@ limits, including example strength and oxygen values, are illustrative and repla
 | Later | Traceability columns (machine, lot, heat treatment, orientation) and filters | Optional columns, no engine change |
 | Later | Two-sided Cpk on dimensional deviation (an upper limit input) | Engine extension |
 | Later | Unequal coupons per build | Engine extension (per-build constants) |
-| Later | Other process profiles (EB-PBF, other DED variants, binder jetting) | New profile files |
+| Later | Other process profiles (other DED variants, binder jetting) | New profile files |
 | Later | Regression, ANOVA, FMEA prioritization | Only with a clear use case |
 
 ## Safety and interpretation boundaries
@@ -150,3 +156,13 @@ defensible engineering insight, across titanium 3D-printing technologies.
 ## H-10: approved WAAM increment
 
 The user approved LPBF plus WAAM process selection with three synthetic scenarios per process. Shared measured-strength calculations and sampling assumptions are unchanged. Five optional WAAM measurements describe arc current/voltage, wire feed, travel speed and shielding gas flow with explicit units. Process-tag mismatches and nonempty foreign-profile fields are rejected. This is not a predictive model or a process-setting optimizer. SPEC section 10 is the updated contract; the codebook documents constructed WAAM examples and their limitations.
+
+
+## H-11 to H-13: signal Pareto and investigation extension
+
+Four selectable processes now share the unchanged strength engine and twelve synthetic scenarios. The new signal Pareto ranks implemented chart-rule occurrences, not physical defects. Ordered investigation checks cite evidence and distinguish failures, instability, capability gaps, sampling and diagnostics. Inspection-defect categories remain future work, and no numerical setting optimizer or learned strength prediction is included. See [the workflow](docs/signal-investigation.md), the updated SPEC and codebook for exact contracts and assumptions.
+
+
+## H-14: interactive Pareto and recorded inspection categories
+
+Signal and primary-inspection-defect Paretos now support direct labels, an 80% reference and keyboard/click category investigation. Inclusive date views retain full-log limits and capability, while selected builds/coupon records and focused checks describe the chosen evidence. Four distinct synthetic inspection examples supplement the original twelve strength files. Coverage and explicit no-defect/unrecorded outcomes remain separate. Only one primary defect category per coupon is represented; multi-defect event modeling remains future work. See [the current guide](docs/pareto-explorer.md).

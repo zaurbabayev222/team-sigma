@@ -29,10 +29,37 @@
       "checksum": "92bfc2e7046b5449347f74a2d108a155"
     },
     "app.py": {
-      "checksum": "936e8e02125ee3ff6ac6aad58bc0565f"
+      "checksum": "d0c29bdcd430971f25e95fc8cfce25a7"
     },
     "data/README.md": {
-      "checksum": "046c82d98e305c48ec70c062d0871335"
+      "checksum": "831fc3b258601d7bf855d16fed5f34a9"
+    },
+    "data/ebpbf_inspection_demo.csv": {
+      "checksum": "ae7c857c65b7bc8a875cbaf8394e8c75"
+    },
+    "data/ebpbf_stable_capable.csv": {
+      "checksum": "b9301207a82686a63ede04d78d9713f5"
+    },
+    "data/ebpbf_stable_incapable.csv": {
+      "checksum": "ed5f605fd66643d5a3c558d819349b71"
+    },
+    "data/ebpbf_unstable_shift.csv": {
+      "checksum": "81a0e4d005cddbacf0b06e7069826323"
+    },
+    "data/laser_ded_inspection_demo.csv": {
+      "checksum": "8fec46091a3978989a6ba9e5c53a581f"
+    },
+    "data/laser_ded_stable_capable.csv": {
+      "checksum": "04b3693be76984a264e21f2a1ed73945"
+    },
+    "data/laser_ded_stable_incapable.csv": {
+      "checksum": "a23f727c7c3c616e8a68f3fcafed5626"
+    },
+    "data/laser_ded_unstable_shift.csv": {
+      "checksum": "73efa9860d9d31ea7e9db7e723bb1ab8"
+    },
+    "data/lpbf_inspection_demo.csv": {
+      "checksum": "1623c08da936cffb855c0fff28e980b6"
     },
     "data/stable_capable.csv": {
       "checksum": "42630fff3aaf0a21ad22e689ae6fe051"
@@ -43,6 +70,9 @@
     "data/unstable_shift.csv": {
       "checksum": "5d1f571db93872458fecdbe9765ec7d6"
     },
+    "data/waam_inspection_demo.csv": {
+      "checksum": "cc58723a4fe5f32821a262de3ee9fe87"
+    },
     "data/waam_stable_capable.csv": {
       "checksum": "e827ce388d781287841f3bf66de60b11"
     },
@@ -52,17 +82,32 @@
     "data/waam_unstable_shift.csv": {
       "checksum": "a374871cc15d51a47e1f7fbde456cda6"
     },
-    "frontend/dist/assets/index-BlgZ9ihF.js": {
-      "checksum": "69856ffb7d28e334b242807e989a0fdc"
+    "frontend/dist/assets/index-B7JiH0Gj.css": {
+      "checksum": "11d1547570475a91864e7caa1b97b1dd"
     },
-    "frontend/dist/assets/index-DonT6qJY.css": {
-      "checksum": "2db38cbe659eafe9e164cbaec870e53b"
+    "frontend/dist/assets/index-BClMsTD1.js": {
+      "checksum": "7b3d6fb38f89c68ddb61fcfcbefd656a"
     },
     "frontend/dist/index.html": {
-      "checksum": "2747763de6069b32cd00cc5fb37aa02e"
+      "checksum": "fc207d6cea3a3df1162f37d5eb12be63"
+    },
+    "inspection.py": {
+      "checksum": "022857d289bb388c9575e2e9dff237d7"
+    },
+    "investigation.py": {
+      "checksum": "560ce96a182f195eb51e03437f3b02ba"
+    },
+    "pareto_view.py": {
+      "checksum": "abf4ab0c55975c749a820c4fe7205aeb"
     },
     "profiles/__init__.py": {
-      "checksum": "86cd2daab98521c6e14e137fc35b6f7a"
+      "checksum": "f2dc8a548ad2108bdce04ea112bfb363"
+    },
+    "profiles/ebpbf.py": {
+      "checksum": "d33795579feeba97a2647b273ec51240"
+    },
+    "profiles/laser_ded.py": {
+      "checksum": "ffa0696a292852b81d69368086a82915"
     },
     "profiles/lpbf.py": {
       "checksum": "0c6d98dd168d44f3a075386bcabaf7e0"
@@ -72,6 +117,9 @@
     },
     "qc.py": {
       "checksum": "7dfe0f6f637ba9b663b7d5402eeb5e7d"
+    },
+    "signals.py": {
+      "checksum": "8d00d67f993370709eaa4628a127eebb"
     }
   }
 }

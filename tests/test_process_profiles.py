@@ -17,8 +17,8 @@ def upload(contents, process_type='waam'):
                        data={'lsl': '980', 'process_type': process_type})
 
 
-@pytest.mark.parametrize('process_type', ['lpbf', 'waam'])
-def test_known_answer_and_degenerate_inputs_for_both_profiles(process_type):
+@pytest.mark.parametrize('process_type', ['lpbf', 'waam', 'ebpbf', 'laser_ded'])
+def test_known_answer_and_degenerate_inputs_for_all_profiles(process_type):
     result = upload(KNOWN, process_type).json()
     assert result['profile']['name'] == process_type
     assert result['cpk'] == pytest.approx(.591, abs=.001)
@@ -35,11 +35,11 @@ def test_known_answer_and_degenerate_inputs_for_both_profiles(process_type):
 
 def test_profile_metadata_and_filtered_catalog():
     profiles = client.get('/profiles').json()['profiles']
-    assert [p['name'] for p in profiles] == ['lpbf', 'waam']
+    assert [p['name'] for p in profiles] == ['lpbf', 'waam', 'ebpbf', 'laser_ded']
     assert len(profiles[1]['parameters']) == 5
     old = client.get('/datasets').json()['datasets']
     waam = client.get('/datasets?process_type=waam').json()['datasets']
-    assert len(old) == len(waam) == 3
+    assert len(old) == len(waam) == 4
     assert all(not name.startswith('waam_') for name in old)
     assert all(name.startswith('waam_') for name in waam)
     assert client.get('/datasets?process_type=unknown').status_code == 422

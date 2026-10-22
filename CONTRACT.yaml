@@ -22,7 +22,7 @@
 # Delete the paths you do not use.
 
 spec: SPEC.md
-updated: "2026-10-19"
+updated: "2026-10-22"
 
 tasks:
   - id: H-01
@@ -54,7 +54,7 @@ tasks:
       lists the three original LPBF examples (supplementary WAAM files are H-10),
       and data/README.md names every one of them and describes every
       column with units and how the data would be collected for real.
-    result: "Three seeded synthetic CSVs and codebook restored; reproducibility, schema, planted-shift and edge-case checks pass against the pulled core; ready for check-in"
+    result: "Original three LPBF examples and codebook satisfy the technical check; all four validators pass for sixteen synthetic examples, units, seeds, collection guidance and inspection semantics; reviewed commit/check-in remains open (docs/evaluation.md)"
 
   - id: H-03
     title: Core QC statistic as one plain, tested function
@@ -101,7 +101,7 @@ tasks:
       URL to run, the numbers or chart the tool shows, and a one-line "how to
       read this"; a teammate who did not write it follows it and gets the same
       numbers.
-    result: "Dashboard refinement and judging walkthrough verified: separate stability/capability/conformance, analyzed-input snapshots, accessible charts and combined investigations; 6 frontend tests and three browser/API scenarios pass; prior H-04 integration accepted by repo owner 2026-10-21; independent teammate reproduction pending"
+    result: "Written walkthrough covers sixteen synthetic examples; H-15 adds fourteen offline interactive lessons with captured API outputs and exact CSV downloads; sixteen API parity checks and local deck browser checks pass; independent teammate reproduction remains open, with no new assignment"
   - id: H-06
     title: Deploy to the course Posit Connect server
     points: "protects the 25 working-tool points - judges must be able to open it"
@@ -138,10 +138,11 @@ tasks:
       live URL, and links demo/README.md. A teammate who did not write the
       code follows it from a fresh clone and it works.
     result: >
-      Windows quick start, API/function reference, usability workflow 
-      and rubric evidence updated; 30 Python tests plus 5 subtests, 
-      6 frontend tests, five bundle tests and data validator pass; 
-      public URL and independent fresh-clone walkthrough pending
+      Windows setup, API/function reference, four-process/Pareto guides, interactive walkthrough,
+      unchanged 100-point rubric mapping and submission draft updated under H-15;
+      78 Python tests plus 18 subtests, 19 frontend tests/build, four validators and
+      sixteen API scenarios pass locally; independent fresh-clone review remains open;
+      public URL depends on unchanged H-06
   - id: H-08
     title: Reproducible public repo, submitted on Devpost
     points: "5 - Tool Documentation: fully reproducible code, posted publicly to GitHub"
@@ -158,13 +159,11 @@ tasks:
       testme script and the H-03 tests both pass with no extra steps; git
       grep -i "api_key" finds no real key; the Devpost entry links the repo.
     result: >
-      Updated .gitignore to exclude unnecessary local files,
-      Python caches, virtual environments, build artifacts,
-      and sensitive configuration files.
-      Confirmed that the team repository is publicly accessible
-      on GitHub. Fresh-clone reproducibility testing,
-      application validation, security checks, and Devpost
-      submission are still pending.
+      Existing public-repository and .gitignore work retained; H-15 verifies a clean local
+      clone of committed 3fa4c7c with fresh pinned/locked dependencies (37 Python tests,
+      8 subtests, 8 frontend tests/build after documented CSV sync). The current candidate
+      is uncommitted and passes separate local checks; publishing/reproducing that public
+      revision, final secret review and Devpost confirmation remain open; no new assignments
 
   - id: H-09
     title: Cross-platform reproducibility and documentation consistency
@@ -185,3 +184,55 @@ tasks:
     notes: "User approved LPBF plus WAAM increment; keep qc.py and legacy LPBF API defaults unchanged; X-bar/S only for defensible equal-size build subgroups; no parameter-to-strength prediction; local review completed and user authorized commit/push on 2026-10-22; qualifying push invokes existing deployment workflow."
     definition_of_done: "python -m pytest tests; python data/validate.py; python data/validate_waam.py; npm --prefix app/frontend test; npm --prefix app/frontend run build; all six scenarios pass API/browser checks and manifest/bundle verification"
     result: "LPBF/WAAM selector, profile metadata, upload validation and three seeded WAAM fixtures implemented; 37 Python tests, 8 frontend tests, both validators, five bundle tests, six browser/API scenarios and 18-file manifest/isolated bundle pass; qc.py unchanged; user approved commit/push; public deployment verification remains H-06"
+
+  - id: H-11
+    title: Control-chart signal Pareto
+    status: done
+    owner: "Codex assisting Sigma Airlines"
+    started_at: "2026-10-22T21:37:44.168487+00:00"
+    owns: ["app/signals.py", "tests/test_signals.py", "SPEC.md", "README.md", "app/README.md", "app/frontend/", "app/app.py", "app/manifest.json", "docs/", "demo/", "PROJECT_OVERVIEW.md"]
+    notes: "User approved both EB-PBF and laser DED plus existing chart-signal categories; inspection defect categories deferred; no commit, push or deployment during local review."
+    definition_of_done: "python -m pytest tests/test_signals.py; npm --prefix app/frontend test; npm --prefix app/frontend run build; browser verifies signal counts, cumulative percentage and zero-signal state"
+    result: "Four known-answer/edge/core-parity tests and ten frontend tests pass; build succeeds; live stable/unstable browser states verified; local review complete, commit pending"
+
+  - id: H-12
+    title: Evidence-based investigation actions
+    status: done
+    owner: "Codex assisting Sigma Airlines"
+    started_at: "2026-10-22T21:39:09.849262+00:00"
+    owns: ["app/investigation.py", "tests/test_investigation.py", "SPEC.md", "README.md", "app/README.md", "app/frontend/", "app/app.py", "app/manifest.json", "docs/", "demo/", "PROJECT_OVERVIEW.md"]
+    notes: "User approved both EB-PBF and laser DED plus existing chart-signal categories; inspection defect categories deferred; no commit, push or deployment during local review."
+    definition_of_done: "python -m pytest tests/test_investigation.py; npm --prefix app/frontend test; browser checks stable, incapable, unstable and missing-context actions"
+    result: "Six guidance/API tests and twelve frontend tests pass; custom settings, constant data, missing context and stable/incapable/unstable browser actions verified; local review complete, commit pending"
+
+  - id: H-13
+    title: EB-PBF and powder-fed laser DED profiles and scenarios
+    status: done
+    owner: "Codex assisting Sigma Airlines"
+    started_at: "2026-10-22T21:41:59.738479+00:00"
+    owns: ["app/investigation.py", "app/profiles/", "data/", "tests/test_process_profiles.py", "tests/test_additional_processes.py", "tests/test_bundle_api.py", ".github/scripts/", ".github/workflows/deploy-fastapi.yml", "SPEC.md", "README.md", "app/README.md", "app/frontend/", "app/app.py", "app/manifest.json", "docs/", "demo/", "PROJECT_OVERVIEW.md"]
+    notes: "User approved both EB-PBF and laser DED plus existing chart-signal categories; inspection defect categories deferred; no commit, push or deployment during local review."
+    definition_of_done: "python -m pytest tests; python data/validate.py; python data/validate_waam.py; python data/validate_additional.py; npm --prefix app/frontend test; npm --prefix app/frontend run build; twelve API/browser scenarios and isolated manifest/bundle verification"
+    result: "Four profiles and twelve seeded scenarios verified; 54 Python tests plus 14 subtests, 14 frontend tests/build, three validators, five bundle tests, twelve browser/API scenarios and isolated 28-file manifest pass; original core and six datasets unchanged; local review complete, no commit/push/deployment"
+
+
+  - id: H-14
+    title: Interactive Pareto investigation, fixed-limit date views and inspection defects
+    status: done
+    owner: "Codex assisting Sigma Airlines"
+    started_at: "2026-10-22T21:57:25.241883+00:00"
+    owns: ["SPEC.md", "README.md", "PROJECT_OVERVIEW.md", "app/", "tests/", "data/", "demo/", "docs/", ".github/scripts/", ".github/workflows/deploy-fastapi.yml"]
+    notes: "User approved all five recommended Pareto improvements; preserve core formulas and original twelve CSVs; add four distinct synthetic inspection examples; no commit, push or deployment during review."
+    definition_of_done: "python -m pytest tests; all four data validators and generators check; npm --prefix app/frontend test; npm --prefix app/frontend run build; sixteen browser/API scenarios, keyboard selection, date/empty/error states, upload parity and isolated manifest/bundle verification"
+    result: "All five Pareto improvements implemented; 75 Python tests plus 18 subtests, 19 frontend tests/build, four validators/generator checks, sixteen browser/API scenarios, keyboard/mobile/upload/filter/error/reset checks, five bundle tests and 34-file isolated manifest pass; core/original datasets unchanged; local review only, no commit/push/deployment"
+
+
+  - id: H-15
+    title: Reconcile non-deployment evidence and build an interactive HTML walkthrough
+    status: done
+    owner: "Codex assisting Sigma Airlines"
+    started_at: "2026-10-22T22:21:23.700289+00:00"
+    owns: ["SPEC.md", "CONTRACT.yaml", "README.md", "PROJECT_OVERVIEW.md", "app/README.md", "demo/", "docs/", "tests/test_demo_artifact.py"]
+    notes: "User authorized documentation/tutorial work and subsequently approved committing/pushing the accumulated candidate to main; remaining review/submission stays open-ended; H-06 ledger and deployment files preserved during H-15; the existing push-triggered workflow may run."
+    definition_of_done: "python demo/build_slidedeck.py --check; python -m pytest tests/test_demo_artifact.py; docs/evaluation.md maps the unchanged 100-point rubric to current evidence; sixteen scenarios/four validators pass; deck file/HTTP navigation, interactions, downloads, keyboard, print and mobile checks pass; H-06 baseline unchanged; remaining human/publication/submission work stated honestly"
+    result: "Fourteen offline HTML lessons, sixteen captured scenarios/exact CSVs, twelve requirement responses and four fixed-baseline date views verified; 78 Python tests plus 18 subtests, 19 frontend tests/build, four validators, sixteen API parity cases and artifact/browser/offline/download/keyboard/mobile/print checks pass; rubric links/H-06 preservation pass; user approved check-in to main; independent review, public-revision reproduction and submission remain open without new assignments"

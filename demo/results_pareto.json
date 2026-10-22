@@ -1,0 +1,1307 @@
+{
+  "synthetic": true,
+  "lsl": 895,
+  "min_builds": 25,
+  "cpk_target": 1.33,
+  "results": {
+    "stable_capable": {
+      "n_builds": 30,
+      "cpk": 1.683472027406637,
+      "ppk": 1.7888714257173952,
+      "n_failures": 0,
+      "verdict": "capable",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "inspection_pareto": {
+        "provided": false,
+        "total_coupons": 90,
+        "inspected_coupons": 0,
+        "unrecorded_coupons": 90,
+        "no_defect_coupons": 0,
+        "defective_coupons": 0,
+        "coverage_percent": 0.0,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": []
+      }
+    },
+    "stable_incapable": {
+      "n_builds": 30,
+      "cpk": 0.3119606023055329,
+      "ppk": 0.3314919394732296,
+      "n_failures": 17,
+      "verdict": "not capable",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "inspection_pareto": {
+        "provided": false,
+        "total_coupons": 90,
+        "inspected_coupons": 0,
+        "unrecorded_coupons": 90,
+        "no_defect_coupons": 0,
+        "defective_coupons": 0,
+        "coverage_percent": 0.0,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": []
+      }
+    },
+    "unstable_shift": {
+      "n_builds": 30,
+      "cpk": 1.2923372876555803,
+      "ppk": 0.7117306491588054,
+      "n_failures": 0,
+      "verdict": "not assessable",
+      "signal_pareto": {
+        "total_signals": 11,
+        "flagged_builds": 11,
+        "denominator": "signal occurrences",
+        "categories": [
+          {
+            "category": "mean_low",
+            "label": "Mean below X-bar LCL",
+            "count": 8,
+            "percent": 72.72727272727273,
+            "cumulative_percent": 72.72727272727273,
+            "build_ids": [
+              "B020",
+              "B024",
+              "B025",
+              "B026",
+              "B027",
+              "B028",
+              "B029",
+              "B030"
+            ]
+          },
+          {
+            "category": "mean_high",
+            "label": "Mean above X-bar UCL",
+            "count": 3,
+            "percent": 27.272727272727273,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "B007",
+              "B014",
+              "B018"
+            ]
+          }
+        ]
+      },
+      "inspection_pareto": {
+        "provided": false,
+        "total_coupons": 90,
+        "inspected_coupons": 0,
+        "unrecorded_coupons": 90,
+        "no_defect_coupons": 0,
+        "defective_coupons": 0,
+        "coverage_percent": 0.0,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": []
+      }
+    },
+    "lpbf_inspection_demo": {
+      "n_builds": 30,
+      "cpk": 1.2923372876555803,
+      "ppk": 0.7117306491588054,
+      "n_failures": 0,
+      "verdict": "not assessable",
+      "signal_pareto": {
+        "total_signals": 11,
+        "flagged_builds": 11,
+        "denominator": "signal occurrences",
+        "categories": [
+          {
+            "category": "mean_low",
+            "label": "Mean below X-bar LCL",
+            "count": 8,
+            "percent": 72.72727272727273,
+            "cumulative_percent": 72.72727272727273,
+            "build_ids": [
+              "B020",
+              "B024",
+              "B025",
+              "B026",
+              "B027",
+              "B028",
+              "B029",
+              "B030"
+            ]
+          },
+          {
+            "category": "mean_high",
+            "label": "Mean above X-bar UCL",
+            "count": 3,
+            "percent": 27.272727272727273,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "B007",
+              "B014",
+              "B018"
+            ]
+          }
+        ]
+      },
+      "inspection_pareto": {
+        "provided": true,
+        "total_coupons": 90,
+        "inspected_coupons": 84,
+        "unrecorded_coupons": 6,
+        "no_defect_coupons": 45,
+        "defective_coupons": 39,
+        "coverage_percent": 93.33333333333333,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": [
+          {
+            "category": "porosity",
+            "label": "Porosity",
+            "count": 20,
+            "percent": 51.282051282051285,
+            "cumulative_percent": 51.282051282051285,
+            "build_ids": [
+              "B001",
+              "B002",
+              "B003",
+              "B004",
+              "B005",
+              "B007",
+              "B008",
+              "B011",
+              "B012",
+              "B013",
+              "B014",
+              "B016",
+              "B017",
+              "B021",
+              "B022",
+              "B025",
+              "B028"
+            ],
+            "coupon_rows": [
+              2,
+              4,
+              7,
+              9,
+              10,
+              13,
+              19,
+              23,
+              32,
+              36,
+              38,
+              42,
+              46,
+              48,
+              49,
+              51,
+              63,
+              65,
+              73,
+              82
+            ]
+          },
+          {
+            "category": "lack of fusion",
+            "label": "Lack of fusion",
+            "count": 12,
+            "percent": 30.76923076923077,
+            "cumulative_percent": 82.05128205128206,
+            "build_ids": [
+              "B008",
+              "B009",
+              "B010",
+              "B012",
+              "B014",
+              "B015",
+              "B020",
+              "B027",
+              "B029",
+              "B030"
+            ],
+            "coupon_rows": [
+              22,
+              27,
+              29,
+              30,
+              34,
+              41,
+              43,
+              44,
+              59,
+              79,
+              87,
+              88
+            ]
+          },
+          {
+            "category": "cracking",
+            "label": "Cracking",
+            "count": 5,
+            "percent": 12.820512820512821,
+            "cumulative_percent": 94.87179487179488,
+            "build_ids": [
+              "B006",
+              "B015",
+              "B026",
+              "B028",
+              "B029"
+            ],
+            "coupon_rows": [
+              18,
+              45,
+              78,
+              84,
+              86
+            ]
+          },
+          {
+            "category": "dimensional deviation",
+            "label": "Dimensional deviation",
+            "count": 2,
+            "percent": 5.128205128205129,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "B005",
+              "B014"
+            ],
+            "coupon_rows": [
+              15,
+              40
+            ]
+          }
+        ]
+      }
+    },
+    "waam_stable_capable": {
+      "n_builds": 30,
+      "cpk": 1.9111082512444262,
+      "ppk": 1.8910826336193287,
+      "n_failures": 0,
+      "verdict": "capable",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "inspection_pareto": {
+        "provided": false,
+        "total_coupons": 90,
+        "inspected_coupons": 0,
+        "unrecorded_coupons": 90,
+        "no_defect_coupons": 0,
+        "defective_coupons": 0,
+        "coverage_percent": 0.0,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": []
+      }
+    },
+    "waam_stable_incapable": {
+      "n_builds": 30,
+      "cpk": 0.30790939977713666,
+      "ppk": 0.304682959883376,
+      "n_failures": 18,
+      "verdict": "not capable",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "inspection_pareto": {
+        "provided": false,
+        "total_coupons": 90,
+        "inspected_coupons": 0,
+        "unrecorded_coupons": 90,
+        "no_defect_coupons": 0,
+        "defective_coupons": 0,
+        "coverage_percent": 0.0,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": []
+      }
+    },
+    "waam_unstable_shift": {
+      "n_builds": 30,
+      "cpk": 1.3767086340886652,
+      "ppk": 0.5795964797898725,
+      "n_failures": 5,
+      "verdict": "not assessable",
+      "signal_pareto": {
+        "total_signals": 18,
+        "flagged_builds": 18,
+        "denominator": "signal occurrences",
+        "categories": [
+          {
+            "category": "mean_low",
+            "label": "Mean below X-bar LCL",
+            "count": 11,
+            "percent": 61.111111111111114,
+            "cumulative_percent": 61.111111111111114,
+            "build_ids": [
+              "W020",
+              "W021",
+              "W022",
+              "W023",
+              "W024",
+              "W025",
+              "W026",
+              "W027",
+              "W028",
+              "W029",
+              "W030"
+            ]
+          },
+          {
+            "category": "mean_high",
+            "label": "Mean above X-bar UCL",
+            "count": 7,
+            "percent": 38.888888888888886,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "W003",
+              "W004",
+              "W005",
+              "W010",
+              "W014",
+              "W016",
+              "W017"
+            ]
+          }
+        ]
+      },
+      "inspection_pareto": {
+        "provided": false,
+        "total_coupons": 90,
+        "inspected_coupons": 0,
+        "unrecorded_coupons": 90,
+        "no_defect_coupons": 0,
+        "defective_coupons": 0,
+        "coverage_percent": 0.0,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": []
+      }
+    },
+    "waam_inspection_demo": {
+      "n_builds": 30,
+      "cpk": 1.3767086340886652,
+      "ppk": 0.5795964797898725,
+      "n_failures": 5,
+      "verdict": "not assessable",
+      "signal_pareto": {
+        "total_signals": 18,
+        "flagged_builds": 18,
+        "denominator": "signal occurrences",
+        "categories": [
+          {
+            "category": "mean_low",
+            "label": "Mean below X-bar LCL",
+            "count": 11,
+            "percent": 61.111111111111114,
+            "cumulative_percent": 61.111111111111114,
+            "build_ids": [
+              "W020",
+              "W021",
+              "W022",
+              "W023",
+              "W024",
+              "W025",
+              "W026",
+              "W027",
+              "W028",
+              "W029",
+              "W030"
+            ]
+          },
+          {
+            "category": "mean_high",
+            "label": "Mean above X-bar UCL",
+            "count": 7,
+            "percent": 38.888888888888886,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "W003",
+              "W004",
+              "W005",
+              "W010",
+              "W014",
+              "W016",
+              "W017"
+            ]
+          }
+        ]
+      },
+      "inspection_pareto": {
+        "provided": true,
+        "total_coupons": 90,
+        "inspected_coupons": 84,
+        "unrecorded_coupons": 6,
+        "no_defect_coupons": 45,
+        "defective_coupons": 39,
+        "coverage_percent": 93.33333333333333,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": [
+          {
+            "category": "porosity",
+            "label": "Porosity",
+            "count": 20,
+            "percent": 51.282051282051285,
+            "cumulative_percent": 51.282051282051285,
+            "build_ids": [
+              "W002",
+              "W004",
+              "W008",
+              "W010",
+              "W011",
+              "W014",
+              "W015",
+              "W018",
+              "W019",
+              "W022",
+              "W023",
+              "W024",
+              "W025",
+              "W028",
+              "W029"
+            ],
+            "coupon_rows": [
+              6,
+              11,
+              22,
+              29,
+              32,
+              40,
+              45,
+              52,
+              56,
+              57,
+              64,
+              65,
+              67,
+              68,
+              70,
+              71,
+              72,
+              75,
+              82,
+              87
+            ]
+          },
+          {
+            "category": "lack of fusion",
+            "label": "Lack of fusion",
+            "count": 12,
+            "percent": 30.76923076923077,
+            "cumulative_percent": 82.05128205128206,
+            "build_ids": [
+              "W002",
+              "W004",
+              "W009",
+              "W012",
+              "W013",
+              "W014",
+              "W016",
+              "W017",
+              "W020",
+              "W025",
+              "W030"
+            ],
+            "coupon_rows": [
+              4,
+              5,
+              10,
+              26,
+              35,
+              38,
+              41,
+              48,
+              49,
+              60,
+              73,
+              89
+            ]
+          },
+          {
+            "category": "cracking",
+            "label": "Cracking",
+            "count": 5,
+            "percent": 12.820512820512821,
+            "cumulative_percent": 94.87179487179488,
+            "build_ids": [
+              "W001",
+              "W016",
+              "W018",
+              "W029",
+              "W030"
+            ],
+            "coupon_rows": [
+              3,
+              47,
+              53,
+              85,
+              90
+            ]
+          },
+          {
+            "category": "dimensional deviation",
+            "label": "Dimensional deviation",
+            "count": 2,
+            "percent": 5.128205128205129,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "W022",
+              "W027"
+            ],
+            "coupon_rows": [
+              66,
+              81
+            ]
+          }
+        ]
+      }
+    },
+    "ebpbf_stable_capable": {
+      "n_builds": 30,
+      "cpk": 2.542352990921878,
+      "ppk": 2.267524651002773,
+      "n_failures": 0,
+      "verdict": "capable",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "inspection_pareto": {
+        "provided": false,
+        "total_coupons": 90,
+        "inspected_coupons": 0,
+        "unrecorded_coupons": 90,
+        "no_defect_coupons": 0,
+        "defective_coupons": 0,
+        "coverage_percent": 0.0,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": []
+      }
+    },
+    "ebpbf_stable_incapable": {
+      "n_builds": 30,
+      "cpk": 0.4027482282022275,
+      "ppk": 0.35921114764834133,
+      "n_failures": 16,
+      "verdict": "not capable",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "inspection_pareto": {
+        "provided": false,
+        "total_coupons": 90,
+        "inspected_coupons": 0,
+        "unrecorded_coupons": 90,
+        "no_defect_coupons": 0,
+        "defective_coupons": 0,
+        "coverage_percent": 0.0,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": []
+      }
+    },
+    "ebpbf_unstable_shift": {
+      "n_builds": 30,
+      "cpk": 1.7578312445913382,
+      "ppk": 0.5357510410261421,
+      "n_failures": 4,
+      "verdict": "not assessable",
+      "signal_pareto": {
+        "total_signals": 24,
+        "flagged_builds": 24,
+        "denominator": "signal occurrences",
+        "categories": [
+          {
+            "category": "mean_high",
+            "label": "Mean above X-bar UCL",
+            "count": 13,
+            "percent": 54.166666666666664,
+            "cumulative_percent": 54.166666666666664,
+            "build_ids": [
+              "E003",
+              "E004",
+              "E005",
+              "E006",
+              "E007",
+              "E008",
+              "E009",
+              "E012",
+              "E014",
+              "E015",
+              "E016",
+              "E018",
+              "E019"
+            ]
+          },
+          {
+            "category": "mean_low",
+            "label": "Mean below X-bar LCL",
+            "count": 11,
+            "percent": 45.833333333333336,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "E020",
+              "E021",
+              "E022",
+              "E023",
+              "E024",
+              "E025",
+              "E026",
+              "E027",
+              "E028",
+              "E029",
+              "E030"
+            ]
+          }
+        ]
+      },
+      "inspection_pareto": {
+        "provided": false,
+        "total_coupons": 90,
+        "inspected_coupons": 0,
+        "unrecorded_coupons": 90,
+        "no_defect_coupons": 0,
+        "defective_coupons": 0,
+        "coverage_percent": 0.0,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": []
+      }
+    },
+    "ebpbf_inspection_demo": {
+      "n_builds": 30,
+      "cpk": 1.7578312445913382,
+      "ppk": 0.5357510410261421,
+      "n_failures": 4,
+      "verdict": "not assessable",
+      "signal_pareto": {
+        "total_signals": 24,
+        "flagged_builds": 24,
+        "denominator": "signal occurrences",
+        "categories": [
+          {
+            "category": "mean_high",
+            "label": "Mean above X-bar UCL",
+            "count": 13,
+            "percent": 54.166666666666664,
+            "cumulative_percent": 54.166666666666664,
+            "build_ids": [
+              "E003",
+              "E004",
+              "E005",
+              "E006",
+              "E007",
+              "E008",
+              "E009",
+              "E012",
+              "E014",
+              "E015",
+              "E016",
+              "E018",
+              "E019"
+            ]
+          },
+          {
+            "category": "mean_low",
+            "label": "Mean below X-bar LCL",
+            "count": 11,
+            "percent": 45.833333333333336,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "E020",
+              "E021",
+              "E022",
+              "E023",
+              "E024",
+              "E025",
+              "E026",
+              "E027",
+              "E028",
+              "E029",
+              "E030"
+            ]
+          }
+        ]
+      },
+      "inspection_pareto": {
+        "provided": true,
+        "total_coupons": 90,
+        "inspected_coupons": 84,
+        "unrecorded_coupons": 6,
+        "no_defect_coupons": 45,
+        "defective_coupons": 39,
+        "coverage_percent": 93.33333333333333,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": [
+          {
+            "category": "porosity",
+            "label": "Porosity",
+            "count": 20,
+            "percent": 51.282051282051285,
+            "cumulative_percent": 51.282051282051285,
+            "build_ids": [
+              "E001",
+              "E003",
+              "E006",
+              "E007",
+              "E008",
+              "E011",
+              "E012",
+              "E013",
+              "E016",
+              "E017",
+              "E019",
+              "E021",
+              "E024",
+              "E026",
+              "E027"
+            ],
+            "coupon_rows": [
+              1,
+              8,
+              16,
+              21,
+              24,
+              31,
+              33,
+              34,
+              36,
+              37,
+              46,
+              48,
+              50,
+              55,
+              57,
+              61,
+              70,
+              71,
+              76,
+              79
+            ]
+          },
+          {
+            "category": "lack of fusion",
+            "label": "Lack of fusion",
+            "count": 12,
+            "percent": 30.76923076923077,
+            "cumulative_percent": 82.05128205128206,
+            "build_ids": [
+              "E005",
+              "E007",
+              "E008",
+              "E009",
+              "E010",
+              "E013",
+              "E014",
+              "E015",
+              "E016",
+              "E018",
+              "E020",
+              "E022"
+            ],
+            "coupon_rows": [
+              14,
+              20,
+              23,
+              25,
+              28,
+              39,
+              41,
+              45,
+              47,
+              53,
+              60,
+              66
+            ]
+          },
+          {
+            "category": "cracking",
+            "label": "Cracking",
+            "count": 5,
+            "percent": 12.820512820512821,
+            "cumulative_percent": 94.87179487179488,
+            "build_ids": [
+              "E002",
+              "E019",
+              "E023",
+              "E025"
+            ],
+            "coupon_rows": [
+              4,
+              56,
+              68,
+              74,
+              75
+            ]
+          },
+          {
+            "category": "dimensional deviation",
+            "label": "Dimensional deviation",
+            "count": 2,
+            "percent": 5.128205128205129,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "E015",
+              "E021"
+            ],
+            "coupon_rows": [
+              43,
+              63
+            ]
+          }
+        ]
+      }
+    },
+    "laser_ded_stable_capable": {
+      "n_builds": 30,
+      "cpk": 1.3944795102447567,
+      "ppk": 1.4233744429894433,
+      "n_failures": 0,
+      "verdict": "capable",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "inspection_pareto": {
+        "provided": false,
+        "total_coupons": 90,
+        "inspected_coupons": 0,
+        "unrecorded_coupons": 90,
+        "no_defect_coupons": 0,
+        "defective_coupons": 0,
+        "coverage_percent": 0.0,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": []
+      }
+    },
+    "laser_ded_stable_incapable": {
+      "n_builds": 30,
+      "cpk": 0.2317543741303291,
+      "ppk": 0.23655654368863793,
+      "n_failures": 22,
+      "verdict": "not capable",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "inspection_pareto": {
+        "provided": false,
+        "total_coupons": 90,
+        "inspected_coupons": 0,
+        "unrecorded_coupons": 90,
+        "no_defect_coupons": 0,
+        "defective_coupons": 0,
+        "coverage_percent": 0.0,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": []
+      }
+    },
+    "laser_ded_unstable_shift": {
+      "n_builds": 30,
+      "cpk": 0.8634835841240136,
+      "ppk": 0.44449406954925685,
+      "n_failures": 12,
+      "verdict": "not assessable",
+      "signal_pareto": {
+        "total_signals": 16,
+        "flagged_builds": 15,
+        "denominator": "signal occurrences",
+        "categories": [
+          {
+            "category": "mean_low",
+            "label": "Mean below X-bar LCL",
+            "count": 10,
+            "percent": 62.5,
+            "cumulative_percent": 62.5,
+            "build_ids": [
+              "D020",
+              "D021",
+              "D022",
+              "D023",
+              "D024",
+              "D025",
+              "D026",
+              "D028",
+              "D029",
+              "D030"
+            ]
+          },
+          {
+            "category": "mean_high",
+            "label": "Mean above X-bar UCL",
+            "count": 5,
+            "percent": 31.25,
+            "cumulative_percent": 93.75,
+            "build_ids": [
+              "D005",
+              "D006",
+              "D009",
+              "D014",
+              "D019"
+            ]
+          },
+          {
+            "category": "spread_high",
+            "label": "S above UCL",
+            "count": 1,
+            "percent": 6.25,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "D024"
+            ]
+          }
+        ]
+      },
+      "inspection_pareto": {
+        "provided": false,
+        "total_coupons": 90,
+        "inspected_coupons": 0,
+        "unrecorded_coupons": 90,
+        "no_defect_coupons": 0,
+        "defective_coupons": 0,
+        "coverage_percent": 0.0,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": []
+      }
+    },
+    "laser_ded_inspection_demo": {
+      "n_builds": 30,
+      "cpk": 0.8634835841240136,
+      "ppk": 0.44449406954925685,
+      "n_failures": 12,
+      "verdict": "not assessable",
+      "signal_pareto": {
+        "total_signals": 16,
+        "flagged_builds": 15,
+        "denominator": "signal occurrences",
+        "categories": [
+          {
+            "category": "mean_low",
+            "label": "Mean below X-bar LCL",
+            "count": 10,
+            "percent": 62.5,
+            "cumulative_percent": 62.5,
+            "build_ids": [
+              "D020",
+              "D021",
+              "D022",
+              "D023",
+              "D024",
+              "D025",
+              "D026",
+              "D028",
+              "D029",
+              "D030"
+            ]
+          },
+          {
+            "category": "mean_high",
+            "label": "Mean above X-bar UCL",
+            "count": 5,
+            "percent": 31.25,
+            "cumulative_percent": 93.75,
+            "build_ids": [
+              "D005",
+              "D006",
+              "D009",
+              "D014",
+              "D019"
+            ]
+          },
+          {
+            "category": "spread_high",
+            "label": "S above UCL",
+            "count": 1,
+            "percent": 6.25,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "D024"
+            ]
+          }
+        ]
+      },
+      "inspection_pareto": {
+        "provided": true,
+        "total_coupons": 90,
+        "inspected_coupons": 84,
+        "unrecorded_coupons": 6,
+        "no_defect_coupons": 45,
+        "defective_coupons": 39,
+        "coverage_percent": 93.33333333333333,
+        "denominator": "coupons with a recorded primary defect",
+        "categories": [
+          {
+            "category": "porosity",
+            "label": "Porosity",
+            "count": 20,
+            "percent": 51.282051282051285,
+            "cumulative_percent": 51.282051282051285,
+            "build_ids": [
+              "D001",
+              "D002",
+              "D003",
+              "D007",
+              "D008",
+              "D009",
+              "D010",
+              "D016",
+              "D018",
+              "D022",
+              "D023",
+              "D024",
+              "D025",
+              "D026",
+              "D027",
+              "D029",
+              "D030"
+            ],
+            "coupon_rows": [
+              1,
+              3,
+              5,
+              7,
+              19,
+              23,
+              25,
+              29,
+              30,
+              47,
+              48,
+              52,
+              66,
+              68,
+              71,
+              74,
+              76,
+              79,
+              87,
+              89
+            ]
+          },
+          {
+            "category": "lack of fusion",
+            "label": "Lack of fusion",
+            "count": 12,
+            "percent": 30.76923076923077,
+            "cumulative_percent": 82.05128205128206,
+            "build_ids": [
+              "D004",
+              "D005",
+              "D007",
+              "D008",
+              "D010",
+              "D011",
+              "D012",
+              "D017",
+              "D021",
+              "D023",
+              "D025",
+              "D028"
+            ],
+            "coupon_rows": [
+              12,
+              13,
+              20,
+              22,
+              28,
+              33,
+              35,
+              49,
+              61,
+              67,
+              75,
+              83
+            ]
+          },
+          {
+            "category": "cracking",
+            "label": "Cracking",
+            "count": 5,
+            "percent": 12.820512820512821,
+            "cumulative_percent": 94.87179487179488,
+            "build_ids": [
+              "D003",
+              "D007",
+              "D012",
+              "D020",
+              "D030"
+            ],
+            "coupon_rows": [
+              9,
+              21,
+              36,
+              59,
+              88
+            ]
+          },
+          {
+            "category": "dimensional deviation",
+            "label": "Dimensional deviation",
+            "count": 2,
+            "percent": 5.128205128205129,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "D008",
+              "D018"
+            ],
+            "coupon_rows": [
+              24,
+              54
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "laser_ded_single_day_view": {
+    "start_date": "2026-10-24",
+    "end_date": "2026-10-24",
+    "window_builds": 1,
+    "full_builds": 30,
+    "signal_pareto": {
+      "total_signals": 2,
+      "flagged_builds": 1,
+      "denominator": "signal occurrences",
+      "categories": [
+        {
+          "category": "mean_low",
+          "label": "Mean below X-bar LCL",
+          "count": 1,
+          "percent": 50.0,
+          "cumulative_percent": 50.0,
+          "build_ids": [
+            "D024"
+          ]
+        },
+        {
+          "category": "spread_high",
+          "label": "S above UCL",
+          "count": 1,
+          "percent": 50.0,
+          "cumulative_percent": 100.0,
+          "build_ids": [
+            "D024"
+          ]
+        }
+      ]
+    },
+    "inspection_pareto": {
+      "provided": true,
+      "total_coupons": 3,
+      "inspected_coupons": 2,
+      "unrecorded_coupons": 1,
+      "no_defect_coupons": 1,
+      "defective_coupons": 1,
+      "coverage_percent": 66.66666666666667,
+      "denominator": "coupons with a recorded primary defect",
+      "categories": [
+        {
+          "category": "porosity",
+          "label": "Porosity",
+          "count": 1,
+          "percent": 100.0,
+          "cumulative_percent": 100.0,
+          "build_ids": [
+            "D024"
+          ],
+          "coupon_rows": [
+            71
+          ]
+        }
+      ]
+    },
+    "selection": {
+      "kind": "signal",
+      "category": "spread_high",
+      "label": "S above UCL"
+    },
+    "builds": [
+      {
+        "build_id": "D024",
+        "order": "2026-10-24",
+        "mean": 897.6986666666667,
+        "s": 56.562551218393075,
+        "flagged": true,
+        "reason": "mean below the X-bar lower limit; s above the S chart upper limit"
+      }
+    ],
+    "context": [
+      {
+        "build_id": "D024",
+        "values": {
+          "laser_power_w": 1029.7186,
+          "powder_feed_rate_g_min": 5.237,
+          "travel_speed_mm_s": 8.2656,
+          "shielding_gas_flow_l_min": 19.2197,
+          "standoff_distance_mm": 12.0833
+        },
+        "coupons": [
+          {
+            "row": 70,
+            "build_id": "D024",
+            "uts_mpa": 843.895,
+            "category": null,
+            "label": null
+          },
+          {
+            "row": 71,
+            "build_id": "D024",
+            "uts_mpa": 892.535,
+            "category": "porosity",
+            "label": "Porosity"
+          },
+          {
+            "row": 72,
+            "build_id": "D024",
+            "uts_mpa": 956.666,
+            "category": "none",
+            "label": "none"
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "spread_high",
+        "priority": 1,
+        "title": "Review S above UCL",
+        "evidence": "1 signals (50.0% of signals in this date view); original full-log limits retained.",
+        "action": "Check individual coupons, sampling locations, specimen preparation, test repeatability and consistency within each build. A spread signal does not identify its physical cause.",
+        "build_ids": [
+          "D024"
+        ]
+      },
+      {
+        "id": "view_records",
+        "priority": 2,
+        "title": "Compare source records for the displayed builds",
+        "evidence": "1 displayed builds for Powder-fed laser directed energy deposition (laser DED).",
+        "action": "Review the coupon details and available recorded process context below. Unflagged-build reference ranges and the capability assessment still describe the full input log. Confirm comparable material, orientation, processing and test conditions before engineering trials.",
+        "build_ids": [
+          "D024"
+        ]
+      }
+    ],
+    "filtered": true,
+    "limits_source": "full input log; unchanged",
+    "window_build_ids": [
+      "D024"
+    ]
+  }
+}

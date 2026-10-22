@@ -13,3 +13,13 @@ Select LPBF or WAAM before choosing an example or uploading a CSV. `GET profiles
 Switching process clears the selected upload and marks previous results stale. The entered customer LSL is retained. WAAM context uses arc current, voltage, wire feed, travel speed and shielding-gas flow; values are descriptive, not strength predictions or recommended settings. Mixed-process tags and nonempty known fields from the other profile are rejected.
 
 For Windows PowerShell setup and the verified same-origin preview, follow the [root quick start](../../README.md#run-in-positron-on-windows-powershell). Run `npm.cmd --prefix app/frontend test` and `npm.cmd --prefix app/frontend run build` from the repository root. Eight tests cover rendering and request wiring; all six scenarios also require the live API/browser walkthrough.
+
+
+## Signal workflow and four processes
+
+The selector now includes EB-PBF (`ebpbf`) and powder-fed laser DED (`laser_ded`). Each profile has three examples and metadata-driven optional labels/units. `SignalPareto.jsx` renders Python-supplied signal counts and cumulative percentages, with an accessible SVG description, an exact-values/build-ID table and a no-signal state. `InvestigationActions` renders ordered evidence/action pairs with disclosures for further checks and build IDs. No counts, rule decisions or recommended settings are inferred in React. See the [workflow](../../docs/signal-investigation.md). Fourteen frontend fixture tests cover these contracts; live browser/API verification exercises all twelve integrated scenarios.
+
+
+## Interactive Pareto exploration (H-14)
+
+ParetoExplorer submits start/end dates and one selected signal or inspection category through the original analysis request, preserving the analyzed dataset/file and LSL snapshot. Python supplies scoped counts, rows, coverage and actions; React formats the two Pareto charts with accessible SVG bar buttons, direct labels and an 80% reference. Applied/draft dates, loading, errors, selected state, Clear selection, Reset Pareto view and new-analysis resets are explicit. Full-log chart points are outlined for selected builds. See [the guide](../../docs/pareto-explorer.md). Nineteen frontend tests cover rendering/request contracts; live tests cover sixteen examples and keyboard/mobile interactions.

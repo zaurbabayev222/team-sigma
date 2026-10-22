@@ -2,9 +2,20 @@
 
 Titanium additive manufacturing quality dashboard by **Sigma Airlines**, Cornell SYSEN 5300 Six Sigma Hackathon, Virtual DL Challenge.
 
-AeroQual helps a quality engineer review tensile-test coupons after each build: detect changes in process stability, assess lower-side strength capability, count observed failures, and inspect recorded conditions for flagged builds. The application supports **laser powder bed fusion (LPBF)** and **wire arc additive manufacturing (WAAM)** profiles through a React/Vite dashboard and FastAPI backend. Python calculates every QC result.
+AeroQual helps a quality engineer review tensile-test coupons after each build: detect changes in process stability, assess lower-side strength capability, count observed failures, and inspect recorded conditions for flagged builds. The application supports **laser powder bed fusion (LPBF)** and **wire arc additive manufacturing (WAAM)**, **electron beam powder bed fusion (EB-PBF)** and **powder-fed laser DED** profiles through a React/Vite dashboard and FastAPI backend. Python calculates every QC result.
 
-**Status:** the dashboard, API and six synthetic datasets (three per process) work locally. Public Posit Connect deployment and independent fresh-clone teammate reproduction remain unverified. This prototype does not certify hardware or authorize release. All demonstration data and example limits are synthetic or illustrative.
+**Status:** the dashboard, API and sixteen synthetic datasets (four per process) work locally. Public Posit Connect deployment and independent fresh-clone teammate reproduction remain unverified. This prototype does not certify hardware or authorize release. All demonstration data and example limits are synthetic or illustrative.
+
+Start with the **[interactive HTML walkthrough](demo/slidedeck/index.html)** or the
+[written demo](demo/README.md). Download the HTML file and open it directly in a browser;
+GitHub's file view shows its source. The 14 lessons include captured synthetic API results,
+downloadable example CSVs, chart/Pareto exercises and requirement experiments. It works offline;
+use the running dashboard for actual uploads and analysis.
+
+[Evaluation evidence](docs/evaluation.md) maps the unchanged 100-point rubric.
+[Remaining work](docs/remaining-work.md) is an open-ended handoff with no new assignments;
+[submission.md](docs/submission.md) provides draft submission text. The user approved publishing this
+candidate to main. Local test success does not establish independent acceptance, deployment or submission.
 
 ## Run in Positron on Windows PowerShell
 
@@ -49,10 +60,10 @@ bash app/testme.sh
 
 ## Use the dashboard
 
-1. Select **Printing process** (LPBF or WAAM), then **Stable and capable**, **Stable but not capable**, or **Unstable process shift**, or upload your coupon CSV. An upload takes precedence; use **Clear upload** to return to examples. Changing process clears the upload and marks previous results stale.
+1. Select **Printing process** (LPBF, WAAM, EB-PBF or laser DED), then **Stable and capable**, **Stable but not capable**, **Unstable process shift**, or **Inspection defect example**, or upload your coupon CSV. An upload takes precedence; use **Clear upload** to return to examples. Changing process clears the upload and marks previous results stale.
 2. Enter **Minimum strength, LSL (MPa)** from the customer specification. The demo default **895 MPa** is illustrative, not a titanium acceptance standard.
 3. Click **Analyze builds**. Review the labeled dataset/file and LSL, then read the separate stability, capability and observed-failure summaries. Expand the full backend reason when needed.
-4. Inspect X-bar/S charts and the combined **Build investigation** table. Hover or keyboard-focus a chart point; **View all build data** exposes every plotted value. Expand diagnostics, observed reference ranges or distribution bins for supporting detail.
+4. Inspect X-bar/S charts, the **Control-chart signal Pareto**, **Recommended investigation actions** and the combined **Build investigation** table. Hover or keyboard-focus a chart point; **View all build data** exposes every plotted value. Expand diagnostics, observed reference ranges or distribution bins for supporting detail.
 5. If you change an input, the page labels the previous results and asks you to analyze again. Inputs lock while a request is running; failed analyses display an error with recovery guidance.
 
 The dashboard uses defaults of 25 builds and Cpk target 1.33. These settings are configurable through the API, not dashboard controls. Red squares identify builds flagged by either chart; circles represent unflagged builds. The table explains each flag. Chart and table containers scroll horizontally on small screens.
@@ -74,13 +85,16 @@ The CSV has one row per tested coupon. Select the process that produced it; do n
 | `wire_feed_rate_m_min` (WAAM) | No | Numeric m/min | Wire feeder log |
 | `travel_speed_mm_s` (WAAM) | No | Numeric mm/s | Motion controller log |
 | `shielding_gas_flow_l_min` (WAAM) | No | Numeric L/min | Gas flow record |
-| `process_type` | No | `lpbf` or `waam`, matching the selection on every row | Manufacturing record |
+| `primary_defect` | No | Text: recorded primary inspection category; `none` for inspected/no defect, blank for unrecorded | Coupon inspection report |
+| `process_type` | No | `lpbf`, `waam`, `ebpbf` or `laser_ded`, matching the selection on every row | Manufacturing record |
+
+EB-PBF and laser DED optional fields, units and collection sources are in the [expanded codebook](data/README.md#eb-pbf-and-powder-fed-laser-ded-h-13).
 
 At least two builds and two coupons per build are required, with equal coupon counts across builds. Blank, nonnumeric or infinite strength values cause an error, never a pass. Optional parameters are descriptive and do not affect capability. Unrecognized extra columns are not analyzed; nonempty recognized fields from the other process are rejected.
 
 | Separate parameter | Required | Default | Meaning |
 | --- | --- | --- | --- |
-| `process_type` | No in API; select in dashboard | `lpbf` | Manufacturing process: `lpbf` or `waam` |
+| `process_type` | No in API; select in dashboard | `lpbf` | Manufacturing process: `lpbf`, `waam`, `ebpbf` or `laser_ded` |
 | `lsl` | Yes | None in API; 895 in dashboard | Customer lower strength limit, MPa |
 | `min_builds` | No | 25 | Minimum builds for a capability verdict |
 | `cpk_target` | No | 1.33 | Configured lower-side Cpk target |
@@ -99,6 +113,12 @@ Each file contains **30 builds with 3 coupons each (90 total)**. Live API checks
 | `waam_stable_capable` | 1.911108 | 1.891083 | 0/90 | 0 | capable |
 | `waam_stable_incapable` | 0.307909 | 0.304683 | 18/90 | 0 | not capable |
 | `waam_unstable_shift` | 1.376709 | 0.579596 | 5/90 | 18 | not assessable |
+| `ebpbf_stable_capable` | 2.542353 | 2.267525 | 0/90 | 0 | capable |
+| `ebpbf_stable_incapable` | 0.402748 | 0.359211 | 16/90 | 0 | not capable |
+| `ebpbf_unstable_shift` | 1.757831 | 0.535751 | 4/90 | 24 | not assessable |
+| `laser_ded_stable_capable` | 1.394480 | 1.423374 | 0/90 | 0 | capable |
+| `laser_ded_stable_incapable` | 0.231754 | 0.236557 | 22/90 | 0 | not capable |
+| `laser_ded_unstable_shift` | 0.863484 | 0.444494 | 12/90 | 15 | not assessable |
 
 Stability alone does not establish capability; zero observed failures alone does not establish capability. In the unstable example, strength and oxygen changes are planted together from B020. Their association is synthetic, not validated manufacturing physics.
 
@@ -142,6 +162,10 @@ npm.cmd --prefix app/frontend test
 .\.venv\Scripts\python.exe data/generate_waam.py --check
 .\.venv\Scripts\python.exe data/validate.py
 .\.venv\Scripts\python.exe data/validate_waam.py
+.\.venv\Scripts\python.exe data/generate_additional.py --check
+.\.venv\Scripts\python.exe data/validate_additional.py
+.\.venv\Scripts\python.exe data/generate_inspection.py --check
+.\.venv\Scripts\python.exe data/validate_inspection.py
 ```
 
 The scenario checker needs the running server; omit `--base-url` for core-only checks. It does not rewrite results unless `--output` is supplied. Frontend tests check rendering and request wiring using fixtures; the live checker compares all core fields using the integrated datasets.
@@ -173,21 +197,25 @@ Baseline local Windows verification before the WAAM increment: **30 Python tests
 | `tests/` | Statistical, API and bundle API tests (including `test_bundle_api.py`) |
 | `.github/` | Deployment validation and publishing tools |
 
-Current scope excludes processes other than LPBF/WAAM, unequal subgroups, regression, ANOVA, FMEA, Pareto analysis, predictive models and automated parameter recommendations. See [SPEC](SPEC.md), [decisions](docs/decisions.md), [task ledger](CONTRACT.yaml) and [rubric](docs/criteria.md). Starter provenance is documented in [demos](demos/README.md) and the deployment handoff; see the [MIT license](LICENSE).
+Current scope excludes other methods, unequal subgroups, regression, ANOVA, FMEA, multi-defect event analysis, predictive models and numerical parameter-change recommendations. Signal and primary-inspection-defect Paretos, fixed-limit date views and evidence-based investigation checks are implemented. See [SPEC](SPEC.md), [decisions](docs/decisions.md), [task ledger](CONTRACT.yaml) and [rubric](docs/criteria.md). Starter provenance is documented in [demos](demos/README.md) and the deployment handoff; see the [MIT license](LICENSE).
 
 ## Submission evidence and remaining checks
 
+For the complete current 100-point mapping, use [docs/evaluation.md](docs/evaluation.md).
+[docs/remaining-work.md](docs/remaining-work.md) is the open-ended handoff; the table below is a
+compact overview. The H-10 through H-14 verification paragraphs retain historical increment results.
+
 | Rubric item | Evidence to review | Remaining action |
 | --- | --- | --- |
-| Effective working tool (25) | Local dashboard/API, upload workflow and six examples (three per process) | Publish and verify a public course Connect URL |
+| Effective working tool (25) | Local dashboard/API, upload workflow and sixteen examples (four per process) | Publish and verify a public course Connect URL |
 | Valid QC analysis (25) | SPEC formulas; known-answer and degenerate tests in `tests/` | Retain actual passing output and explain assumptions |
 | Prompt fit, user, minimal inputs (15) | SPEC use case; three required CSV columns plus customer LSL | Confirm the stated workflow with a quality-engineering reviewer |
-| Clear demonstration (10) | Three-minute walkthrough and real local captures in `demo/` | Independent teammate reproduction |
+| Clear demonstration (10) | Interactive 14-lesson HTML tutorial, written walkthrough and synthetic API captures in `demo/` | Independent teammate reproduction |
 | Documentation (10) | This quick start and API/function reference | Independent fresh-clone walkthrough |
-| Datasets and codebook (10) | Six labeled synthetic files; units, seeds and collection sources | Verify reproducibility on the supported checkout |
+| Datasets and codebook (10) | Sixteen labeled synthetic files; units, seeds and collection sources | Verify reproducibility on the supported checkout |
 | Public reproducible repository (5) | GitHub source, lockfile and run/test commands | Fresh-clone verification and final Devpost links |
 
-Example known-answer evidence (LSL 980 MPa): X-bar center 1000 MPa; limits 980.456?1019.544 MPa; S center 10 MPa; upper limit 25.682 MPa; Cpk 0.591; Ppk 0.571; 1/12 failures; capability withheld for too few builds. Constant-data tests require undefined indices and a no-variation reason; one-build, unequal-count and missing-strength tests require rejection. These checks validate implementation against the stated examples, not hardware qualification.
+Example known-answer evidence (LSL 980 MPa): X-bar center 1000 MPa; limits 980.456–1019.544 MPa; S center 10 MPa; upper limit 25.682 MPa; Cpk 0.591; Ppk 0.571; 1/12 failures; capability withheld for too few builds. Constant-data tests require undefined indices and a no-variation reason; one-build, unequal-count and missing-strength tests require rejection. These checks validate implementation against the stated examples, not hardware qualification.
 
 The WAAM release manifest was generated locally with rsconnect-python 1.32.0 under Python 3.12.15. All 18 runtime checksums, isolated dashboard/assets/health, known-answer upload and six scenario comparisons passed. The user approved committing and pushing this WAAM release; the existing workflow publishes qualifying pushes to main. Confirm server interpreter support before publication. Public deployment and independent human checks remain pending; no scores are claimed here.
 
@@ -197,4 +225,44 @@ WAAM selection reuses the measured-strength X-bar/S engine; it does not estimate
 
 Legacy requests that omit `process_type` remain LPBF. `/profiles` describes supported measurements and units; `/datasets?process_type=waam` lists WAAM examples. GET analysis takes `process_type` as a query parameter and POST takes it as a multipart form field. Existing LPBF dataset IDs and core output keys remain unchanged. Full synthetic WAAM construction and its limitations are in the [codebook](data/README.md#waam-extension-h-10).
 
-H-10 local verification: **37 Python tests**, **8 frontend tests**, both dataset validators and five bundle tests pass. All six scenarios were exercised in the browser and through the API, including process switching, stale context, uploads, mismatch errors, delayed catalogs and mobile/keyboard use. The core statistical function is unchanged. These are local results; WAAM publication and independent teammate reproduction are still pending.
+H-10 local verification: **37 Python tests**, **8 frontend tests**, both dataset validators and five bundle tests passed. All six scenarios were exercised in the browser and through the API, including process switching, stale context, uploads, mismatch errors, delayed catalogs and mobile/keyboard use. The core statistical function is unchanged. The WAAM source increment was committed/pushed before the later extensions; public deployment verification remains H-06, and independent reproduction remains open.
+
+
+## Signal Pareto and investigation checks (H-11 to H-13)
+
+The **Control-chart signal Pareto** ranks mean-below-LCL, mean-above-UCL and S-above-UCL occurrences using the existing chart rules. Bars show counts; the right-axis line shows cumulative percentage. A build can trigger two signals. These are not inspection defect categories, coupon failure rates or proven causes. With no signals, the dashboard explains why there is nothing to rank. Expand the data table for affected builds and exact percentages.
+
+**Recommended investigation actions** show ordered checks with the triggering evidence: test-record review, instability investigation, baseline review, zero variation or insufficient samples, capability improvement, distribution checks and selected-process logs. Expand further checks and affected build IDs as needed. Guidance does not prescribe machine settings or replace engineering decisions. See the [workflow and response contract](docs/signal-investigation.md).
+
+Select **Laser DED > Unstable process shift** to exercise all three signal categories: 16 signals on 15 builds; D024 has both a low-mean and high-S signal. Required CSV columns and original LPBF/WAAM numeric results are unchanged. The new methods each have three additional reproducible synthetic examples, with units and seeds in the codebook. No trained strength-prediction model is included.
+
+This increment is a local review candidate; public deployment and independent teammate walkthrough remain pending. The normal launch command above uses port 8000; the current parallel review preview uses http://127.0.0.1:8001/dashboard/.
+
+H-13 historical local verification: **54 Python tests plus 14 subtests**, **14 frontend tests** and production build, all three dataset validators, all twelve browser/API scenarios, and five bundle tests passed. The regenerated Python 3.12 manifest verified **28 runtime files**, and the isolated bundle served the dashboard/assets, known-answer upload and twelve scenarios. The engine and original six dataset bytes were unchanged.
+
+
+## Expanded Pareto exploration (H-14)
+
+Select **Inspection defect example** under any process to see both signal and inspection-defect Paretos. Click a bar or focus it and press Enter/Space to filter build details and investigation checks. Selected builds are outlined on the full strength charts; **Clear selection** restores flagged builds in the applied date window. Expand coupon records for original data-row numbers, measured strengths and inspection labels.
+
+Use **From build date**, **Through build date** and **Apply date range** for an inclusive evidence window. Either bound may be blank. Displayed applied dates and counts remain visible while editing draft dates; **Reset Pareto view** restores the full window. The complete-file control limits, Cpk/Ppk, strength-failure totals and verdict remain unchanged. Invalid ranges preserve the last successful view and show a recovery message.
+
+Charts show counts, category shares, cumulative labels and an **80% reference**. Signal percentages use signal occurrences; defect percentages use recorded defective coupons. Inspection coverage, explicit no-defect results and missing records are reported separately. The four new synthetic examples each have 39 primary defects, 45 explicit no-defect results and six unrecorded results; they preserve the original strength data. A physical inspection category is never inferred from a chart signal or a strength failure.
+
+See [the complete interaction/API guide](docs/pareto-explorer.md) and [inspection codebook](data/README.md#synthetic-inspection-examples-h-14). All sixteen datasets have stable IDs. This remains a local review build; no commit, push or deployment is part of this change.
+
+H-14 local verification: **75 Python tests plus 18 subtests**, **19 frontend tests** and production build, all four data validators/generator checks, all sixteen browser/API scenarios, five bundle tests and the isolated known-answer/dashboard checks pass. The final manifest verifies **34 runtime files**. Keyboard selection, mobile scrolling, native uploads, fixed-limit single-day views, invalid/empty ranges, clearing and reanalysis resets were exercised. The core and original source datasets remain unchanged; release review and independent human reproduction remain pending.
+
+## Documentation and interactive training (H-15)
+
+The [self-contained HTML walkthrough](demo/slidedeck/index.html) provides 14 lessons with all sixteen
+scenarios, exact source CSV downloads, chart/Pareto exploration, captured LSL/date experiments and
+knowledge checks. The [demo instructions](demo/README.md#interactive-html-walkthrough) explain offline
+opening, HTTP preview, keyboard navigation, printing and rebuilding verified captures.
+
+Current local checks: **78 Python tests plus 18 subtests**, **19 frontend tests/build**, four validators,
+sixteen API parity cases and three tutorial artifact tests pass (the three are included in the 78).
+Browser checks cover navigation, selections, source-byte download parity, offline file opening,
+responsive layout and printing. The unchanged rubric has a complete [evidence mapping](docs/evaluation.md).
+The [remaining-work list](docs/remaining-work.md) stays open-ended. H-06 and deployment files were
+preserved; no commit, push or deployment was performed for this update.

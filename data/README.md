@@ -138,3 +138,82 @@ From the repository root (use the project's Python executable in PowerShell):
 The generator writes only its three named WAAM files when `--check` is omitted. The validator checks byte reproduction, schema, units-as-column-contract, grouping, tags, dates, frozen outcomes and shift location. It independently checks arithmetic with Python's standard-library sample SD and the closed form c4=sqrt(pi)/2 for n=3; it does not treat matching the core alone as proof of correctness. Original `generate.py --check` and `validate.py` remain the LPBF checks.
 
 For either process, real capability assessment requires justified rational subgroups, comparable alloy/orientation/post-processing/testing conditions and a suitable measurement system. Do not pool different processes or test populations. Process selection does not predict strength, qualify a welding procedure, or certify a bracket.
+
+
+## EB-PBF and powder-fed laser DED (H-13)
+
+Six supplementary files extend the original LPBF and WAAM examples, which are unchanged. All files below contain **synthetic** data: 30 builds with three coupons each. Strength in MPa is measured input to the app, not predicted output. Example LSL 895 MPa is illustrative, not an aerospace standard. These fixtures are not training/test partitions for a learned manufacturing model.
+
+| File | Cpk | Ppk | Below LSL | Unique flagged builds | Signal occurrences | Verdict |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| `ebpbf_stable_capable.csv` | 2.542353 | 2.267525 | 0/90 | 0 | 0 | capable |
+| `ebpbf_stable_incapable.csv` | 0.402748 | 0.359211 | 16/90 | 0 | 0 | not capable |
+| `ebpbf_unstable_shift.csv` | 1.757831 | 0.535751 | 4/90 | 24 | 24 | not assessable |
+| `laser_ded_stable_capable.csv` | 1.394480 | 1.423374 | 0/90 | 0 | 0 | capable |
+| `laser_ded_stable_incapable.csv` | 0.231754 | 0.236557 | 22/90 | 0 | 0 | not capable |
+| `laser_ded_unstable_shift.csv` | 0.863484 | 0.444494 | 12/90 | 15 | 16 | not assessable |
+
+Each row contains `process_type` (`ebpbf` or `laser_ded`), `build_id` (E001-E030 or D001-D030), `build_date` (ISO 2026-10-01 through 2026-10-30), `uts_mpa` (numeric MPa) and the selected profile's five optional numeric context columns. Coupon rows repeat build-level process context. Required build/date/UTS semantics are the same as the original codebook. Optional context never changes core strength statistics.
+
+| Process | Optional column | Units | Real collection source |
+| --- | --- | --- | --- |
+| EB-PBF | `beam_current_ma` | mA | Electron-beam power-source log |
+| EB-PBF | `accelerating_voltage_kv` | kV | Electron-beam power-source log |
+| EB-PBF | `scan_speed_mm_s` | mm/s | Build scan/motion log |
+| EB-PBF | `preheat_temperature_c` | deg C | Recorded preheat/thermal measurement, with sensor definition |
+| EB-PBF | `chamber_pressure_pa` | Pa | Chamber vacuum-gauge record |
+| Powder-fed laser DED | `laser_power_w` | W | Laser power log |
+| Powder-fed laser DED | `powder_feed_rate_g_min` | g/min | Calibrated powder feeder log |
+| Powder-fed laser DED | `travel_speed_mm_s` | mm/s | Motion controller log |
+| Powder-fed laser DED | `shielding_gas_flow_l_min` | L/min | Gas flow record |
+| Powder-fed laser DED | `standoff_distance_mm` | mm | Nozzle-to-workpiece distance record |
+
+For real data, link coupon tensile reports to build travelers, material lot, orientation, post-processing and test method. Keep one comparable population and a defensible equal-size rational subgroup per build. Sensor location, calibration and aggregation matter; these field labels alone do not define a qualified measurement procedure. Shared fields retain identical units across profiles; no implicit conversion occurs.
+
+### Reproduction and constructed signals
+
+`generate_additional.py` uses Python `random.Random` seeds fixed before inspecting outputs: EB-PBF strength 5304, context 5305; laser DED strength 5306, context 5307. EB-PBF reference strengths are 90 independent normal draws with mean 970 and SD 14 MPa; laser DED mean 960 and SD 15 MPa. Round strengths to 0.001 MPa and group consecutive triples. Reference Shapiro-Wilk p-values are 0.600812 and 0.716425 respectively; neither proves normality.
+
+Context uses independent uniform jitter, rounded to four decimals, around these illustrative centers/spreads in table-column order: EB-PBF `(12 +/-1, 60 +/-1, 1000 +/-50, 700 +/-15, 0.02 +/-0.004)`; laser DED `(1000 +/-40, 6 +/-0.3, 8 +/-0.4, 20 +/-1, 12 +/-0.5)`. They are not recommended settings, validated operating windows or values copied from a study.
+
+The EB-PBF incapable fixture subtracts 65 MPa from every reference coupon; laser DED subtracts 55 MPa. Unstable EB-PBF subtracts 65 MPa strength and 80 deg C preheat from E020; unstable laser DED subtracts 55 MPa strength and 1 g/min powder feed from D020, with additional strength offsets `[-60, 0, +60]` on D024's three coupons. This deliberately plants a within-build spread increase while preserving that build's mean. All other values remain the reference values. Associations are constructed for the demo and do not establish physical causality or settings-to-strength effects.
+
+With whole-log limits, EB-PBF signals include 13 high means (E003-E009, E012, E014-E016, E018-E019) and 11 low means (E020-E030). Laser DED has 10 low means (D020-D026, D028-D030), 5 high means (D005-D006, D009, D014, D019) and one high S (D024). D024 appears twice: 16 signals on 15 builds. Full-log limits shift with the excursion and can flag earlier reference builds; these are not limits frozen from a qualified stable baseline.
+
+```powershell
+.\.venv\Scripts\python.exe data/generate_additional.py --check
+.\.venv\Scripts\python.exe data/validate_additional.py
+```
+
+Without `--check`, the generator writes only its six named new files. The validator checks byte reproduction, schemas, grouping, dates, tags, context consistency, frozen outcomes and planted changes. Independent Python stdlib sample SDs, c4=sqrt(pi)/2 for n=3, chart-limit arithmetic, coupon failures and category counts cross-check the core.
+
+Parameter vocabulary is informed by primary sources: [Wang et al., EB-PBF thermal modelling](https://pmc.ncbi.nlm.nih.gov/articles/PMC8658374/), [NIST EB-PBF powder/preheating study](https://www.nist.gov/publications/sintered-powder-oxidation-variation-function-build-height-titanium-alloy-produced) and [NIST directed energy deposition research](https://www.nist.gov/additive-manufacturing/research-areas/technologies/directed-energy-deposition). These sources motivate recorded context, not the illustrative numeric distributions, thresholds or causal claims.
+
+
+## Synthetic inspection examples (H-14)
+
+Four additional runnable files preserve every original strength/setting field and append optional `primary_defect`. All records are **synthetic**, including every inspection outcome; no real inspection or calibrated inspection performance is implied. Original twelve CSV bytes and their generators are unchanged.
+
+| New file | Strength/settings source | Inspection shuffle seed |
+| --- | --- | ---: |
+| `lpbf_inspection_demo.csv` | `unstable_shift.csv` | 5310 |
+| `waam_inspection_demo.csv` | `waam_unstable_shift.csv` | 5311 |
+| `ebpbf_inspection_demo.csv` | `ebpbf_unstable_shift.csv` | 5312 |
+| `laser_ded_inspection_demo.csv` | `laser_ded_unstable_shift.csv` | 5313 |
+
+Each has 90 coupon rows and exactly **20 Porosity, 12 Lack of fusion, 5 Cracking, 2 Dimensional deviation, 45 `none`, and 6 blank** primary-defect fields. Python `random.Random(seed).shuffle` assigns this fixed inventory independently to source rows. Categories and their associations with builds/strength are invented for demonstration, not empirical frequencies, process physics or a model trained on settings. The labels do not prove those conditions were observed in the source strength data.
+
+The one extra variable, `primary_defect`, is text (no physical units), one primary classification per coupon. A real source would be a traceable coupon inspection report, with the inspection method, coverage, detection limits, classification criteria and responsible reviewer recorded outside this minimal example. If a coupon has several defects, define a documented primary-category rule or use a future separate multi-defect event schema; do not put a list of events into this primary field and count it as multiple coupons.
+
+`none` explicitly means inspected/no primary defect recorded; matching ignores case and surrounding whitespace. A blank means no inspection result recorded, not a pass. A missing column also means no supplied inspection information. Other recorded labels are counted case-insensitively, with at most 80 characters per label. The API preserves literal `None`/`none` as text for this field instead of allowing pandas to turn the reserved no-defect value into a missing value. No inspection outcome is inferred from measured UTS or chart flags.
+
+Full-window inspection totals are 84 inspected, 39 defective, 45 explicit no-defect and 6 unrecorded. Coverage = 84/90 = 93.3333%. The defect Pareto denominator is 39: counts 20,12,5,2; percentages 51.2821%,30.7692%,12.8205%,5.1282%; cumulative 51.2821%,82.0513%,94.8718%,100%. Those are recorded primary categories only; they are not strength-failure rates or an inventory of every possible defect. The 80% line is a visual reference, not an asserted 80/20 law or a severity threshold.
+
+The new files have the same core verdict/indices/failure counts as their source unstable scenario at illustrative LSL 895 MPa. LPBF source dates differ from the October dates in the other process fixtures; choose actual dates from each source. Optional inclusive date views change Pareto denominators and inspection coverage only for window builds while keeping complete-file control limits and capability results fixed. Original 1-based data-row numbers (excluding header) identify selected coupon records even after filtering.
+
+```powershell
+.\.venv\Scripts\python.exe data/generate_inspection.py --check
+.\.venv\Scripts\python.exe data/validate_inspection.py
+```
+
+Without `--check`, generation writes only the four new named files. Validation checks byte reproduction, unchanged source columns, independent category counts, coverage, cumulative arithmetic and exact core-output equality. All four datasets appear as **Inspection defect example** under their process selector; all previous dataset IDs remain available. There are now sixteen files, four per process. See the [interaction and API contract](../docs/pareto-explorer.md).

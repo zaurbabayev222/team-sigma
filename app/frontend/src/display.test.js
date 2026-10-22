@@ -2,6 +2,7 @@ import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it, vi, afterEach } from 'vitest'
 import { Results } from './App.jsx'
+import SignalPareto, { InspectionPareto } from './SignalPareto'
 import { API_URL, analyzeDataset, analyzeUpload, listDatasets } from './api'
 
 // Display fixture only: statistics correctness belongs to the Python known-answer tests.
@@ -56,5 +57,74 @@ describe('process-specific contracts', () => {
     const html=renderToStaticMarkup(React.createElement(Results,{result,context:{source:'WAAM example',processLabel:result.profile.label,lsl:895,synthetic:true}}))
     for(const value of ['Wire arc additive manufacturing','Arc current (A)','125.000','W020'])expect(html).toContain(value)
     expect(html).not.toContain('Laser power')
+  })
+})
+
+
+describe('signal Pareto', () => {
+  it('renders server signal counts, cumulative percentage and affected build IDs', () => {
+    const signal_pareto={total_signals:4,flagged_builds:3,categories:[{category:'mean_low',label:'Mean below X-bar LCL',count:2,percent:50,cumulative_percent:50,build_ids:['A','B']},{category:'mean_high',label:'Mean above X-bar UCL',count:1,percent:25,cumulative_percent:75,build_ids:['C']},{category:'spread_high',label:'S above UCL',count:1,percent:25,cumulative_percent:100,build_ids:['A']}]}
+    const html=renderToStaticMarkup(React.createElement(Results,{result:{...fixture,signal_pareto}}))
+    for(const value of ['4 signals across 3 flagged builds','50.0%','75.0%','100.0%','A, B','not inspection defects'])expect(html).toContain(value)
+  })
+  it('explains why no chart is shown without signals', () => {
+    const html=renderToStaticMarkup(React.createElement(Results,{result:{...fixture,signal_pareto:{total_signals:0,flagged_builds:0,categories:[]}}}))
+    expect(html).toContain('no signal categories to rank')
+    expect(html).not.toContain('NaN')
+  })
+})
+
+
+describe('investigation actions', () => {
+  it('shows the evidence, ordered checks and affected builds supplied by Python', () => {
+    const investigation_actions=[{id:'unstable',priority:1,title:'Review build shift',evidence:'Two signals on one build.',action:'Compare the source test records.',build_ids:['W020']}]
+    const html=renderToStaticMarkup(React.createElement(Results,{result:{...fixture,investigation_actions}}))
+    for(const value of ['Recommended investigation actions','Two signals on one build.','Compare the source test records.','W020','do not establish causes'])expect(html).toContain(value)
+  })
+  it('keeps additional checks available through a disclosure', () => {
+    const investigation_actions=Array.from({length:5},(_,i)=>({id:`check-${i}`,title:`Check ${i}`,evidence:'Observed evidence',action:'Review it',build_ids:[]}))
+    const html=renderToStaticMarkup(React.createElement(Results,{result:{...fixture,investigation_actions}}))
+    expect(html).toContain('More investigation checks (2)')
+    expect(html).toContain('start="4"')
+    expect(html).toContain('Check 4')
+  })
+})
+
+
+describe('additional printing methods', () => {
+  it.each(['ebpbf','laser_ded'])('uses the selected %s profile without a fallback', async process => {
+    const fetch=vi.fn().mockResolvedValue({ok:true,json:async()=>fixture});vi.stubGlobal('fetch',fetch)
+    await listDatasets(process);await analyzeDataset(`${process}_stable_capable`,895,process);await analyzeUpload(new Blob(['test']),895,process)
+    expect(fetch.mock.calls[0][0]).toContain(`process_type=${process}`)
+    expect(fetch.mock.calls[1][0]).toContain(`process_type=${process}`)
+    expect(fetch.mock.calls[2][1].body.get('process_type')).toBe(process)
+  })
+})
+
+
+describe('interactive Pareto contracts', () => {
+  it('renders keyboard bar controls, counts, shares, cumulative labels and the 80 percent reference', () => {
+    const pareto={total_signals:2,flagged_builds:2,categories:[{category:'mean_low',label:'Mean below X-bar LCL',count:2,percent:100,cumulative_percent:100,build_ids:['A','B']}]}
+    const html=renderToStaticMarkup(React.createElement(SignalPareto,{pareto,selected:'mean_low',onSelect:()=>{}}))
+    for(const value of ['role="button"','tabindex="0"','aria-pressed="true"','Select signal category: Mean below X-bar LCL','2 (100.0%)','80% reference','Inspect Mean below X-bar LCL'])expect(html).toContain(value)
+  })
+  it.each(['missing','unrecorded','none'])('distinguishes the %s inspection empty state', state => {
+    const pareto={provided:state!=='missing',total_coupons:3,inspected_coupons:state==='none'?3:0,no_defect_coupons:state==='none'?3:0,unrecorded_coupons:state==='none'?0:3,defective_coupons:0,coverage_percent:state==='none'?100:0,categories:[]}
+    const html=renderToStaticMarkup(React.createElement(InspectionPareto,{pareto}))
+    expect(html).toContain(state==='missing'?'No inspection column was supplied':state==='unrecorded'?'Blanks are not passes':'No primary defects are recorded')
+    expect(html).not.toContain('NaN')
+  })
+  it('passes inclusive date and category fields through GET and multipart without changing the analysis inputs', async () => {
+    const fetch=vi.fn().mockResolvedValue({ok:true,json:async()=>fixture});vi.stubGlobal('fetch',fetch)
+    const filters={start_date:'2026-10-24',end_date:'2026-10-24',defect_category:'Lack of fusion',signal_category:null}
+    await analyzeDataset('laser_ded_inspection_demo',895,'laser_ded',filters)
+    const url=new URL(fetch.mock.calls[0][0],'http://localhost/')
+    expect(url.searchParams.get('defect_category')).toBe('Lack of fusion')
+    expect(url.searchParams.get('start_date')).toBe('2026-10-24')
+    expect(url.searchParams.has('signal_category')).toBe(false)
+    await analyzeUpload(new Blob(['test']),895,'laser_ded',filters)
+    const body=fetch.mock.calls[1][1].body
+    expect(body.get('lsl')).toBe('895');expect(body.get('end_date')).toBe('2026-10-24')
+    expect(body.get('defect_category')).toBe('Lack of fusion')
   })
 })

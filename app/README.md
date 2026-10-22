@@ -1,5 +1,10 @@
 # AeroQual function and API reference
 
+For guided practice, use the [offline interactive HTML walkthrough](../demo/slidedeck/index.html).
+It displays captured synthetic results; actual analysis and uploads use the API described here.
+[Evaluation evidence](../docs/evaluation.md), [remaining work](../docs/remaining-work.md) and the
+[submission draft](../docs/submission.md) describe the current local candidate and outstanding gates.
+
 Start with the [root README](../README.md) for Windows PowerShell setup, dashboard usage, observed verification results and current limitations. The [codebook](../data/README.md) defines the synthetic datasets; the [walkthrough](../demo/README.md) explains their outputs.
 
 ## Launch and frontend integration
@@ -29,8 +34,8 @@ Keep the backend running separately and open Vite's printed URL. Remove the over
 | --- | --- | --- |
 | GET | `/` | Redirects to `/dashboard/` (keeps the Connect path prefix) |
 | GET | `/health` | `{"status":"ok"}` |
-| GET | `/profiles` | LPBF/WAAM labels, column mappings and optional parameter units |
-| GET | `/datasets` | `{"datasets":["stable_capable","stable_incapable","unstable_shift"]}` after CSV synchronization |
+| GET | `/profiles` | All four process labels, column mappings and optional parameter units |
+| GET | `/datasets` | Process-specific registry IDs; four examples per process after synchronization |
 | GET | `/analyze` | Analyze bundled CSV using query parameters |
 | POST | `/analyze` | Analyze uploaded CSV using multipart fields |
 | GET | `/docs`, `/openapi.json` | Interactive documentation and machine-readable schema |
@@ -43,10 +48,13 @@ Keep the backend running separately and open Vite's printed URL. Remove the over
 | --- | --- | --- | --- |
 | `dataset` | String | Required for GET | Filename without `.csv` from `app/data/`; letters, digits, underscore or hyphen only |
 | `file` | CSV file | Required for POST | Multipart upload, one row per coupon |
-| `process_type` | String | `lpbf` | Selected profile: `lpbf` or `waam`; query for GET, form field for POST |
+| `process_type` | String | `lpbf` | Selected profile: `lpbf`, `waam`, `ebpbf` or `laser_ded`; query for GET, form field for POST |
 | `lsl` | Float | Required | Customer lower strength limit, MPa |
 | `min_builds` | Integer | 25 | Minimum builds for a capability verdict |
 | `cpk_target` | Float | 1.33 | Lower-side Cpk target |
+| `start_date`, `end_date` | ISO dates | Unbounded | Inclusive Pareto date window; complete-file limits and verdict retained |
+| `signal_category` | String | None | Select mean_low, mean_high or spread_high for investigation details |
+| `defect_category` | String | None | Select recorded primary inspection category; mutually exclusive with signal_category |
 
 GET takes settings as query parameters. POST takes **multipart/form-data**, not JSON: file and scalar settings belong in the same form. This matches FastAPI's [File/Form documentation](https://fastapi.tiangolo.com/tutorial/request-forms-and-files/), checked through Context7. The dashboard exposes process, LSL and dataset/upload selection; it uses defaults for the other settings.
 
@@ -74,6 +82,10 @@ The known-answer upload returns Cpk `0.5908179503`, Ppk `0.5708992257`, failure 
 | `verdict`, `reason` | Strings | Assessment and explanation |
 | `profile` | Object | `name`, `label`, `value_label`, `value_unit`, `parameters` (column/label/unit metadata) |
 | `parameters` | Object | `columns`, `usual_range`, `flagged_builds` |
+| `inspection_pareto` | Object | Full-log inspection coverage/counts and primary-defect categories |
+| `investigation_view` | Object | Applied dates, scoped Paretos, selected builds/coupon context and scoped actions; original limits retained |
+| `signal_pareto` | Object | Total occurrences, unique flagged builds, denominator and sorted categories with counts, percentages, cumulative percentages and build IDs |
+| `investigation_actions` | List | Ordered evidence-linked checks: id, priority, title, evidence, action, build_ids |
 | `histogram` | List | `{lower, upper, count}` bins from NumPy automatic binning; edges in MPa |
 
 `parameters.usual_range[column]` is `{min, max}` over build means of **unflagged builds**. `parameters.flagged_builds` contains `{build_id, values: {column: value}}`. Nonnumeric optional entries become missing; unavailable flagged values become null. A range is omitted if no usable unflagged values exist. Without recognized optional columns the object is `{"columns":[],"usual_range":{},"flagged_builds":[]}`. These observed ranges are not approved operating windows.
@@ -113,7 +125,7 @@ analyze(df, lsl, subgroup_col="subgroup", order_col="order", value_col="value",
         min_builds=25, cpk_target=1.33)
 ```
 
-`df` is a pandas DataFrame; `lsl` must be a finite Python integer/float, not boolean. Column arguments map subgroup, order and measurement. Direct callers using supplied CSVs must pass the shared build/strength mappings above because defaults are generic. The frame is not modified. Returns the core response fields above, without `profile`, `parameters` or `histogram`; bad core input raises `ValueError`.
+`df` is a pandas DataFrame; `lsl` must be a finite Python integer/float, not boolean. Column arguments map subgroup, order and measurement. Direct callers using supplied CSVs must pass the shared build/strength mappings above because defaults are generic. The frame is not modified. Returns the core response fields above, without adapter fields `profile`, `parameters`, `histogram`, `signal_pareto`, `investigation_actions`, `inspection_pareto` or `investigation_view`; bad core input raises `ValueError`.
 
 ### Calculations
 
@@ -146,7 +158,7 @@ Shapiro-Wilk uses pooled coupon values when total variation is positive; it does
 
 ### API adapter and profile
 
-`run_analysis(df, lsl, min_builds, cpk_target, process_type="lpbf")` in `app.py` checks profile columns, calls `analyze`, converts its `ValueError` to HTTP 400 and adds profile, parameters and histogram. `parameter_summary(df, result, profile)` describes optional parameters at build level. The API uses the explicit registry in `profiles/__init__.py` to resolve LPBF or WAAM, filter builtin examples and reject unknown profiles, incompatible tags or nonempty fields exclusive to the other process. The numerical engine remains unchanged.
+`run_analysis(df, lsl, min_builds, cpk_target, process_type="lpbf")` in `app.py` checks profile columns, calls `analyze`, converts its `ValueError` to HTTP 400 and adds profile, parameters and histogram. `parameter_summary(df, result, profile)` describes optional parameters at build level. The API uses the explicit registry in `profiles/__init__.py` to resolve the four supported processes, filter builtin examples and reject unknown profiles, incompatible tags or nonempty fields exclusive to the other process. The numerical engine remains unchanged.
 
 ## Scripts and release boundaries
 
@@ -184,4 +196,34 @@ WAAM optional numeric fields/units are arc_current_a (A), arc_voltage_v (V), wir
 
 Unknown process IDs return 422. Wrong-process dataset IDs return 404. CSV process tags, if present, are trimmed/case-normalized and must all match the selected process; mixed/blank/mismatched tags return 400. Nonempty recognized fields exclusive to another process also return 400. A generic three-column CSV cannot establish its own process provenance: the user's selection declares it. Do not pool differing processes or test populations.
 
-The six builtins are explicit in the registry. Legacy requests still default to LPBF, preserving its three original dataset IDs and core numbers. The frontend receives labels/units through profile metadata; selection changes clear uploads, refilter examples and mark previous results stale. Customer LSL is retained when switching; it is never inferred from the method. Parameter values and planted associations are synthetic examples, not recommended operating windows or trained predictions.
+The sixteen builtins are explicit in the registry. Legacy requests still default to LPBF, preserving its three original dataset IDs and core numbers. The frontend receives labels/units through profile metadata; selection changes clear uploads, refilter examples and mark previous results stale. Customer LSL is retained when switching; it is never inferred from the method. Parameter values and planted associations are synthetic examples, not recommended operating windows or trained predictions.
+
+
+## EB-PBF, powder-fed laser DED and signal workflow
+
+Use IDs `ebpbf` and `laser_ded` for query/form `process_type`; their example dataset IDs prefix the usual scenario names with the process ID. The [codebook](../data/README.md#eb-pbf-and-powder-fed-laser-ded-h-13) lists every optional column and unit. Same-unit shared columns are allowed; only nonempty exclusive foreign-profile fields are rejected.
+
+`signal_pareto(result)` in `signals.py` takes a valid core result and returns `total_signals`, `flagged_builds`, `denominator` and `categories`. A row has `category`, `label`, `count`, `percent`, `cumulative_percent`, `build_ids`. Categories use strict existing X-bar low/high and S-high comparisons. Percentages count signal occurrences, not builds or defects; zero-count categories are omitted. No signals yields zero totals and an empty list.
+
+`investigation_actions(result, profile, min_builds=25, cpk_target=1.33)` in `investigation.py` takes an enriched result (with signal Pareto and optional parameter summary) and produces ordered checks. It uses the same settings as the core and makes no setpoint or causal claim. `run_analysis` calls both plain functions; no new QC calculation lives in React or FastAPI. See the [full signal/investigation contract](../docs/signal-investigation.md).
+
+```powershell
+Invoke-RestMethod 'http://127.0.0.1:8000/analyze?dataset=laser_ded_unstable_shift&lsl=895&process_type=laser_ded'
+curl.exe --fail --silent --show-error http://127.0.0.1:8000/analyze -F 'file=@data/ebpbf_stable_capable.csv' -F 'lsl=895' -F 'process_type=ebpbf'
+```
+
+
+## Interactive Pareto requests (H-14)
+
+GET query and POST multipart fields accept optional `start_date`, `end_date`, `signal_category`, `defect_category`. These produce a descriptive `investigation_view` while preserving every full-analysis field. Re-submit the same complete dataset/file and LSL/settings; do not prefilter coupons before calling the endpoint. Dates must be valid ISO calendar dates and ordered; source build dates must be valid/consistent when requesting a date window. Invalid views return HTTP 400. Unknown/no-occurrence defect labels produce an empty selected view; simultaneous signal and defect selections are rejected.
+
+Optional CSV `primary_defect` distinguishes a recorded label, explicit `none` and blank/unrecorded. `inspection.py` validates and counts these records. `pareto_view.py` selects inclusive dates, recounts signal occurrences using original limits, derives primary-defect counts/coverage and returns selected build/coupon context and checks. Required build/strength inputs and all core formulas are unchanged. Four separate `*_inspection_demo` datasets extend source unstable fixtures with clearly synthetic inspection categories; the original twelve files are unchanged.
+
+```powershell
+Invoke-RestMethod 'http://127.0.0.1:8000/analyze?dataset=laser_ded_inspection_demo&lsl=895&process_type=laser_ded&start_date=2026-10-24&end_date=2026-10-24&signal_category=spread_high'
+curl.exe --fail --silent --show-error http://127.0.0.1:8000/analyze -F 'file=@data/laser_ded_inspection_demo.csv' -F 'lsl=895' -F 'process_type=laser_ded' -F 'defect_category=Porosity'
+```
+
+`inspection_pareto` contains `provided`, total/inspected/unrecorded/no-defect/defective coupon counts, coverage percent (null when no coupons), denominator and categories. Category rows include normalized ID, display label, count, percentage, cumulative percentage, unique build IDs and original 1-based coupon data-row positions.
+
+`investigation_view` contains applied start/end, window/full build counts, window build IDs, both scoped Paretos, selected category metadata, matching core build rows, per-build optional context and coupon records, scoped actions, `filtered` and limits-source metadata. Selecting a category filters details, not its Pareto denominator. Default no-selection details show flagged builds in the date window. See the [full guide](../docs/pareto-explorer.md).

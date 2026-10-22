@@ -4,7 +4,7 @@ The workflow (`.github/workflows/deploy-fastapi.yml`) and `connect-publish-async
 repository's `connect-publish` templates, originally from
 [timothyfraser/fastapi-connect-demo](https://github.com/timothyfraser/fastapi-connect-demo) (MIT).
 The publisher script is the template copy, unchanged. The workflow adds three things to the
-template: it builds the React dashboard, stages a bundle (app source + built dashboard + the six
+template: it builds the React dashboard, stages a bundle (app source + built dashboard + the twelve
 `data/*.csv` files and codebook) with `prepare-connect-bundle.py`, and runs every test before it
 publishes.
 
@@ -21,7 +21,7 @@ Posit Connect**. You can also start it by hand there (**Run workflow**). The run
    runs update the same item, so the URL does not change;
 5. asks Connect to make the app public ("anyone, no login"). If the server refuses, the run warns:
    set it by hand in Connect (the app's **Access** panel);
-6. checks `/health`, then checks the dashboard, the SPEC known answer and all six datasets
+6. checks `/health`, then checks the dashboard, the SPEC known answer and all twelve datasets
    **without** a key, as a judge would see them.
 
 Secrets: `CONNECT_SERVER` and `CONNECT_API_KEY`, set by the repo owner in **Settings → Secrets and
@@ -76,3 +76,13 @@ Use a fresh unused output path. Requirements staging explicitly uses UTF-8 and L
 ## WAAM release candidate
 
 H-10 adds the WAAM module, explicit profile registry and three additional CSVs to the runtime bundle. The expanded local manifest was regenerated after the source, codebook and frontend changes; all 18 checksums, isolated HTTP behavior and all six LPBF/WAAM scenarios passed. Repeat generation after any further runtime changes. Legacy LPBF API defaults remain supported. No workflow publication is invoked by local tests. A later push to main still triggers deployment; review the expanded manifest before authorizing that push.
+
+
+## H-11 to H-13 local candidate
+
+The bundle now includes signals.py, investigation.py, EB-PBF and laser DED profile modules and six additional CSVs (twelve total). Build the frontend and finish the data codebook before local manifest generation, then run bundle tests, checksum verification and the isolated HTTP verifier. The verifier calls the registry-driven twelve-scenario checker. Existing publish automation and secrets handling are unchanged. Local review does not publish; a later qualifying main push still deploys automatically.
+
+
+## H-14: expanded Pareto bundle
+
+The bundle includes inspection.py, pareto_view.py and four separate synthetic inspection_demo CSVs (sixteen datasets total), plus the rebuilt interactive frontend. After the codebook/build are final, generate and verify the manifest locally and run the isolated HTTP verifier with the registry-driven sixteen-scenario checker. Original core calculations and twelve source CSVs remain unchanged. Existing push-to-main deployment behavior is unchanged; this local review does not commit, push or publish.

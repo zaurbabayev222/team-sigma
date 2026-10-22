@@ -20,7 +20,7 @@ The examples after each `FILL IN` show the shape of an answer. They are not hint
 
 ## 2. User and use case (rubric: scope 5, user and use case 5)
 - **User:** the contractor's quality engineer who reviews tensile-test results for each finished
-  titanium build using laser powder bed fusion (LPBF) or wire arc additive manufacturing (WAAM).
+  titanium build using LPBF, WAAM, EB-PBF or powder-fed laser DED.
 - **Decision the tool helps them make, and when:** after each new build is tested, (1) whether the
   printing process has changed and needs investigating before the next build, and (2) whether the
   process is capable of meeting the customer's minimum strength, and if not, which recorded process
@@ -35,7 +35,7 @@ cannot measure costs points.
 
 | Input | Type and units | Where the user gets it |
 |---|---|---|
-| Printing process (required) | `lpbf` or `waam` | manufacturing record; selected in dashboard or API |
+| Printing process (required) | `lpbf`, `waam`, `ebpbf` or `laser_ded` | manufacturing record; selected in dashboard or API |
 | `process_type` (optional CSV column) | consistent selected process ID | manufacturing record |
 | `builds.csv`, one row per tested coupon | CSV file | their tensile-test log |
 | `build_id` (required) | text | build traveler / printer job name |
@@ -53,7 +53,7 @@ cannot measure costs points.
 
 Every build has the same number of coupons (3 in our datasets). A blank `uts_mpa` is an error that
 names the row, never a pass. The optional columns come from the selected *process profile*
-(`app/profiles/lpbf.py` or `app/profiles/waam.py`); the statistics never read them.
+(the four registered modules under `app/profiles/`); the statistics never read them.
 
 ## 4. The statistics, and why (rubric: valid QC analysis 25)
 Say the method in words before any code exists. Load the `stats-first-steering` skill first.
@@ -105,7 +105,7 @@ Fixed for every team:
   computes every number; React only displays them.
 - **Starting demo:** `demos/fastapi/` copied into `app/`, with `demos/reactfront/` as `app/frontend/`.
 - **Built to expand:** the statistics in `app/qc.py` see only generic columns (subgroup id, order,
-  value, lower limit). Process-specific fields live in `app/profiles/lpbf.py` or `app/profiles/waam.py`
+  value, lower limit). Process-specific fields live in the four registered modules under `app/profiles/`
   (its optional parameters, units and labels). Adding EB-PBF or other DED variants later means adding and registering a profile
   file, not changing the statistics. See [`docs/decisions.md`](docs/decisions.md).
 
@@ -143,7 +143,7 @@ collect this data for real.
 ## 9. Out of scope
 What we will NOT build, so nobody (human or agent) builds it by accident.
 - Default: logins, databases, real customer data, a second statistic before the first one is tested.
-- Processes other than LPBF and WAAM (EB-PBF, other DED variants, binder jetting) remain out of scope for this increment.
+- Processes other than LPBF, WAAM, EB-PBF and powder-fed laser DED remain out of scope. Inspection primary-defect categories are supported by H-14.
 - Regression, ANOVA, FMEA, machine learning or forecasting; two-sided Cpk on dimensions; filters by
   machine or lot; files with unequal coupons per build. Later, only after the core passes review.
 - Certifying parts: the tool supports a decision, it does not release hardware.
@@ -160,3 +160,31 @@ The user approved process selection, a WAAM profile, three synthetic WAAM scenar
 - WAAM data are seeded synthetic normal-reference fixtures, not measurements or a trained manufacturing model. All example strengths, parameters and LSL 895 MPa are illustrative. No operating window, causal effect or aerospace threshold is asserted.
 - Known answer for both profile adapters: the section 4 CSV at LSL 980 must reproduce Cpk 0.591, Ppk 0.571, one of twelve failures and a withheld conclusion for four builds. Constant data must withhold capability; missing strength, one build and unequal subgroups must reject.
 - Unit-bearing profile metadata drives upload guidance and parameter labels. Existing `cpk`/`ppk` result keys and LPBF identifiers remain compatible. UI results retain selected process, dataset/file and LSL; switching process clears the selected upload and marks older results stale.
+
+## 11. Approved signal Pareto, investigation guidance and profiles (H-11 to H-13)
+
+- User approved existing control-chart categories, not inspection defects: mean below X-bar LCL, mean above X-bar UCL, S above UCL. Reuse strict comparisons against the core limits; no new control rules or changes to capability formulas.
+- Count each category once per build; a build can have both a mean and an S signal. Sort nonzero categories by descending count, ties in the listed order. Percent = category count / total signal occurrences * 100; cumulative percent = running count / total * 100. Report unique flagged builds separately. Empty/constant cases return zero signals and no fabricated percentages. No 80/20 or causal claim.
+- Known-answer Pareto: four builds with low+spread, low, high, no signal give counts 2,1,1; percentages 50,25,25; cumulative 50,75,100; total 4 signals on 3 builds. Equality at limits is not a signal. No signals gives empty rows, total 0.
+- Investigation guidance is deterministic, evidence-linked and ordered: review observed coupon failures, investigate chart signals before interpreting capability, verify no-variation/insufficient-sample cases, review stable incapability, maintain monitoring for capable data, inspect diagnostic concerns and available process logs. No automatic numerical setpoint adjustment, root-cause assertion or hardware release decision.
+- Register `ebpbf` (electron beam powder bed fusion) and `laser_ded` (powder-fed laser directed energy deposition). Both reuse `build_id`, `build_date`, `uts_mpa` and the unchanged X-bar/S engine. Add three seeded scenarios each, retain all six existing CSV bytes and LPBF defaults. DED here means powder-fed laser DED, not every DED subtype.
+- EB-PBF optional context: beam_current_ma (mA), accelerating_voltage_kv (kV), scan_speed_mm_s (mm/s), preheat_temperature_c (deg C), chamber_pressure_pa (Pa). Laser DED context: laser_power_w (W), powder_feed_rate_g_min (g/min), travel_speed_mm_s (mm/s), shielding_gas_flow_l_min (L/min), standoff_distance_mm (mm). Shared column names with the same unit are allowed; exclusive foreign-profile fields remain rejected. Generic columns require truthful user process selection.
+- New data are clearly synthetic fixtures with documented seeds, units, collection sources and planted associations, not training data for a predictive model. One process/test population per file; no implicit unit conversion or method-derived strength limit.
+
+
+## 12. Approved interactive Pareto extension (H-14)
+
+The user approved all five recommended improvements: selectable bars linked to build details/actions, direct counts/percent/cumulative labels, a visual 80% reference, inclusive date-window views retaining full-log control limits, and a separate inspection-defect Pareto.
+
+- Optional `primary_defect` is one recorded primary inspection category per coupon. Trim/case-normalize labels for counting; `none` explicitly means inspected with no defect; blank/missing means uninspected/unrecorded. Reject non-text labels or more than 80 characters. No inference from strength, chart flags or settings; one primary category cannot measure all defects on a multi-defect coupon.
+- Inspection bars count defective inspected coupons per category; percent/cumulative denominators are defective coupons only. Report inspected, no-defect and unrecorded counts separately, plus inspection coverage. No column, no recorded inspections and all inspected/no-defect are distinct empty states. Ties are alphabetic by normalized category. Known answer porosity 2, crack 1, none 1, blank 1 gives 3 defective/4 inspected/5 total; 66.6667%,33.3333%; cumulative 66.6667%,100%; coverage 80%.
+- Add four separate `*_inspection_demo.csv` files, one per process, each extending that process's unstable fixture with documented synthetic inspection results. Do not alter any original twelve CSVs or their core outputs. Each demo has 90 coupons: 39 primary defects (20 porosity,12 lack of fusion,5 cracking,2 dimensional deviation),45 explicit none,6 unrecorded; independently shuffled by fixed process seed with no physical model.
+- Optional GET query / POST multipart `start_date`, `end_date`, `signal_category`, `defect_category` request a view of the same complete input. Validate ISO calendar bounds, start <= end and consistent valid source build dates when filtering. Bounds inclusive, either bound optional; reject simultaneous signal/defect selections. Clear category selection independently of the date range.
+- Always analyze the complete file first. Full-log means/limits, capability indices/verdict, failure totals and diagnostics remain unchanged. Recount Pareto signals using original limits and only builds in the window; inspection counts and coverage use coupons from window builds. A bar selection narrows the investigation table/actions, not the chart denominator. Return empty states for no matching builds/categories without fabricating a new capability verdict.
+- All count/percentage/range-selection logic runs in plain Python helpers; React handles formatting, SVG geometry and interactions only. Selected builds are outlined on full-log charts and listed with coupon strengths, inspection labels and recorded context. Focused actions cite their scope and retain the no-causality/no-setpoint boundary. Display 80% as a reference, not a required 80/20 relationship or evidence of severity.
+- Every bar and the supporting table selection control must support keyboard activation and selected-state announcements. Keep date/filter request errors recoverable and prior results labeled. New analyses reset the view; same-origin/Connect paths and legacy no-filter requests remain compatible.
+
+
+## 13. Approved documentation and interactive walkthrough (H-15)
+
+The user requested updates to all remaining non-deployment evaluation/contract evidence and a step-by-step interactive HTML slide deck. The walkthrough teaches process/data selection, inputs, stability/capability/conformance, control charts, both Paretos, date/category investigation, uploads, diagnostics and safe experimentation. Use actual captured synthetic API outputs, clearly labeled as captured rather than live. A standalone self-contained file must work without the backend or internet; optional Open app launches the actual app separately. Downloadable example CSVs must match repository bytes. Only plot geometry/presentation are computed in JavaScript; requirement experiments use precomputed API captures. Support keyboard navigation, an outline, mobile layouts, print, knowledge checks and original-data provenance. Document missing independent human review, publication/repo synchronization and submission confirmation as open-ended remaining work, without assigning them or claiming completion. H-06 and deployment/runtime files are excluded from this increment.

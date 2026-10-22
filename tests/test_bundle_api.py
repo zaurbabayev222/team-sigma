@@ -12,6 +12,7 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 import pandas as pd
+from app.profiles import DATASETS
 from app.profiles.lpbf import PROFILE
 COLUMNS = {key: PROFILE[key] for key in ("subgroup_col", "order_col", "value_col")}
 from app.qc import analyze
@@ -77,7 +78,7 @@ class ApiChecks(unittest.TestCase):
         self.assertEqual(self.request('/health')[1]['status'], 'ok')
         status, payload = self.request('/datasets')
         self.assertEqual(status, 200)
-        self.assertEqual(payload['datasets'], sorted(path.stem for path in (ROOT / 'data').glob('*.csv') if not path.stem.startswith('waam_')))
+        self.assertEqual(payload['datasets'], sorted(DATASETS['lpbf']))
 
     def test_known_answer_upload_matches_every_core_field(self):
         status, result = self.upload(KNOWN)
@@ -90,7 +91,7 @@ class ApiChecks(unittest.TestCase):
     def test_all_named_datasets_match_upload_and_core(self):
         for path in sorted((ROOT / 'data').glob('*.csv')):
             with self.subTest(dataset=path.name):
-                process = 'waam' if path.stem.startswith('waam_') else 'lpbf'
+                process = next(process for process, names in DATASETS.items() if path.stem in names)
                 status, named = self.request(f'/analyze?dataset={path.stem}&lsl=895&process_type={process}')
                 self.assertEqual(status, 200)
                 status, uploaded = self.upload(path.read_text(), '895', settings={'process_type':process})

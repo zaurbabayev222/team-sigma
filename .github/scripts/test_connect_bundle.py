@@ -49,6 +49,9 @@ class BundleChecks(unittest.TestCase):
         self.assertTrue((self.destination / 'frontend/dist/assets/main.js').exists())
         self.assertTrue((self.destination / 'data/unstable_shift.csv').exists())
         self.assertTrue((self.destination / 'data/waam_unstable_shift.csv').exists())
+        self.assertTrue((self.destination / 'data/ebpbf_unstable_shift.csv').exists())
+        self.assertTrue((self.destination / 'data/laser_ded_unstable_shift.csv').exists())
+        self.assertTrue((self.destination / 'data/laser_ded_inspection_demo.csv').exists())
         self.assertFalse((self.destination / '.env').exists())
         self.assertFalse((self.destination / 'frontend/node_modules').exists())
         # The manifest fingerprints bytes: Windows must stage the same requirements as CI.

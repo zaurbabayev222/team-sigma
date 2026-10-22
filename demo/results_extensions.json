@@ -1,0 +1,1174 @@
+{
+  "synthetic": true,
+  "lsl": 895,
+  "min_builds": 25,
+  "cpk_target": 1.33,
+  "results": {
+    "stable_capable": {
+      "profile": {
+        "name": "lpbf",
+        "label": "Laser powder bed fusion (LPBF)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "chamber_oxygen_ppm",
+            "label": "Chamber oxygen",
+            "unit": "ppm"
+          },
+          {
+            "column": "powder_reuse_count",
+            "label": "Powder reuse count",
+            "unit": "times"
+          },
+          {
+            "column": "laser_power_w",
+            "label": "Laser power",
+            "unit": "W"
+          }
+        ]
+      },
+      "n_builds": 30,
+      "n_per_build": 3,
+      "n_coupons": 90,
+      "cpk": 1.683472027406637,
+      "ppk": 1.7888714257173952,
+      "n_failures": 0,
+      "verdict": "capable",
+      "reason": "Cpk 1.68 is at or above the target 1.33.",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "investigation_actions": [
+        {
+          "id": "monitor",
+          "priority": 1,
+          "title": "Continue monitoring under comparable conditions",
+          "evidence": "Lower-side Cpk 1.683 meets configured target 1.33; no implemented chart signal.",
+          "action": "Retain process and test traceability and continue build-level monitoring. This statistical assessment does not qualify or release aerospace hardware.",
+          "build_ids": []
+        }
+      ]
+    },
+    "stable_incapable": {
+      "profile": {
+        "name": "lpbf",
+        "label": "Laser powder bed fusion (LPBF)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "chamber_oxygen_ppm",
+            "label": "Chamber oxygen",
+            "unit": "ppm"
+          },
+          {
+            "column": "powder_reuse_count",
+            "label": "Powder reuse count",
+            "unit": "times"
+          },
+          {
+            "column": "laser_power_w",
+            "label": "Laser power",
+            "unit": "W"
+          }
+        ]
+      },
+      "n_builds": 30,
+      "n_per_build": 3,
+      "n_coupons": 90,
+      "cpk": 0.3119606023055329,
+      "ppk": 0.3314919394732296,
+      "n_failures": 17,
+      "verdict": "not capable",
+      "reason": "Cpk 0.31 is below the target 1.33.",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "investigation_actions": [
+        {
+          "id": "coupon_failures",
+          "priority": 1,
+          "title": "Review below-specification coupon results",
+          "evidence": "17 of 90 measured coupons are below the entered LSL.",
+          "action": "Trace the failing coupons to their tensile-test reports and build travelers. Verify units, specimen preparation and customer acceptance requirements with the responsible quality engineer.",
+          "build_ids": []
+        },
+        {
+          "id": "capability_gap",
+          "priority": 2,
+          "title": "Plan a controlled capability-improvement study",
+          "evidence": "No implemented chart signal; lower-side Cpk 0.312 is below configured target 1.33.",
+          "action": "Verify the customer LSL and measurement system, then use qualified engineering trials to study centering and within-build variation. Reassess stability and capability after changes; do not lower the customer requirement to obtain a pass.",
+          "build_ids": []
+        },
+        {
+          "id": "process_records",
+          "priority": 3,
+          "title": "Compare available Laser powder bed fusion (LPBF) records",
+          "evidence": "Usable recorded context: Chamber oxygen (ppm), Powder reuse count (times), Laser power (W).",
+          "action": "Compare source records with build chronology and, where available, unflagged-build observed ranges. Those ranges are descriptive, not approved operating windows. Verify any proposed setting change through a qualified engineering study.",
+          "build_ids": []
+        }
+      ]
+    },
+    "unstable_shift": {
+      "profile": {
+        "name": "lpbf",
+        "label": "Laser powder bed fusion (LPBF)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "chamber_oxygen_ppm",
+            "label": "Chamber oxygen",
+            "unit": "ppm"
+          },
+          {
+            "column": "powder_reuse_count",
+            "label": "Powder reuse count",
+            "unit": "times"
+          },
+          {
+            "column": "laser_power_w",
+            "label": "Laser power",
+            "unit": "W"
+          }
+        ]
+      },
+      "n_builds": 30,
+      "n_per_build": 3,
+      "n_coupons": 90,
+      "cpk": 1.2923372876555803,
+      "ppk": 0.7117306491588054,
+      "n_failures": 0,
+      "verdict": "not assessable",
+      "reason": "Not assessable: process is unstable, builds out of control: B007, B014, B018, B020, B024, B025, B026, B027, B028, B029, B030.",
+      "signal_pareto": {
+        "total_signals": 11,
+        "flagged_builds": 11,
+        "denominator": "signal occurrences",
+        "categories": [
+          {
+            "category": "mean_low",
+            "label": "Mean below X-bar LCL",
+            "count": 8,
+            "percent": 72.72727272727273,
+            "cumulative_percent": 72.72727272727273,
+            "build_ids": [
+              "B020",
+              "B024",
+              "B025",
+              "B026",
+              "B027",
+              "B028",
+              "B029",
+              "B030"
+            ]
+          },
+          {
+            "category": "mean_high",
+            "label": "Mean above X-bar UCL",
+            "count": 3,
+            "percent": 27.272727272727273,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "B007",
+              "B014",
+              "B018"
+            ]
+          }
+        ]
+      },
+      "investigation_actions": [
+        {
+          "id": "unstable",
+          "priority": 1,
+          "title": "Investigate chart signals before interpreting capability",
+          "evidence": "11 chart signals on 11 builds; capability conclusion is withheld.",
+          "action": "Review build chronology, test conditions, material lots, orientation and post-processing around the affected builds. The signal Pareto prioritizes review frequency, not cause or severity.",
+          "build_ids": []
+        },
+        {
+          "id": "mean_low",
+          "priority": 2,
+          "title": "Review Mean below X-bar LCL",
+          "evidence": "8 signal occurrences (72.7% of all signals).",
+          "action": "Compare the affected build means with earlier and later builds. Check test records and process changes; a low chart mean is separate from a coupon failing the LSL.",
+          "build_ids": [
+            "B020",
+            "B024",
+            "B025",
+            "B026",
+            "B027",
+            "B028",
+            "B029",
+            "B030"
+          ]
+        },
+        {
+          "id": "mean_high",
+          "priority": 3,
+          "title": "Review Mean above X-bar UCL",
+          "evidence": "3 signal occurrences (27.3% of all signals).",
+          "action": "Check whether test conditions, coupon population or process records changed. This is a statistical shift; there is no upper strength specification in this analysis.",
+          "build_ids": [
+            "B007",
+            "B014",
+            "B018"
+          ]
+        },
+        {
+          "id": "baseline",
+          "priority": 4,
+          "title": "Review the control-limit baseline",
+          "evidence": "Current limits use the entire uploaded log, including signaled builds.",
+          "action": "After engineering investigation, collect or designate a justified stable qualification baseline before prospective monitoring. Full-log limits can also flag builds before a planted shift; do not simply delete points to obtain a passing result.",
+          "build_ids": []
+        },
+        {
+          "id": "normality",
+          "priority": 5,
+          "title": "Review the strength distribution and test population",
+          "evidence": "Pooled Shapiro-Wilk p = 0.03036 is below diagnostic threshold 0.05; this does not change the backend verdict.",
+          "action": "Inspect the distribution and whether mixed conditions or a process shift explain it. Review suitability of normal-based indices with a statistician; a pooled diagnostic does not prove a within-build distribution or cause.",
+          "build_ids": []
+        },
+        {
+          "id": "process_records",
+          "priority": 6,
+          "title": "Compare available Laser powder bed fusion (LPBF) records",
+          "evidence": "Usable recorded context: Chamber oxygen (ppm), Powder reuse count (times), Laser power (W).",
+          "action": "Compare source records with build chronology and, where available, unflagged-build observed ranges. Those ranges are descriptive, not approved operating windows. Verify any proposed setting change through a qualified engineering study.",
+          "build_ids": []
+        }
+      ]
+    },
+    "waam_stable_capable": {
+      "profile": {
+        "name": "waam",
+        "label": "Wire arc additive manufacturing (WAAM)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "arc_current_a",
+            "label": "Arc current",
+            "unit": "A"
+          },
+          {
+            "column": "arc_voltage_v",
+            "label": "Arc voltage",
+            "unit": "V"
+          },
+          {
+            "column": "wire_feed_rate_m_min",
+            "label": "Wire feed rate",
+            "unit": "m/min"
+          },
+          {
+            "column": "travel_speed_mm_s",
+            "label": "Travel speed",
+            "unit": "mm/s"
+          },
+          {
+            "column": "shielding_gas_flow_l_min",
+            "label": "Shielding gas flow",
+            "unit": "L/min"
+          }
+        ]
+      },
+      "n_builds": 30,
+      "n_per_build": 3,
+      "n_coupons": 90,
+      "cpk": 1.9111082512444262,
+      "ppk": 1.8910826336193287,
+      "n_failures": 0,
+      "verdict": "capable",
+      "reason": "Cpk 1.91 is at or above the target 1.33.",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "investigation_actions": [
+        {
+          "id": "monitor",
+          "priority": 1,
+          "title": "Continue monitoring under comparable conditions",
+          "evidence": "Lower-side Cpk 1.911 meets configured target 1.33; no implemented chart signal.",
+          "action": "Retain process and test traceability and continue build-level monitoring. This statistical assessment does not qualify or release aerospace hardware.",
+          "build_ids": []
+        }
+      ]
+    },
+    "waam_stable_incapable": {
+      "profile": {
+        "name": "waam",
+        "label": "Wire arc additive manufacturing (WAAM)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "arc_current_a",
+            "label": "Arc current",
+            "unit": "A"
+          },
+          {
+            "column": "arc_voltage_v",
+            "label": "Arc voltage",
+            "unit": "V"
+          },
+          {
+            "column": "wire_feed_rate_m_min",
+            "label": "Wire feed rate",
+            "unit": "m/min"
+          },
+          {
+            "column": "travel_speed_mm_s",
+            "label": "Travel speed",
+            "unit": "mm/s"
+          },
+          {
+            "column": "shielding_gas_flow_l_min",
+            "label": "Shielding gas flow",
+            "unit": "L/min"
+          }
+        ]
+      },
+      "n_builds": 30,
+      "n_per_build": 3,
+      "n_coupons": 90,
+      "cpk": 0.30790939977713666,
+      "ppk": 0.304682959883376,
+      "n_failures": 18,
+      "verdict": "not capable",
+      "reason": "Cpk 0.31 is below the target 1.33.",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "investigation_actions": [
+        {
+          "id": "coupon_failures",
+          "priority": 1,
+          "title": "Review below-specification coupon results",
+          "evidence": "18 of 90 measured coupons are below the entered LSL.",
+          "action": "Trace the failing coupons to their tensile-test reports and build travelers. Verify units, specimen preparation and customer acceptance requirements with the responsible quality engineer.",
+          "build_ids": []
+        },
+        {
+          "id": "capability_gap",
+          "priority": 2,
+          "title": "Plan a controlled capability-improvement study",
+          "evidence": "No implemented chart signal; lower-side Cpk 0.308 is below configured target 1.33.",
+          "action": "Verify the customer LSL and measurement system, then use qualified engineering trials to study centering and within-build variation. Reassess stability and capability after changes; do not lower the customer requirement to obtain a pass.",
+          "build_ids": []
+        },
+        {
+          "id": "process_records",
+          "priority": 3,
+          "title": "Compare available Wire arc additive manufacturing (WAAM) records",
+          "evidence": "Usable recorded context: Arc current (A), Arc voltage (V), Wire feed rate (m/min), Travel speed (mm/s), Shielding gas flow (L/min).",
+          "action": "Compare source records with build chronology and, where available, unflagged-build observed ranges. Those ranges are descriptive, not approved operating windows. Verify any proposed setting change through a qualified engineering study.",
+          "build_ids": []
+        }
+      ]
+    },
+    "waam_unstable_shift": {
+      "profile": {
+        "name": "waam",
+        "label": "Wire arc additive manufacturing (WAAM)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "arc_current_a",
+            "label": "Arc current",
+            "unit": "A"
+          },
+          {
+            "column": "arc_voltage_v",
+            "label": "Arc voltage",
+            "unit": "V"
+          },
+          {
+            "column": "wire_feed_rate_m_min",
+            "label": "Wire feed rate",
+            "unit": "m/min"
+          },
+          {
+            "column": "travel_speed_mm_s",
+            "label": "Travel speed",
+            "unit": "mm/s"
+          },
+          {
+            "column": "shielding_gas_flow_l_min",
+            "label": "Shielding gas flow",
+            "unit": "L/min"
+          }
+        ]
+      },
+      "n_builds": 30,
+      "n_per_build": 3,
+      "n_coupons": 90,
+      "cpk": 1.3767086340886652,
+      "ppk": 0.5795964797898725,
+      "n_failures": 5,
+      "verdict": "not assessable",
+      "reason": "Not assessable: process is unstable, builds out of control: W003, W004, W005, W010, W014, W016, W017, W020, W021, W022, W023, W024, W025, W026, W027, W028, W029, W030.",
+      "signal_pareto": {
+        "total_signals": 18,
+        "flagged_builds": 18,
+        "denominator": "signal occurrences",
+        "categories": [
+          {
+            "category": "mean_low",
+            "label": "Mean below X-bar LCL",
+            "count": 11,
+            "percent": 61.111111111111114,
+            "cumulative_percent": 61.111111111111114,
+            "build_ids": [
+              "W020",
+              "W021",
+              "W022",
+              "W023",
+              "W024",
+              "W025",
+              "W026",
+              "W027",
+              "W028",
+              "W029",
+              "W030"
+            ]
+          },
+          {
+            "category": "mean_high",
+            "label": "Mean above X-bar UCL",
+            "count": 7,
+            "percent": 38.888888888888886,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "W003",
+              "W004",
+              "W005",
+              "W010",
+              "W014",
+              "W016",
+              "W017"
+            ]
+          }
+        ]
+      },
+      "investigation_actions": [
+        {
+          "id": "coupon_failures",
+          "priority": 1,
+          "title": "Review below-specification coupon results",
+          "evidence": "5 of 90 measured coupons are below the entered LSL.",
+          "action": "Trace the failing coupons to their tensile-test reports and build travelers. Verify units, specimen preparation and customer acceptance requirements with the responsible quality engineer.",
+          "build_ids": []
+        },
+        {
+          "id": "unstable",
+          "priority": 2,
+          "title": "Investigate chart signals before interpreting capability",
+          "evidence": "18 chart signals on 18 builds; capability conclusion is withheld.",
+          "action": "Review build chronology, test conditions, material lots, orientation and post-processing around the affected builds. The signal Pareto prioritizes review frequency, not cause or severity.",
+          "build_ids": []
+        },
+        {
+          "id": "mean_low",
+          "priority": 3,
+          "title": "Review Mean below X-bar LCL",
+          "evidence": "11 signal occurrences (61.1% of all signals).",
+          "action": "Compare the affected build means with earlier and later builds. Check test records and process changes; a low chart mean is separate from a coupon failing the LSL.",
+          "build_ids": [
+            "W020",
+            "W021",
+            "W022",
+            "W023",
+            "W024",
+            "W025",
+            "W026",
+            "W027",
+            "W028",
+            "W029",
+            "W030"
+          ]
+        },
+        {
+          "id": "mean_high",
+          "priority": 4,
+          "title": "Review Mean above X-bar UCL",
+          "evidence": "7 signal occurrences (38.9% of all signals).",
+          "action": "Check whether test conditions, coupon population or process records changed. This is a statistical shift; there is no upper strength specification in this analysis.",
+          "build_ids": [
+            "W003",
+            "W004",
+            "W005",
+            "W010",
+            "W014",
+            "W016",
+            "W017"
+          ]
+        },
+        {
+          "id": "baseline",
+          "priority": 5,
+          "title": "Review the control-limit baseline",
+          "evidence": "Current limits use the entire uploaded log, including signaled builds.",
+          "action": "After engineering investigation, collect or designate a justified stable qualification baseline before prospective monitoring. Full-log limits can also flag builds before a planted shift; do not simply delete points to obtain a passing result.",
+          "build_ids": []
+        },
+        {
+          "id": "normality",
+          "priority": 6,
+          "title": "Review the strength distribution and test population",
+          "evidence": "Pooled Shapiro-Wilk p = 0.000104 is below diagnostic threshold 0.05; this does not change the backend verdict.",
+          "action": "Inspect the distribution and whether mixed conditions or a process shift explain it. Review suitability of normal-based indices with a statistician; a pooled diagnostic does not prove a within-build distribution or cause.",
+          "build_ids": []
+        },
+        {
+          "id": "process_records",
+          "priority": 7,
+          "title": "Compare available Wire arc additive manufacturing (WAAM) records",
+          "evidence": "Usable recorded context: Arc current (A), Arc voltage (V), Wire feed rate (m/min), Travel speed (mm/s), Shielding gas flow (L/min).",
+          "action": "Compare source records with build chronology and, where available, unflagged-build observed ranges. Those ranges are descriptive, not approved operating windows. Verify any proposed setting change through a qualified engineering study.",
+          "build_ids": []
+        }
+      ]
+    },
+    "ebpbf_stable_capable": {
+      "profile": {
+        "name": "ebpbf",
+        "label": "Electron beam powder bed fusion (EB-PBF)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "beam_current_ma",
+            "label": "Beam current",
+            "unit": "mA"
+          },
+          {
+            "column": "accelerating_voltage_kv",
+            "label": "Accelerating voltage",
+            "unit": "kV"
+          },
+          {
+            "column": "scan_speed_mm_s",
+            "label": "Scan speed",
+            "unit": "mm/s"
+          },
+          {
+            "column": "preheat_temperature_c",
+            "label": "Preheat temperature",
+            "unit": "deg C"
+          },
+          {
+            "column": "chamber_pressure_pa",
+            "label": "Chamber pressure",
+            "unit": "Pa"
+          }
+        ]
+      },
+      "n_builds": 30,
+      "n_per_build": 3,
+      "n_coupons": 90,
+      "cpk": 2.542352990921878,
+      "ppk": 2.267524651002773,
+      "n_failures": 0,
+      "verdict": "capable",
+      "reason": "Cpk 2.54 is at or above the target 1.33.",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "investigation_actions": [
+        {
+          "id": "monitor",
+          "priority": 1,
+          "title": "Continue monitoring under comparable conditions",
+          "evidence": "Lower-side Cpk 2.542 meets configured target 1.33; no implemented chart signal.",
+          "action": "Retain process and test traceability and continue build-level monitoring. This statistical assessment does not qualify or release aerospace hardware.",
+          "build_ids": []
+        }
+      ]
+    },
+    "ebpbf_stable_incapable": {
+      "profile": {
+        "name": "ebpbf",
+        "label": "Electron beam powder bed fusion (EB-PBF)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "beam_current_ma",
+            "label": "Beam current",
+            "unit": "mA"
+          },
+          {
+            "column": "accelerating_voltage_kv",
+            "label": "Accelerating voltage",
+            "unit": "kV"
+          },
+          {
+            "column": "scan_speed_mm_s",
+            "label": "Scan speed",
+            "unit": "mm/s"
+          },
+          {
+            "column": "preheat_temperature_c",
+            "label": "Preheat temperature",
+            "unit": "deg C"
+          },
+          {
+            "column": "chamber_pressure_pa",
+            "label": "Chamber pressure",
+            "unit": "Pa"
+          }
+        ]
+      },
+      "n_builds": 30,
+      "n_per_build": 3,
+      "n_coupons": 90,
+      "cpk": 0.4027482282022275,
+      "ppk": 0.35921114764834133,
+      "n_failures": 16,
+      "verdict": "not capable",
+      "reason": "Cpk 0.40 is below the target 1.33.",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "investigation_actions": [
+        {
+          "id": "coupon_failures",
+          "priority": 1,
+          "title": "Review below-specification coupon results",
+          "evidence": "16 of 90 measured coupons are below the entered LSL.",
+          "action": "Trace the failing coupons to their tensile-test reports and build travelers. Verify units, specimen preparation and customer acceptance requirements with the responsible quality engineer.",
+          "build_ids": []
+        },
+        {
+          "id": "capability_gap",
+          "priority": 2,
+          "title": "Plan a controlled capability-improvement study",
+          "evidence": "No implemented chart signal; lower-side Cpk 0.403 is below configured target 1.33.",
+          "action": "Verify the customer LSL and measurement system, then use qualified engineering trials to study centering and within-build variation. Reassess stability and capability after changes; do not lower the customer requirement to obtain a pass.",
+          "build_ids": []
+        },
+        {
+          "id": "process_records",
+          "priority": 3,
+          "title": "Compare available Electron beam powder bed fusion (EB-PBF) records",
+          "evidence": "Usable recorded context: Beam current (mA), Accelerating voltage (kV), Scan speed (mm/s), Preheat temperature (deg C), Chamber pressure (Pa).",
+          "action": "Compare source records with build chronology and, where available, unflagged-build observed ranges. Those ranges are descriptive, not approved operating windows. Verify any proposed setting change through a qualified engineering study.",
+          "build_ids": []
+        }
+      ]
+    },
+    "ebpbf_unstable_shift": {
+      "profile": {
+        "name": "ebpbf",
+        "label": "Electron beam powder bed fusion (EB-PBF)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "beam_current_ma",
+            "label": "Beam current",
+            "unit": "mA"
+          },
+          {
+            "column": "accelerating_voltage_kv",
+            "label": "Accelerating voltage",
+            "unit": "kV"
+          },
+          {
+            "column": "scan_speed_mm_s",
+            "label": "Scan speed",
+            "unit": "mm/s"
+          },
+          {
+            "column": "preheat_temperature_c",
+            "label": "Preheat temperature",
+            "unit": "deg C"
+          },
+          {
+            "column": "chamber_pressure_pa",
+            "label": "Chamber pressure",
+            "unit": "Pa"
+          }
+        ]
+      },
+      "n_builds": 30,
+      "n_per_build": 3,
+      "n_coupons": 90,
+      "cpk": 1.7578312445913382,
+      "ppk": 0.5357510410261421,
+      "n_failures": 4,
+      "verdict": "not assessable",
+      "reason": "Not assessable: process is unstable, builds out of control: E003, E004, E005, E006, E007, E008, E009, E012, E014, E015, E016, E018, E019, E020, E021, E022, E023, E024, E025, E026, E027, E028, E029, E030.",
+      "signal_pareto": {
+        "total_signals": 24,
+        "flagged_builds": 24,
+        "denominator": "signal occurrences",
+        "categories": [
+          {
+            "category": "mean_high",
+            "label": "Mean above X-bar UCL",
+            "count": 13,
+            "percent": 54.166666666666664,
+            "cumulative_percent": 54.166666666666664,
+            "build_ids": [
+              "E003",
+              "E004",
+              "E005",
+              "E006",
+              "E007",
+              "E008",
+              "E009",
+              "E012",
+              "E014",
+              "E015",
+              "E016",
+              "E018",
+              "E019"
+            ]
+          },
+          {
+            "category": "mean_low",
+            "label": "Mean below X-bar LCL",
+            "count": 11,
+            "percent": 45.833333333333336,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "E020",
+              "E021",
+              "E022",
+              "E023",
+              "E024",
+              "E025",
+              "E026",
+              "E027",
+              "E028",
+              "E029",
+              "E030"
+            ]
+          }
+        ]
+      },
+      "investigation_actions": [
+        {
+          "id": "coupon_failures",
+          "priority": 1,
+          "title": "Review below-specification coupon results",
+          "evidence": "4 of 90 measured coupons are below the entered LSL.",
+          "action": "Trace the failing coupons to their tensile-test reports and build travelers. Verify units, specimen preparation and customer acceptance requirements with the responsible quality engineer.",
+          "build_ids": []
+        },
+        {
+          "id": "unstable",
+          "priority": 2,
+          "title": "Investigate chart signals before interpreting capability",
+          "evidence": "24 chart signals on 24 builds; capability conclusion is withheld.",
+          "action": "Review build chronology, test conditions, material lots, orientation and post-processing around the affected builds. The signal Pareto prioritizes review frequency, not cause or severity.",
+          "build_ids": []
+        },
+        {
+          "id": "mean_high",
+          "priority": 3,
+          "title": "Review Mean above X-bar UCL",
+          "evidence": "13 signal occurrences (54.2% of all signals).",
+          "action": "Check whether test conditions, coupon population or process records changed. This is a statistical shift; there is no upper strength specification in this analysis.",
+          "build_ids": [
+            "E003",
+            "E004",
+            "E005",
+            "E006",
+            "E007",
+            "E008",
+            "E009",
+            "E012",
+            "E014",
+            "E015",
+            "E016",
+            "E018",
+            "E019"
+          ]
+        },
+        {
+          "id": "mean_low",
+          "priority": 4,
+          "title": "Review Mean below X-bar LCL",
+          "evidence": "11 signal occurrences (45.8% of all signals).",
+          "action": "Compare the affected build means with earlier and later builds. Check test records and process changes; a low chart mean is separate from a coupon failing the LSL.",
+          "build_ids": [
+            "E020",
+            "E021",
+            "E022",
+            "E023",
+            "E024",
+            "E025",
+            "E026",
+            "E027",
+            "E028",
+            "E029",
+            "E030"
+          ]
+        },
+        {
+          "id": "baseline",
+          "priority": 5,
+          "title": "Review the control-limit baseline",
+          "evidence": "Current limits use the entire uploaded log, including signaled builds.",
+          "action": "After engineering investigation, collect or designate a justified stable qualification baseline before prospective monitoring. Full-log limits can also flag builds before a planted shift; do not simply delete points to obtain a passing result.",
+          "build_ids": []
+        },
+        {
+          "id": "normality",
+          "priority": 6,
+          "title": "Review the strength distribution and test population",
+          "evidence": "Pooled Shapiro-Wilk p = 5.722e-07 is below diagnostic threshold 0.05; this does not change the backend verdict.",
+          "action": "Inspect the distribution and whether mixed conditions or a process shift explain it. Review suitability of normal-based indices with a statistician; a pooled diagnostic does not prove a within-build distribution or cause.",
+          "build_ids": []
+        },
+        {
+          "id": "process_records",
+          "priority": 7,
+          "title": "Compare available Electron beam powder bed fusion (EB-PBF) records",
+          "evidence": "Usable recorded context: Beam current (mA), Accelerating voltage (kV), Scan speed (mm/s), Preheat temperature (deg C), Chamber pressure (Pa).",
+          "action": "Compare source records with build chronology and, where available, unflagged-build observed ranges. Those ranges are descriptive, not approved operating windows. Verify any proposed setting change through a qualified engineering study.",
+          "build_ids": []
+        }
+      ]
+    },
+    "laser_ded_stable_capable": {
+      "profile": {
+        "name": "laser_ded",
+        "label": "Powder-fed laser directed energy deposition (laser DED)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "laser_power_w",
+            "label": "Laser power",
+            "unit": "W"
+          },
+          {
+            "column": "powder_feed_rate_g_min",
+            "label": "Powder feed rate",
+            "unit": "g/min"
+          },
+          {
+            "column": "travel_speed_mm_s",
+            "label": "Travel speed",
+            "unit": "mm/s"
+          },
+          {
+            "column": "shielding_gas_flow_l_min",
+            "label": "Shielding gas flow",
+            "unit": "L/min"
+          },
+          {
+            "column": "standoff_distance_mm",
+            "label": "Standoff distance",
+            "unit": "mm"
+          }
+        ]
+      },
+      "n_builds": 30,
+      "n_per_build": 3,
+      "n_coupons": 90,
+      "cpk": 1.3944795102447567,
+      "ppk": 1.4233744429894433,
+      "n_failures": 0,
+      "verdict": "capable",
+      "reason": "Cpk 1.39 is at or above the target 1.33.",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "investigation_actions": [
+        {
+          "id": "monitor",
+          "priority": 1,
+          "title": "Continue monitoring under comparable conditions",
+          "evidence": "Lower-side Cpk 1.394 meets configured target 1.33; no implemented chart signal.",
+          "action": "Retain process and test traceability and continue build-level monitoring. This statistical assessment does not qualify or release aerospace hardware.",
+          "build_ids": []
+        }
+      ]
+    },
+    "laser_ded_stable_incapable": {
+      "profile": {
+        "name": "laser_ded",
+        "label": "Powder-fed laser directed energy deposition (laser DED)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "laser_power_w",
+            "label": "Laser power",
+            "unit": "W"
+          },
+          {
+            "column": "powder_feed_rate_g_min",
+            "label": "Powder feed rate",
+            "unit": "g/min"
+          },
+          {
+            "column": "travel_speed_mm_s",
+            "label": "Travel speed",
+            "unit": "mm/s"
+          },
+          {
+            "column": "shielding_gas_flow_l_min",
+            "label": "Shielding gas flow",
+            "unit": "L/min"
+          },
+          {
+            "column": "standoff_distance_mm",
+            "label": "Standoff distance",
+            "unit": "mm"
+          }
+        ]
+      },
+      "n_builds": 30,
+      "n_per_build": 3,
+      "n_coupons": 90,
+      "cpk": 0.2317543741303291,
+      "ppk": 0.23655654368863793,
+      "n_failures": 22,
+      "verdict": "not capable",
+      "reason": "Cpk 0.23 is below the target 1.33.",
+      "signal_pareto": {
+        "total_signals": 0,
+        "flagged_builds": 0,
+        "denominator": "signal occurrences",
+        "categories": []
+      },
+      "investigation_actions": [
+        {
+          "id": "coupon_failures",
+          "priority": 1,
+          "title": "Review below-specification coupon results",
+          "evidence": "22 of 90 measured coupons are below the entered LSL.",
+          "action": "Trace the failing coupons to their tensile-test reports and build travelers. Verify units, specimen preparation and customer acceptance requirements with the responsible quality engineer.",
+          "build_ids": []
+        },
+        {
+          "id": "capability_gap",
+          "priority": 2,
+          "title": "Plan a controlled capability-improvement study",
+          "evidence": "No implemented chart signal; lower-side Cpk 0.232 is below configured target 1.33.",
+          "action": "Verify the customer LSL and measurement system, then use qualified engineering trials to study centering and within-build variation. Reassess stability and capability after changes; do not lower the customer requirement to obtain a pass.",
+          "build_ids": []
+        },
+        {
+          "id": "process_records",
+          "priority": 3,
+          "title": "Compare available Powder-fed laser directed energy deposition (laser DED) records",
+          "evidence": "Usable recorded context: Laser power (W), Powder feed rate (g/min), Travel speed (mm/s), Shielding gas flow (L/min), Standoff distance (mm).",
+          "action": "Compare source records with build chronology and, where available, unflagged-build observed ranges. Those ranges are descriptive, not approved operating windows. Verify any proposed setting change through a qualified engineering study.",
+          "build_ids": []
+        }
+      ]
+    },
+    "laser_ded_unstable_shift": {
+      "profile": {
+        "name": "laser_ded",
+        "label": "Powder-fed laser directed energy deposition (laser DED)",
+        "value_label": "Ultimate tensile strength",
+        "value_unit": "MPa",
+        "parameters": [
+          {
+            "column": "laser_power_w",
+            "label": "Laser power",
+            "unit": "W"
+          },
+          {
+            "column": "powder_feed_rate_g_min",
+            "label": "Powder feed rate",
+            "unit": "g/min"
+          },
+          {
+            "column": "travel_speed_mm_s",
+            "label": "Travel speed",
+            "unit": "mm/s"
+          },
+          {
+            "column": "shielding_gas_flow_l_min",
+            "label": "Shielding gas flow",
+            "unit": "L/min"
+          },
+          {
+            "column": "standoff_distance_mm",
+            "label": "Standoff distance",
+            "unit": "mm"
+          }
+        ]
+      },
+      "n_builds": 30,
+      "n_per_build": 3,
+      "n_coupons": 90,
+      "cpk": 0.8634835841240136,
+      "ppk": 0.44449406954925685,
+      "n_failures": 12,
+      "verdict": "not assessable",
+      "reason": "Not assessable: process is unstable, builds out of control: D005, D006, D009, D014, D019, D020, D021, D022, D023, D024, D025, D026, D028, D029, D030.",
+      "signal_pareto": {
+        "total_signals": 16,
+        "flagged_builds": 15,
+        "denominator": "signal occurrences",
+        "categories": [
+          {
+            "category": "mean_low",
+            "label": "Mean below X-bar LCL",
+            "count": 10,
+            "percent": 62.5,
+            "cumulative_percent": 62.5,
+            "build_ids": [
+              "D020",
+              "D021",
+              "D022",
+              "D023",
+              "D024",
+              "D025",
+              "D026",
+              "D028",
+              "D029",
+              "D030"
+            ]
+          },
+          {
+            "category": "mean_high",
+            "label": "Mean above X-bar UCL",
+            "count": 5,
+            "percent": 31.25,
+            "cumulative_percent": 93.75,
+            "build_ids": [
+              "D005",
+              "D006",
+              "D009",
+              "D014",
+              "D019"
+            ]
+          },
+          {
+            "category": "spread_high",
+            "label": "S above UCL",
+            "count": 1,
+            "percent": 6.25,
+            "cumulative_percent": 100.0,
+            "build_ids": [
+              "D024"
+            ]
+          }
+        ]
+      },
+      "investigation_actions": [
+        {
+          "id": "coupon_failures",
+          "priority": 1,
+          "title": "Review below-specification coupon results",
+          "evidence": "12 of 90 measured coupons are below the entered LSL.",
+          "action": "Trace the failing coupons to their tensile-test reports and build travelers. Verify units, specimen preparation and customer acceptance requirements with the responsible quality engineer.",
+          "build_ids": []
+        },
+        {
+          "id": "unstable",
+          "priority": 2,
+          "title": "Investigate chart signals before interpreting capability",
+          "evidence": "16 chart signals on 15 builds; capability conclusion is withheld.",
+          "action": "Review build chronology, test conditions, material lots, orientation and post-processing around the affected builds. The signal Pareto prioritizes review frequency, not cause or severity.",
+          "build_ids": []
+        },
+        {
+          "id": "mean_low",
+          "priority": 3,
+          "title": "Review Mean below X-bar LCL",
+          "evidence": "10 signal occurrences (62.5% of all signals).",
+          "action": "Compare the affected build means with earlier and later builds. Check test records and process changes; a low chart mean is separate from a coupon failing the LSL.",
+          "build_ids": [
+            "D020",
+            "D021",
+            "D022",
+            "D023",
+            "D024",
+            "D025",
+            "D026",
+            "D028",
+            "D029",
+            "D030"
+          ]
+        },
+        {
+          "id": "mean_high",
+          "priority": 4,
+          "title": "Review Mean above X-bar UCL",
+          "evidence": "5 signal occurrences (31.2% of all signals).",
+          "action": "Check whether test conditions, coupon population or process records changed. This is a statistical shift; there is no upper strength specification in this analysis.",
+          "build_ids": [
+            "D005",
+            "D006",
+            "D009",
+            "D014",
+            "D019"
+          ]
+        },
+        {
+          "id": "spread_high",
+          "priority": 5,
+          "title": "Review S above UCL",
+          "evidence": "1 signal occurrences (6.2% of all signals).",
+          "action": "Check individual coupons, sampling locations, specimen preparation, test repeatability and consistency within each build. A spread signal does not identify its physical cause.",
+          "build_ids": [
+            "D024"
+          ]
+        },
+        {
+          "id": "baseline",
+          "priority": 6,
+          "title": "Review the control-limit baseline",
+          "evidence": "Current limits use the entire uploaded log, including signaled builds.",
+          "action": "After engineering investigation, collect or designate a justified stable qualification baseline before prospective monitoring. Full-log limits can also flag builds before a planted shift; do not simply delete points to obtain a passing result.",
+          "build_ids": []
+        },
+        {
+          "id": "normality",
+          "priority": 7,
+          "title": "Review the strength distribution and test population",
+          "evidence": "Pooled Shapiro-Wilk p = 0.0005183 is below diagnostic threshold 0.05; this does not change the backend verdict.",
+          "action": "Inspect the distribution and whether mixed conditions or a process shift explain it. Review suitability of normal-based indices with a statistician; a pooled diagnostic does not prove a within-build distribution or cause.",
+          "build_ids": []
+        },
+        {
+          "id": "process_records",
+          "priority": 8,
+          "title": "Compare available Powder-fed laser directed energy deposition (laser DED) records",
+          "evidence": "Usable recorded context: Laser power (W), Powder feed rate (g/min), Travel speed (mm/s), Shielding gas flow (L/min), Standoff distance (mm).",
+          "action": "Compare source records with build chronology and, where available, unflagged-build observed ranges. Those ranges are descriptive, not approved operating windows. Verify any proposed setting change through a qualified engineering study.",
+          "build_ids": []
+        }
+      ]
+    }
+  }
+}

@@ -1,5 +1,17 @@
 # Design decisions and why
 
+## H-15: teaching and evidence, 22 October 2026
+
+- Use a self-contained HTML walkthrough outside the application runtime, with the app's existing
+  teal/slate visual language and no additional library dependency. File opening and HTTP preview
+  both work, including offline lessons and exact synthetic CSV downloads.
+- Capture existing API outputs and verify core parity; do not reimplement statistical calculations
+  in the deck. Source/data SHA-256 hashes detect stale evidence. Requirement and date experiments
+  display precomputed responses, explicitly labeled as captured training outputs.
+- Preserve the event rubric and map its 100 points to concrete evidence without claiming a score.
+  Preserve H-06 and deployment files. Keep historical owners, and leave remaining human review,
+  publication and submission steps open-ended as requested.
+
 Sigma Airlines · Prompt 1, 3D Printing for Aerospace · agreed by the team on 2026-10-19
 
 This is the reference for *why* the tool is built the way [`SPEC.md`](../SPEC.md) says. SPEC says
@@ -144,3 +156,13 @@ build (would switch the S-chart constants to per-build values).
 ## H-10 update: user-approved LPBF plus WAAM
 
 This supersedes the LPBF-only scope decision above for the new increment; the original release history remains recorded. The user approved one additional process before adding more statistics. Keep qc.py unchanged, use a profile registry and explicit process selection, preserve legacy LPBF defaults, and add three reproducible WAAM demonstration files. The section 4 SPEC known answer must match under both adapters; sampling design remains equal-size, comparable build subgroups. No automatic strength requirement, qualified operating window, parameter adjustment or training claim is introduced. Generic measurement-only files use the user's declared process; supplied tags and recognized foreign-profile fields are checked to prevent accidental pooling.
+
+
+## 2026-10-22: approved signal categories and two new methods
+
+The user chose both EB-PBF and laser DED, with existing control-chart signal categories for the first Pareto. Inspection defect categories are deferred. Count signal occurrences (a build can contribute two), use deterministic ties and explicit zero states, and keep strength failures separate. Investigation actions are deterministic engineering checks with evidence, not causal diagnoses or setting prescriptions. Laser DED scope is powder-fed laser DED. New normal-reference fixtures are clearly synthetic, not measurements or training data for a strength model; all original fixtures and qc.py remain unchanged.
+
+
+## 2026-10-22: all five Pareto improvements approved
+
+The user approved selectable bars, direct labels, an 80% reference, date-window views retaining original limits, and a separate inspection-defect Pareto. A single optional primary_defect per coupon distinguishes recorded categories, explicit none and unrecorded blanks. Defect percentages exclude none/blanks and report inspection coverage separately. Four new copies preserve source strength data and add independent synthetic inspection labels; original files are unchanged. Category selection scopes records/actions; full-log capability remains visible and unchanged. Multi-defect event schemas and causal prescriptions remain out of scope.

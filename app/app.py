@@ -1,7 +1,7 @@
 """AeroQual API: X-bar and S chart, Cpk, Ppk and a verdict for tensile-test builds.
 
-This file only reads input and calls analyze() in qc.py. No statistics are computed here
-(the only arithmetic is min / max / mean of process parameters, shown for information).
+This adapter reads input and calls the plain analysis, signal and investigation
+functions. It adds descriptive process context and plot-ready histogram bins.
 """
 import io
 import os
@@ -25,6 +25,10 @@ if APP_DIR not in sys.path:
     sys.path.insert(0, APP_DIR)
 
 from qc import analyze  # noqa: E402
+from signals import signal_pareto  # noqa: E402
+from investigation import investigation_actions  # noqa: E402
+from inspection import inspection_records, inspection_pareto  # noqa: E402
+from pareto_view import pareto_view  # noqa: E402
 from profiles import DATASETS, PROFILES, get_profile  # noqa: E402
 
 # Datasets live in the data folder next to this file (copied by sync_data.sh).
@@ -32,7 +36,7 @@ DATA_DIR = os.path.join(APP_DIR, "data")
 
 app = FastAPI(
     title="AeroQual API",
-    description="Process control and capability of tensile strength by build (LPBF and WAAM titanium).",
+    description="Process control and capability of tensile strength by build (LPBF, WAAM, EB-PBF and powder-fed laser DED titanium).",
     version="1.0.0",
 )
 
@@ -76,7 +80,8 @@ def parameter_summary(df, result, profile):
     return {"columns": columns, "usual_range": usual_range, "flagged_builds": flagged}
 
 
-def run_analysis(df, lsl, min_builds, cpk_target, process_type="lpbf"):
+def run_analysis(df, lsl, min_builds, cpk_target, process_type="lpbf",
+                 start_date=None, end_date=None, signal_category=None, defect_category=None):
     """Check the profile, call analyze(), and add process context."""
     profile = resolve_profile(process_type)
     validate_process(df, profile)
@@ -94,8 +99,17 @@ def run_analysis(df, lsl, min_builds, cpk_target, process_type="lpbf"):
         )
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error))
+    result["signal_pareto"] = signal_pareto(result)
     result["profile"] = {k: profile[k] for k in ("name", "label", "value_label", "value_unit", "parameters")}
     result["parameters"] = parameter_summary(df, result, profile)
+    result["investigation_actions"] = investigation_actions(result, profile, min_builds, cpk_target)
+    try:
+        records = inspection_records(df, profile['subgroup_col'], profile['value_col'])
+        result['inspection_pareto'] = inspection_pareto(records, 'primary_defect' in df.columns)
+        result['investigation_view'] = pareto_view(df, result, records, profile,
+                                                 start_date, end_date, signal_category, defect_category)
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from None
     # Add plot-ready bins without changing any existing H-04 response fields.
     counts, edges = np.histogram(pd.to_numeric(df[profile["value_col"]]), bins="auto")
     result["histogram"] = [{"lower": float(edges[i]), "upper": float(edges[i + 1]),
@@ -156,7 +170,8 @@ async def datasets(process_type: str = 'lpbf'):
 
 @app.get("/analyze")
 def analyze_dataset(dataset: str, lsl: float, min_builds: int = 25, cpk_target: float = 1.33,
-                    process_type: str = "lpbf"):
+                    process_type: str = "lpbf", start_date: str | None = None, end_date: str | None = None,
+                    signal_category: str | None = None, defect_category: str | None = None):
     """Analyze a built-in dataset, e.g. /analyze?dataset=stable_capable&lsl=900."""
     resolve_profile(process_type)
     # Only letters, digits, _ and - are allowed: no slashes, no "..".
@@ -167,19 +182,23 @@ def analyze_dataset(dataset: str, lsl: float, min_builds: int = 25, cpk_target: 
     path = os.path.join(DATA_DIR, dataset + ".csv")
     if not os.path.isfile(path):
         raise HTTPException(status_code=404, detail=f"unknown dataset '{dataset}'")
-    return run_analysis(pd.read_csv(path), lsl, min_builds, cpk_target, process_type)
+    return run_analysis(pd.read_csv(path, converters={'primary_defect': str}), lsl, min_builds, cpk_target, process_type,
+                        start_date, end_date, signal_category, defect_category)
 
 
 @app.post("/analyze")
 def analyze_upload(file: UploadFile = File(...), lsl: float = Form(...),
                    min_builds: int = Form(25), cpk_target: float = Form(1.33),
-                   process_type: str = Form("lpbf")):
+                   process_type: str = Form("lpbf"), start_date: str | None = Form(None),
+                   end_date: str | None = Form(None), signal_category: str | None = Form(None),
+                   defect_category: str | None = Form(None)):
     """Analyze an uploaded CSV (multipart form: file, lsl, min_builds, cpk_target)."""
     try:
-        df = pd.read_csv(io.BytesIO(file.file.read()))
+        df = pd.read_csv(io.BytesIO(file.file.read()), converters={'primary_defect': str})
     except Exception:
         raise HTTPException(status_code=400, detail="could not read the file as a CSV table")
-    return run_analysis(df, lsl, min_builds, cpk_target, process_type)
+    return run_analysis(df, lsl, min_builds, cpk_target, process_type,
+                        start_date, end_date, signal_category, defect_category)
 
 
 @app.get("/__docs__/")

@@ -11,15 +11,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import pandas as pd
 from app.qc import analyze
+from app.profiles import DATASETS, SCENARIOS as SCENARIO_NAMES
 
-SCENARIOS = {
-    'stable_capable.csv': 'capable',
-    'stable_incapable.csv': 'not capable',
-    'unstable_shift.csv': 'not assessable',
-    'waam_stable_capable.csv': 'capable',
-    'waam_stable_incapable.csv': 'not capable',
-    'waam_unstable_shift.csv': 'not assessable',
-}
+VERDICTS = dict(zip(SCENARIO_NAMES, ['capable', 'not capable', 'not assessable']))
+SCENARIOS = {name + '.csv': ('not assessable' if name.endswith('inspection_demo') else
+             VERDICTS[next(s for s in SCENARIO_NAMES if name.endswith(s))])
+             for names in DATASETS.values() for name in names}
 
 
 def compare(expected, actual, path='result'):
@@ -54,13 +51,13 @@ def main():
         result = analyze(frame, args.lsl, subgroup_col='build_id', order_col='build_date', value_col='uts_mpa')
         assert result['n_builds'] == 30 and result['n_per_build'] == 3, f'{name}: expected 30 builds x 3 coupons'
         assert result['verdict'] == verdict, f'{name}: expected {verdict}, got {result["verdict"]}: {result["reason"]}'
-        if name.endswith('unstable_shift.csv'):
+        if name.endswith(('unstable_shift.csv','inspection_demo.csv')):
             assert any(build['flagged'] for build in result['builds']), 'shift must flag builds'
             assert 'unstable' in result['reason'].lower(), 'shift must explain instability'
         else:
             assert not any(build['flagged'] for build in result['builds']), f'{name}: stable scenario has flags'
         if args.base_url:
-            address = args.base_url.rstrip('/') + '/analyze?' + urlencode({'dataset': Path(name).stem, 'lsl': args.lsl, 'process_type': 'waam' if name.startswith('waam_') else 'lpbf'})
+            address = args.base_url.rstrip('/') + '/analyze?' + urlencode({'dataset': Path(name).stem, 'lsl': args.lsl, 'process_type': next(process for process, names in DATASETS.items() if Path(name).stem in names)})
             with urlopen(address, timeout=30) as response:
                 compare(result, json.load(response))
         results[name] = result
@@ -68,7 +65,7 @@ def main():
     if args.output:
         args.output.write_text(json.dumps({'lsl': args.lsl, 'results': results}, indent=2, allow_nan=False) + '\n')
         print(f'Captured actual results: {args.output}')
-    print('PASS: all six synthetic scenarios (LPBF + WAAM)' + (' and API parity.' if args.base_url else '. API/browser reproduction still required.'))
+    print('PASS: all sixteen synthetic scenarios (LPBF + WAAM + EB-PBF + laser DED)' + (' and API parity.' if args.base_url else '. API/browser reproduction still required.'))
 
 
 if __name__ == '__main__':

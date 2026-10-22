@@ -1,5 +1,19 @@
 # Plan: AeroQual release 1
 
+## Current non-deployment handoff (H-15)
+
+The earlier plan and teammate letters below are historical, not new assignments. The approved
+current work reconciles the rubric evidence, contract results and documentation, then provides a
+14-lesson offline HTML tutorial based on captured API outputs. The tutorial includes all sixteen
+synthetic scenarios, exact CSV downloads, control-chart/Pareto exercises, fixed-limit date views,
+requirement experiments and interpretation checks. Artifact/source hashes and API/core parity
+protect the displayed statistics; known-answer and empty-window tests protect the teaching examples.
+
+[Evaluation evidence](evaluation.md), [submission draft](submission.md) and [remaining work](remaining-work.md)
+are the current handoff. Independent reproduction, reviewed publication, public-revision validation
+and Devpost confirmation stay open-ended. H-06 is excluded and unchanged. No new reviewer is assigned,
+and no commit, push or deployment is performed as part of this update.
+
 **DRAFT, pending team review (2026-10-19).** Once approved, change an interface below only after telling
 everyone: all four agents build against it. What and why: [`SPEC.md`](../SPEC.md), [`decisions.md`](decisions.md).
 
@@ -55,3 +69,13 @@ stable, and can it meet the customer's minimum tensile strength (LSL)?
 2. **Deploy breaks late.** Deploy the bare API first (step 4), then redeploy as features land.
 3. **Datasets missing on the server.** Deploys bundle `app/` only, and `data/` sits outside it. C decides
    in H-04 how the files ship (for example, copied into the bundle by `manifestme`) and tests it live.
+
+
+## Approved extensions superseding the initial LPBF-only draft
+
+H-10 added WAAM with the unchanged strength engine. H-11 adds a pure tested signal Pareto (known counts 2/1/1 and cumulative 50/75/100; zero/constant and exact-limit cases). H-12 adds deterministic, evidence-linked investigation checks (stable/capable, incapable, unstable, no variation, custom thresholds and missing context). H-13 adds EB-PBF and powder-fed laser DED with three seeded scenarios each, preserving the original six CSVs and core formulas. Tasks own their paths in CONTRACT.yaml and proceed in that order. User chose chart-signal categories; inspection defects are deferred. New fixtures are validated independently with sample-SD arithmetic and frozen outcomes, including laser DED D024's low mean and high spread (16 signals across 15 flagged builds). New UI states, uploads, profile switching and all twelve scenarios must pass browser/API checks; bundle/manifest verification is required after runtime changes. No commit/push/deployment until local review is accepted. The original plan above is retained as historical context; [the current workflow](signal-investigation.md) and SPEC section 11 govern this increment.
+
+
+## H-14: approved Pareto expansion
+
+Implement/test plain inspection counts and fixed-limit date/category views first (known counts2/1/none/blank;coverage80%;constant/missing/tie/date errors), expose optional GET/form fields, then accessible bar selection and scoped build/actions. Add four separate seeded inspection examples, preserve original twelve datasets/core outputs, document schemas/denominators and exercise sixteen browser/API examples, uploads, keyboard/mobile, error/empty/reset states and the isolated release bundle. This supersedes the earlier deferral of inspection categories; only one primary category per coupon is added.
