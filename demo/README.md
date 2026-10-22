@@ -10,29 +10,29 @@ The datasets and API are now present. All three examples below were selected and
 
 ## Start and reproduce
 
-From the repository root, with Python 3.12 and Node/npm available:
+Follow the [root setup instructions](../README.md#run-in-positron-on-windows-powershell). The built dashboard and API share port 8000. Keep the server running and open [AeroQual locally](http://127.0.0.1:8000/dashboard/).
 
-```bash
-source /tmp/aeroqual-venv/bin/activate  # or activate your own Python 3.12 environment
-python -m pip install -r app/requirements.txt
-bash app/testme.sh
+Choose **Stable and capable**, **Stable but not capable**, or **Unstable process shift**. The underlying identifiers remain `stable_capable`, `stable_incapable`, and `unstable_shift`. Leave LSL at **895 MPa** and select **Analyze builds**. Alternatively upload the corresponding CSV from `data/`; use **Clear upload** to return to examples.
+
+From a second Windows PowerShell terminal at the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe demo/check.py --base-url http://127.0.0.1:8000
 ```
 
-Keep that terminal running. The startup script syncs the example datasets and builds the dashboard. Open [AeroQual locally](http://127.0.0.1:8000/dashboard/). Select **stable_capable**, **stable_incapable** or **unstable_shift** in **Example dataset**, leave **Minimum strength, LSL (MPa)** at **895**, and click **Analyze builds**. Alternatively upload the corresponding CSV from `data/`; clear the upload before switching back to examples.
+In Bash with the project environment active, use `python demo/check.py --base-url http://127.0.0.1:8000`. Omit `--base-url` for core-only checks. Add `--output demo/results.json` only when intentionally refreshing captured results after review; it overwrites that file.
 
-In another terminal, compare all core values with the running API and optionally refresh the full-precision capture:
+The checker compares every core value, chart limit, build flag and reason. Success ends with `PASS: all three synthetic scenarios and API parity.` No credentials are needed locally.
 
-```bash
-/tmp/aeroqual-venv/bin/python demo/check.py --base-url http://127.0.0.1:8000 --output demo/results.json
-```
+### Three-minute judging walkthrough
 
-If `AEROQUAL_VENV` was set when starting the app, use that environment's Python instead. To check the three datasets without starting the API:
+1. **Stable and capable:** identify 30 builds, 90 coupons and LSL 895 MPa in the result context. Show no flags, Cpk 1.683 and zero observed failures. Explain that the configured capability checks pass.
+2. **Stable but not capable:** show no flags alongside 17/90 failures and Cpk 0.312. Explain that statistical stability and meeting the strength requirement are separate questions.
+3. **Unstable process shift:** show 11 flagged builds, the withheld capability conclusion and 0/90 failures. Zero observed failures does not establish capability. Open the build investigation and compare the recorded oxygen values without claiming a proven cause.
+4. Open **View all build data** to trace a plotted point to its numeric values and reason. Chart points also support keyboard focus. Inspect **Observed parameter reference ranges** and explain that these ranges come from unflagged builds, not qualified process windows.
+5. Change LSL without analyzing: the previous result stays labeled with its original inputs and a refresh notice. Select **Analyze builds** to replace it. For your own CSV, open the format guidance before upload.
 
-```bash
-/tmp/aeroqual-venv/bin/python demo/check.py --output demo/results.json
-```
-
-The API check compares every core value, chart limit, build flag and reason, rather than only the rounded summary. A successful run ends with `PASS: all three synthetic scenarios and API parity.` A core-only run explicitly says API/browser reproduction is still required. No credentials are needed for local testing.
+The page separates stability, capability and observed conformance. Diagnostic assumptions and the strength distribution table are expandable. Counts and control limits are unchanged by the presentation refinement.
 
 ## Observed summary
 
@@ -161,8 +161,10 @@ A teammate who did not write the demo must follow the commands above and record 
 
 ## Frontend development checks
 
+Run from the repository root after setup. In PowerShell use `npm.cmd` and `.\.venv\Scripts\python.exe`; in Bash use `npm` and the activated environment's `python`.
+
 ```bash
-npm --prefix app/frontend ci --cache /tmp/aeroqual-npm-cache
+npm --prefix app/frontend ci --no-audit --no-fund
 npm --prefix app/frontend test
 npm --prefix app/frontend run build
 ```
@@ -170,5 +172,27 @@ npm --prefix app/frontend run build
 Frontend tests use labeled fixtures and mocked HTTP responses to check rendering and API wiring. For the statistics and real HTTP API tests:
 
 ```bash
-/tmp/aeroqual-venv/bin/python -m pytest tests
+python -m pytest tests
 ```
+
+## Submission evidence checklist
+
+| Evidence | Current requirement |
+| --- | --- |
+| Working tool | Local dashboard/API and all three scenarios; public Connect URL still pending |
+| Statistical correctness | Run the SPEC known-answer and degenerate tests; retain terminal output |
+| Inputs and data | Three explicitly synthetic CSVs and the linked codebook with units and collection sources |
+| Demonstration | Reproduce the three cases above and inspect the build evidence |
+| Documentation | Follow root setup, input descriptions and API reference from a fresh clone |
+| Independent reproduction | A teammate records date, revision, outputs and visual agreement; still pending |
+| Public submission | Confirm logged-out dashboard access, link repo and demo in Devpost; still pending |
+
+Synthetic examples illustrate software behavior and do not validate titanium manufacturing physics or qualify hardware.
+
+## Local usability review captures
+
+Captured from the running synthetic unstable scenario after the usability refinement, at LSL 895 MPa. These show local behavior, not a public deployment.
+
+![Desktop: unstable-process assessment, separated stability/capability/conformance summaries](screenshots/desktop-review.png)
+
+[Mobile assessment view](screenshots/mobile-review.png) (390 px viewport). Charts and wide data tables scroll inside their containers instead of expanding the page.

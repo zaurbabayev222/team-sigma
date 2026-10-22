@@ -77,7 +77,7 @@ def stage(root, destination):
         copy_file(root / 'data' / name, destination / 'data' / name)
     copy_file(root / 'app/.python-version', destination / '.python-version')
     # newline='\n': on Windows, write_text would otherwise write CRLF and break the checksum.
-    (destination / 'requirements.txt').write_text('\n'.join(dict.fromkeys(requirements)) + '\n', newline='\n')
+    (destination / 'requirements.txt').write_text('\n'.join(dict.fromkeys(requirements)) + '\n', encoding='utf-8', newline='\n')
 
 
 def verify(destination):

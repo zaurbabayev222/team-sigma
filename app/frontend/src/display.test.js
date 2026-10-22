@@ -18,8 +18,12 @@ describe('server results display', () => {
   })
   it('renders the completed API process-parameter contract', () => {
     const parameters = {columns:['chamber_oxygen_ppm'],usual_range:{chamber_oxygen_ppm:{min:34.454,max:141.447}},flagged_builds:[{build_id:'B020',values:{chamber_oxygen_ppm:141.926}}]}
-    const html = renderToStaticMarkup(React.createElement(Results,{result:{...fixture,parameters}}))
+    const html = renderToStaticMarkup(React.createElement(Results,{result:{...fixture,parameters,builds:[{...fixture.builds[0],build_id:'B020',flagged:true,reason:'mean below limit'}]}}))
     for (const value of ['Chamber oxygen','34.454','141.447','B020','141.926']) expect(html).toContain(value)
+  })
+  it('withholds a capability conclusion even when an unstable sample has no failures', () => {
+    const html = renderToStaticMarkup(React.createElement(Results,{result:{...fixture,n_failures:0,failure_rate:0,builds:[{...fixture.builds[0],flagged:true,reason:'mean below limit'}]},context:{source:'Uploaded run.csv',lsl:895,synthetic:false}}))
+    for (const value of ['Capability conclusion withheld','1 of 4 builds','0.0% (0/12)','Descriptive values only','Uploaded run.csv','LSL 895 MPa','View all build data']) expect(html).toContain(value)
   })
 })
 describe('API wiring', () => {

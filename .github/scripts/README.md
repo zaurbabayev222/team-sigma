@@ -53,3 +53,22 @@ python .github/scripts/test_connect_bundle.py -v
 python .github/scripts/prepare-connect-bundle.py --output "$(mktemp -d)/bundle"
 bash -n .github/scripts/connect-publish-async.sh
 ```
+
+## Local candidate verification and Windows commands
+
+The local usability candidate retains the upstream push-to-deploy workflow and name-based publisher. The removed preflight script, manual-title input, requirements-api.txt and duplicate app/REAME.md are not restored. API integration tests now live in tests/test_bundle_api.py; run `python -m pytest tests`.
+
+A local manifest was generated with rsconnect-python 1.32.0 under Python 3.12.15 for 14 runtime files. The local candidate is prepared for review and has not been pushed or published. Confirm course-server runtime support before publishing. Qualifying pushes to main now attempt deployment automatically; review publisher configuration and release intent before pushing.
+
+From Windows PowerShell at the repository root, after installing Python 3.12:
+
+```powershell
+py -3.12 -m venv .venv-connect
+.\.venv-connect\Scripts\python.exe -m pip install -r app/requirements.txt rsconnect-python==1.32.0
+npm.cmd --prefix app/frontend ci --no-audit --no-fund
+npm.cmd --prefix app/frontend run build
+.\.venv-connect\Scripts\python.exe .github/scripts/prepare-connect-bundle.py --output .venv-connect/candidate-1 --write-manifest
+.\.venv-connect\Scripts\python.exe .github/scripts/verify-connect-app.py --bundle .venv-connect/candidate-1
+```
+
+Use a fresh unused output path. Requirements staging explicitly uses UTF-8 and LF on Windows. Never bypass stale-checksum or unexpected-file checks. Manifest generation is local-only and does not publish.

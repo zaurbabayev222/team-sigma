@@ -100,8 +100,7 @@ tasks:
       URL to run, the numbers or chart the tool shows, and a one-line "how to
       read this"; a teammate who did not write it follows it and gets the same
       numbers.
-    result: "Restored dashboard and walkthrough adapted to completed H-04 dataset IDs and parameter schema; also edited H-04 files (app.py: /dashboard mount + histogram bins; testme.sh: sync data + build dashboard), accepted by the repo owner 2026-10-21; frontend 5 tests pass and bundle API reproduces all three captured results; independent teammate reproduction pending"
-
+    result: "Dashboard refinement and judging walkthrough verified: separate stability/capability/conformance, analyzed-input snapshots, accessible charts and combined investigations; 6 frontend tests and three browser/API scenarios pass; prior H-04 integration accepted by repo owner 2026-10-21; independent teammate reproduction pending"
   - id: H-06
     title: Deploy to the course Posit Connect server
     points: "protects the 25 working-tool points - judges must be able to open it"
@@ -121,8 +120,7 @@ tasks:
     definition_of_done: >
       The workflow run is green, and the public URL answers HTTP 200 from a
       logged-out browser and returns the H-03 numbers for one test dataset.
-    result: "Workflow back to the template push-to-deploy (creates the Connect item by name on first run, no GUID or manual title step), plus dashboard build, manifest check and all tests before publishing; app/test_api.py moved to tests/test_bundle_api.py; live publishing and logged-out Connect verification pending"
-
+    result: "Upstream name-based push-to-deploy workflow retained; local Python 3.12.15 manifest and 14 runtime checksums, isolated bundle, known answer and three scenarios pass; upstream GitHub run 39701636897 reports success; public URL and logged-out verification of the next release pending"
   - id: H-07
     title: README and function documentation
     points: "10 - Tool Documentation: excellent, easy-to-follow documentation"
@@ -138,8 +136,7 @@ tasks:
       how each function or endpoint works, how to run it in one command, the
       live URL, and links demo/README.md. A teammate who did not write the
       code follows it from a fresh clone and it works.
-    result: "Jerry Su documentation updated with Codex assistance: Windows startup, current dashboard/scenarios, API/function reference and limitations; 28 Python tests plus 5 subtests, 5 frontend tests and three live API comparisons pass; Windows CRLF dataset validation fails; live URL and independent fresh-clone teammate walkthrough pending"
-
+    result: "Windows quick start, API/function reference, usability workflow and rubric evidence updated; 30 Python tests plus 5 subtests, 6 frontend tests, five bundle tests and data validator pass; public URL and independent fresh-clone walkthrough pending"
   - id: H-08
     title: Reproducible public repo, submitted on Devpost
     points: "5 - Tool Documentation: fully reproducible code, posted publicly to GitHub"
@@ -156,3 +153,13 @@ tasks:
       testme script and the H-03 tests both pass with no extra steps; git
       grep -i "api_key" finds no real key; the Devpost entry links the repo.
     result: ""
+
+  - id: H-09
+    title: Cross-platform reproducibility and documentation consistency
+    status: done
+    owner: "Codex assisting Sigma Airlines"
+    started_at: "2026-10-22T00:41:20.779147+00:00"
+    owns: [".gitattributes", ".github/scripts/README.md", ".github/scripts/prepare-connect-bundle.py", ".github/scripts/test_connect_bundle.py", "data/*.csv", "data/README.md", "app/.python-version", "app/requirements.txt", "app/frontend/index.html"]
+    notes: "Authorized by the user's approval of the usability/documentation plan; normalize text line endings only in existing data/runtime inputs; no statistical or dataset-value changes; review completed before local commit; no push or deployment without release confirmation."
+    definition_of_done: "python data/validate.py; python .github/scripts/test_connect_bundle.py -v; git diff --check; documentation links resolve and QC/API source is unchanged"
+    result: "LF staging and data reproducibility verified; upstream 782ab93 owner/deployment/test relocation changes retained; five bundle tests, data validator, documentation links, no QC/API diff and compatibility checks pass"

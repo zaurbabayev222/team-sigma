@@ -1,15 +1,15 @@
 {
   "version": 1,
-  "locale": "C.UTF-8",
+  "locale": "English_United States.1252",
   "metadata": {
     "appmode": "python-fastapi",
     "entrypoint": "app:app"
   },
   "python": {
-    "version": "3.12.4",
+    "version": "3.12.15",
     "package_manager": {
       "name": "pip",
-      "version": "24.0",
+      "version": "26.2.2",
       "package_file": "requirements.txt"
     }
   },
@@ -43,14 +43,14 @@
     "data/unstable_shift.csv": {
       "checksum": "5d1f571db93872458fecdbe9765ec7d6"
     },
-    "frontend/dist/assets/index-BILLycUL.js": {
-      "checksum": "067c751dd0c82290fdbd0c12eed7e4f0"
+    "frontend/dist/assets/index-CfWBCrTp.css": {
+      "checksum": "cccd199a77915f85a6476a9b4e6933fc"
     },
-    "frontend/dist/assets/index-REKrLcTO.css": {
-      "checksum": "754d457f68ced66a3dee71ec0123bb6c"
+    "frontend/dist/assets/index-DFGzSMmI.js": {
+      "checksum": "8f7e7be0ee99ed67e9844c56b6714a06"
     },
     "frontend/dist/index.html": {
-      "checksum": "a6c70cbd751088ae06e0f3ee47e833aa"
+      "checksum": "e5decab5342085377e3b3bbf12a4c92f"
     },
     "profiles/__init__.py": {
       "checksum": "d41d8cd98f00b204e9800998ecf8427e"

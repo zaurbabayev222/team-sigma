@@ -1,4 +1,4 @@
-﻿# AeroQual function and API reference
+# AeroQual function and API reference
 
 Start with the [root README](../README.md) for Windows PowerShell setup, dashboard usage, observed verification results and current limitations. The [codebook](../data/README.md) defines the synthetic datasets; the [walkthrough](../demo/README.md) explains their outputs.
 
@@ -10,7 +10,7 @@ After installing requirements, copying CSVs to `app/data/` and building React, r
 .\.venv\Scripts\python.exe -m uvicorn app.app:app --host 127.0.0.1 --port 8000
 ```
 
-Open `http://127.0.0.1:8000/dashboard/`. The root stays API JSON. The dashboard mount is registered only if `frontend/dist/` exists when the application imports; build before starting and restart after creating a missing build.
+Open `http://127.0.0.1:8000/dashboard/`. The root redirects to the dashboard, preserving the Connect path prefix. The dashboard mount is registered only if `frontend/dist/` exists when the application imports; build before starting and restart after creating a missing build.
 
 In Bash with the intended Python environment active, `bash app/testme.sh` syncs data, installs/builds React and runs `app:app` from inside `app/`. This flat entrypoint also matches the deployment bundle; use `app.app:app` from the repository root.
 
@@ -153,9 +153,19 @@ Shapiro-Wilk uses pooled coupon values when total variation is positive; it does
 | `testme.sh` | Bash: sync CSVs, install/build frontend, start API |
 | `sync_data.sh` | Copy root `data/*.csv` into runtime `app/data/` |
 | `manifestme.sh` | Build frontend and generate a local manifest using the shared bundle tool |
-| `deployme.sh` | Prepare the bundle and publish from your own machine (the push-to-deploy workflow does this too); requires Bash 4+ |
+| `deployme.sh` | Prepare bundle and publish using the upstream name-based target flow; requires Bash 4+ |
 | `requirements.txt` | Pinned direct Python application/test dependencies |
 
-Every push to `main` that changes `app/`, `data/` or `.github/` tests and redeploys the app; see the [deployment handoff](../.github/scripts/README.md). The manifest targets Python 3.12 and checksums runtime files: after a source, data, dependency or dashboard change, re-write it with `bash app/manifestme.sh` and commit it with the change. Use `testme.sh`, not the publishing scripts, for local preview. Public deployment is unverified.
+The upstream workflow deploys on qualifying pushes to `main`; its publisher creates or updates the named AeroQual content item. Do not generate manifests or publish for local preview. See the [deployment handoff](../.github/scripts/README.md). The manifest targets Python 3.12 and checksums runtime files; source/data/dependency or built-asset changes require reviewed manifest regeneration before publication. Public deployment is unverified.
 
-Run the commands in the [root verification section](../README.md#verification) for Python/frontend tests and live API parity. It records actual outputs and pending independent human reproduction. Local tests do not establish public deployment.
+Run the commands in the [root verification section](../README.md#verification) for Python/frontend tests and live API parity. It records actual outputs, the Windows line-ending correction and passing data validator, and pending independent human reproduction. Local tests do not establish public deployment.
+
+## Usability and evidence presentation
+
+The dashboard separates **statistical stability**, **capability assessment**, and **observed coupon failures**. A flagged process keeps its capability conclusion visibly withheld even when the observed failure count is zero. Backend numbers and verdict precedence are unchanged.
+
+Each successful response is paired with the submitted dataset/file and LSL. Changing those inputs marks the previous results as stale; a successful reanalysis replaces the snapshot. Inputs are disabled during an analysis request. Catalog errors have a retry action and do not prevent uploading a CSV.
+
+Charts provide numeric axes, focusable point descriptions and an expandable table of every build. Flagged builds and their optional recorded conditions share one investigation table. Observed reference ranges, assumptions/diagnostics and distribution-bin tables expand on request. Red squares supplement color as a flag cue; narrow screens use local chart/table scrolling. This is manually checked keyboard/mobile behavior, not a claimed accessibility certification.
+
+See the [judging walkthrough](../demo/README.md) for screenshot evidence, scenario interpretations and the independent reproduction checklist. The API remains the source of QC values. The current candidate was rebuilt and its manifest regenerated/verified locally through H-06 under Python 3.12.15; any later asset or runtime-input changes require repeating that process before publication.

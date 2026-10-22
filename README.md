@@ -1,4 +1,4 @@
-﻿# AeroQual
+# AeroQual
 
 Titanium additive manufacturing quality dashboard by **Sigma Airlines**, Cornell SYSEN 5300 Six Sigma Hackathon, Virtual DL Challenge.
 
@@ -49,11 +49,13 @@ bash app/testme.sh
 
 ## Use the dashboard
 
-1. Select an **Example dataset**, or upload your coupon CSV. An upload takes precedence; use **Clear upload** to return to examples.
+1. Select **Stable and capable**, **Stable but not capable**, or **Unstable process shift**, or upload your coupon CSV. An upload takes precedence; use **Clear upload** to return to examples.
 2. Enter **Minimum strength, LSL (MPa)** from the customer specification. The demo default **895 MPa** is illustrative, not a titanium acceptance standard.
-3. Click **Analyze builds**. Review the verdict/reason, Cpk/Ppk, failure counts, X-bar/S charts, flagged-build table, distribution-bin table and recorded process parameters.
+3. Click **Analyze builds**. Review the labeled dataset/file and LSL, then read the separate stability, capability and observed-failure summaries. Expand the full backend reason when needed.
+4. Inspect X-bar/S charts and the combined **Build investigation** table. Hover or keyboard-focus a chart point; **View all build data** exposes every plotted value. Expand diagnostics, observed reference ranges or distribution bins for supporting detail.
+5. If you change an input, the page labels the previous results and asks you to analyze again. Inputs lock while a request is running; failed analyses display an error with recovery guidance.
 
-The dashboard uses defaults of 25 builds and Cpk target 1.33. These settings are configurable through the API, not dashboard controls. Red points identify builds flagged by either chart; the table explains each flag.
+The dashboard uses defaults of 25 builds and Cpk target 1.33. These settings are configurable through the API, not dashboard controls. Red squares identify builds flagged by either chart; circles represent unflagged builds. The table explains each flag. Chart and table containers scroll horizontally on small screens.
 
 ## Inputs and parameters
 
@@ -90,7 +92,7 @@ Each file contains **30 builds with 3 coupons each (90 total)**. Live API checks
 
 Stability alone does not establish capability; zero observed failures alone does not establish capability. In the unstable example, strength and oxygen changes are planted together from B020. Their association is synthetic, not validated manufacturing physics.
 
-The [complete walkthrough](demo/README.md) records chart limits, flags, parameters and interpretation. On Windows use the setup above and checker below instead of its `/tmp`-based Bash examples.
+The [complete walkthrough](demo/README.md) provides a three-minute judging sequence, local desktop/mobile captures, exact chart limits, flags, parameters and interpretation. Its Windows commands use the same environment as this README.
 
 ## Interpret the statistics
 
@@ -127,9 +129,9 @@ npm.cmd --prefix app/frontend test
 
 The scenario checker needs the running server; omit `--base-url` for core-only checks. It does not rewrite results unless `--output` is supplied. Frontend tests check rendering and request wiring using fixtures; the live checker compares all core fields using the integrated datasets.
 
-Local Windows verification on October 21, 2026: **28 Python tests and 5 subtests passed**, **5 frontend tests passed**, the frontend build succeeded, and all three live scenario/API comparisons passed. Python tests emitted a Starlette/httpx deprecation warning. The browser reported a missing favicon (404), without affecting analysis.
+Local Windows verification on October 21, 2026: **30 Python tests and 5 subtests passed**, **6 frontend tests passed**, the frontend build succeeded, and all three live scenario/API comparisons passed. Python tests emitted a Starlette/httpx deprecation warning. The browser reported a missing favicon (404), without affecting analysis.
 
-**Windows line endings (fixed October 21, 2026):** `data/validate.py` used to report `FAIL: stable_capable.csv: seeded regeneration differs` on Windows, because Git converted the CSVs to Windows (CRLF) line endings while the generator writes LF. `.gitattributes` now keeps every text file LF on all systems, so a fresh clone passes the byte-level check. Independent fresh-clone human reproduction is still pending.
+**Cross-platform reproducibility:** the earlier Windows byte-check failure came from CRLF checkout endings, not changed measurements. Text files now declare LF endings in `.gitattributes`, runtime data copies were resynced, and the bundle tool writes LF requirements explicitly. `data/validate.py` now passes reproducibility, schema, scenario and edge-case checks without weakening its byte comparison. Existing clones may need a clean checkout to adopt the attributes. Independent fresh-clone human reproduction remains pending.
 
 ## Troubleshooting
 
@@ -143,7 +145,7 @@ Local Windows verification on October 21, 2026: **28 Python tests and 5 subtests
 
 ## Deployment and project map
 
-**Public Posit Connect URL: not yet verified (H-06).** Local preview is not evidence of public deployment. Every push to `main` that changes `app/`, `data/` or `.github/` runs the tests and then redeploys to the same URL; see the [deployment handoff](.github/scripts/README.md). Keep credentials in repository secrets only. Use `testme.sh`, not the publishing scripts, to preview the app.
+**Public Posit Connect URL: not yet verified (H-06).** Local preview is not evidence of public deployment. The upstream workflow now tests and deploys automatically on pushes to `main` that change `app/`, `data/` or the configured deployment paths; it can also be started manually. A push is a deployment action when publisher secrets are configured. Follow the [deployment handoff](.github/scripts/README.md). Keep credentials in environment settings or repository secrets. Do not invoke publishing scripts to preview the app.
 
 | Location | Purpose |
 | --- | --- |
@@ -151,7 +153,23 @@ Local Windows verification on October 21, 2026: **28 Python tests and 5 subtests
 | `app/app.py`, `app/profiles/lpbf.py` | API and LPBF mapping |
 | `app/frontend/` | React/Vite dashboard |
 | `data/`, `demo/` | Synthetic CSVs, codebook, walkthrough and checker |
-| `tests/` | Statistical, API and bundle tests |
-| `.github/` | Deploy workflow (tests, then publishes on push) and its scripts |
+| `tests/` | Statistical, API and bundle API tests (including `test_bundle_api.py`) |
+| `.github/` | Deployment validation and publishing tools |
 
 Current scope excludes other selectable printing processes, unequal subgroups, regression, ANOVA, FMEA, Pareto analysis, predictive models and automated parameter recommendations. See [SPEC](SPEC.md), [decisions](docs/decisions.md), [task ledger](CONTRACT.yaml) and [rubric](docs/criteria.md). Starter provenance is documented in [demos](demos/README.md) and the deployment handoff; see the [MIT license](LICENSE).
+
+## Submission evidence and remaining checks
+
+| Rubric item | Evidence to review | Remaining action |
+| --- | --- | --- |
+| Effective working tool (25) | Local dashboard/API, upload workflow and three examples | Publish and verify a public course Connect URL |
+| Valid QC analysis (25) | SPEC formulas; known-answer and degenerate tests in `tests/` | Retain actual passing output and explain assumptions |
+| Prompt fit, user, minimal inputs (15) | SPEC use case; three required CSV columns plus customer LSL | Confirm the stated workflow with a quality-engineering reviewer |
+| Clear demonstration (10) | Three-minute walkthrough and real local captures in `demo/` | Independent teammate reproduction |
+| Documentation (10) | This quick start and API/function reference | Independent fresh-clone walkthrough |
+| Datasets and codebook (10) | Three labeled synthetic files; units, seeds and collection sources | Verify reproducibility on the supported checkout |
+| Public reproducible repository (5) | GitHub source, lockfile and run/test commands | Fresh-clone verification and final Devpost links |
+
+Example known-answer evidence (LSL 980 MPa): X-bar center 1000 MPa; limits 980.456?1019.544 MPa; S center 10 MPa; upper limit 25.682 MPa; Cpk 0.591; Ppk 0.571; 1/12 failures; capability withheld for too few builds. Constant-data tests require undefined indices and a no-variation reason; one-build, unequal-count and missing-strength tests require rejection. These checks validate implementation against the stated examples, not hardware qualification.
+
+The release manifest was regenerated locally with rsconnect-python 1.32.0 under Python 3.12.15. All 14 runtime checksums and isolated bundle dashboard/assets, health, known-answer upload and three scenario comparisons passed. The candidate is prepared for review and release confirmation. Confirm server interpreter support before publication. Public deployment and independent human checks remain pending; no scores are claimed here.

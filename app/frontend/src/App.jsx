@@ -2,50 +2,82 @@ import React, { useEffect, useRef, useState } from 'react'
 import { analyzeDataset, analyzeUpload, listDatasets } from './api'
 
 const number = (value, digits = 3) => value == null ? 'Undefined' : Number(value).toFixed(digits)
+const scenarios = {
+  stable_capable: ['Stable and capable', 'A stable process with strength comfortably above the illustrative minimum.'],
+  stable_incapable: ['Stable but not capable', 'A stable process operating too close to the minimum strength.'],
+  unstable_shift: ['Unstable process shift', 'A planted strength drop: investigate stability before interpreting capability.'],
+}
+const labels = {
+  chamber_oxygen_ppm: ['Chamber oxygen', 'ppm'],
+  powder_reuse_count: ['Powder reuse', 'cycles'],
+  laser_power_w: ['Laser power', 'W'],
+}
+const tableRegion = (label, children) => <div className="table-scroll" role="region" aria-label={label} tabIndex="0">{children}</div>
 
-// Only chart coordinates are calculated here. All displayed QC values come from Python.
+// Only plot geometry and formatting are calculated here. QC results come from Python.
 export function Chart({ title, builds, field, limits }) {
+  const [active, setActive] = useState(null)
   const values = [...builds.map(build => build[field]), limits.lcl, limits.ucl]
   const low = Math.min(...values), high = Math.max(...values)
-  const y = value => 175 - (value - low) / (high - low || 1) * 140
-  const x = index => 45 + index / Math.max(builds.length - 1, 1) * 630
-  return <section className="card"><h2>{title}</h2>
-    <p>LCL {number(limits.lcl)} · Center {number(limits.center)} · UCL {number(limits.ucl)} MPa</p>
-    <svg viewBox="0 0 730 220" role="img" aria-label={`${title}; flagged builds shown in red`}>
-      {['lcl', 'center', 'ucl'].map(key => <g key={key}><line x1="45" x2="675" y1={y(limits[key])} y2={y(limits[key])} stroke={key === 'center' ? '#52677e' : '#b87724'} strokeDasharray="5 4"/><text x="680" y={y(limits[key]) + 4}>{key.toUpperCase()}</text></g>)}
-      <polyline points={builds.map((build, i) => `${x(i)},${y(build[field])}`).join(' ')} fill="none" stroke="#247982" strokeWidth="2"/>
-      {builds.map((build, i) => <circle key={build.build_id} cx={x(i)} cy={y(build[field])} r="4" fill={build.flagged ? '#c42828' : '#247982'}><title>{`${build.build_id}: ${number(build[field])} MPa. ${build.reason || 'In control'}`}</title></circle>)}
-      <text x="45" y="210">{builds[0]?.build_id}</text><text x="600" y="210">{builds.at(-1)?.build_id}</text>
-    </svg><p>Builds in date order. Red points identify flagged builds; hover for details.</p>
+  const y = value => 206 - (value - low) / (high - low || 1) * 160
+  const x = index => 65 + index / Math.max(builds.length - 1, 1) * 565
+  const description = build => `${build.build_id}: ${number(build[field])} MPa. ${build.flagged ? build.reason : 'No chart rule triggered.'}`
+  return <section className="panel chart-panel" aria-label={title}>
+    <h2>{title}</h2>
+    <p className="muted">{field === 'mean' ? 'Average coupon strength within each build.' : 'Variation between coupons within each build.'} Control limits are estimated from this entire dataset.</p>
+    <div className="chart-scroll" role="region" aria-label={`${title} plot; scroll horizontally on small screens`} tabIndex="0">
+      <svg viewBox="0 0 740 265" role="group" aria-label={`${title}; focus a point for its value. All values are available in the build data table.`}>
+        {[low, (low + high) / 2, high].map((value, index) => <g key={index}><line x1="65" x2="630" y1={y(value)} y2={y(value)} className="grid-line"/><text x="55" y={y(value) + 4} textAnchor="end">{number(value, 1)}</text></g>)}
+        <text x="65" y="22">MPa</text>
+        {['lcl', 'center', 'ucl'].map(key => <g key={key}><line x1="65" x2="630" y1={y(limits[key])} y2={y(limits[key])} className={key === 'center' ? 'center-line' : 'limit-line'}/><text x="645" y={y(limits[key]) + 4}>{key.toUpperCase()}</text></g>)}
+        <polyline points={builds.map((build, index) => `${x(index)},${y(build[field])}`).join(' ')} className="series-line"/>
+        {builds.map((build, index) => <g key={build.build_id} tabIndex="0" role="img" aria-label={description(build)} onFocus={() => setActive(build)} onMouseEnter={() => setActive(build)} onMouseLeave={() => setActive(null)} onBlur={() => setActive(null)}>
+          <circle cx={x(index)} cy={y(build[field])} r="12" fill="transparent"/>
+          {build.flagged ? <rect x={x(index) - 4} y={y(build[field]) - 4} width="8" height="8" className="flag-point"/> : <circle cx={x(index)} cy={y(build[field])} r="4" className="normal-point"/>}
+          <title>{description(build)}</title>
+        </g>)}
+        <text x="65" y="234">{builds[0]?.build_id}</text><text x="630" y="234" textAnchor="end">{builds.at(-1)?.build_id}</text><text x="350" y="258" textAnchor="middle">Builds in date order</text>
+      </svg>
+    </div>
+    <p className="chart-readout" aria-live="polite">{active ? description(active) : 'Circle: unflagged build. Red square: build flagged by either chart. Hover or focus a point for details.'}</p>
+    <dl className="limits">{[['Lower limit', limits.lcl], ['Center', limits.center], ['Upper limit', limits.ucl]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{number(value)} MPa</dd></div>)}</dl>
   </section>
 }
 
-export function Results({ result }) {
+export function Results({ result, context }) {
   const flagged = result.builds.filter(build => build.flagged)
-  const labels = {
-    chamber_oxygen_ppm: ['Chamber oxygen', 'ppm'],
-    powder_reuse_count: ['Powder reuse count', 'times'],
-    laser_power_w: ['Laser power', 'W'],
-  }
-  // Adapt the completed H-04 parameter contract; values are computed by Python.
-  const parameters = Array.isArray(result.parameters) ? result.parameters :
-    (result.parameters?.columns || []).map(column => ({
-      column, label: labels[column]?.[0] || column, unit: labels[column]?.[1] || '',
-      reference_min: result.parameters.usual_range[column]?.min,
-      reference_max: result.parameters.usual_range[column]?.max,
-      flagged_builds: result.parameters.flagged_builds.map(build => ({
-        build_id: build.build_id, values: [build.values[column]],
-      })),
-    }))
-  return <div aria-live="polite">
-    <section className={`card verdict ${result.verdict === 'capable' ? 'good' : 'attention'}`}><h2>{result.verdict}</h2><p>{result.reason}</p></section>
-    <div className="metrics">{[['Cpk (lower)', number(result.cpk)], ['Ppk (lower)', number(result.ppk)], ['Failure rate', `${number(result.failure_rate * 100, 1)}% (${result.n_failures}/${result.n_coupons})`], ['Builds / coupons per build', `${result.n_builds} / ${result.n_per_build}`]].map(([label, value]) => <section className="card" key={label}><h3>{label}</h3><strong>{value}</strong></section>)}</div>
-    <Chart title="X-bar chart — build mean" builds={result.builds} field="mean" limits={result.xbar}/>
-    <Chart title="S chart — within-build standard deviation" builds={result.builds} field="s" limits={result.s_chart}/>
-    <section className="card"><h2>Flagged builds</h2>{flagged.length ? <table><thead><tr><th>Build</th><th>Date</th><th>Mean (MPa)</th><th>S (MPa)</th><th>Reason</th></tr></thead><tbody>{flagged.map(build => <tr key={build.build_id}><td>{build.build_id}</td><td>{build.order}</td><td>{number(build.mean)}</td><td>{number(build.s)}</td><td>{build.reason}</td></tr>)}</tbody></table> : <p>No builds flagged.</p>}</section>
-    <section className="card"><h2>Assumptions and interpretation</h2><p>Lower specification only; equal coupons per build; builds in time order; approximately normal strengths in a stable process. Capability is assessed only with at least 25 stable builds and a Cpk target of 1.33.</p><p>Within-build sigma: {number(result.sigma_short)} MPa. Overall sigma: {number(result.sigma_total)} MPa. Shapiro–Wilk p-value: {number(result.shapiro_p, 4)}. A small p-value raises concern about normality; a large value does not prove it.</p></section>
-    {Array.isArray(result.histogram) && result.histogram.length > 0 && <section className="card"><h2>Strength distribution</h2><table><thead><tr><th>Strength interval (MPa)</th><th>Coupon count</th></tr></thead><tbody>{result.histogram.map((bin, index) => <tr key={index}><td>{number(bin.lower)}–{number(bin.upper)}</td><td>{bin.count}</td></tr>)}</tbody></table></section>}
-    {parameters.length > 0 && <section className="card"><h2>Recorded process parameters</h2><p>Compare flagged builds with the usual range. Associations suggest investigation and do not establish a cause.</p>{parameters.map(parameter => <div key={parameter.column}><h3>{parameter.label || parameter.column} ({parameter.unit})</h3><p>Usual range: {number(parameter.reference_min)}–{number(parameter.reference_max)} {parameter.unit}</p><table><thead><tr><th>Flagged build</th><th>Recorded values</th></tr></thead><tbody>{(parameter.flagged_builds || []).map(build => <tr key={build.build_id}><td>{build.build_id}</td><td>{(build.values || []).map(value => number(value)).join(', ')}</td></tr>)}</tbody></table></div>)}</section>}
+  const withheld = result.verdict === 'not assessable'
+  const parameters = Array.isArray(result.parameters) ? result.parameters : (result.parameters?.columns || []).map(column => ({
+    column, label: labels[column]?.[0] || column, unit: labels[column]?.[1] || '',
+    reference_min: result.parameters.usual_range[column]?.min,
+    reference_max: result.parameters.usual_range[column]?.max,
+    flagged_builds: result.parameters.flagged_builds.map(build => ({build_id: build.build_id, values: [build.values[column]]})),
+  }))
+  const heading = flagged.length ? 'Process unstable — investigate flagged builds' : withheld ? 'More evidence needed for capability assessment' : result.verdict === 'capable' ? 'Process meets the configured capability target' : 'Stable process falls below the capability target'
+  return <div className="results">
+    {context && <section className="analysis-context" aria-label="Analyzed inputs"><h2>Analysis results</h2><p><strong>{context.source}</strong> · LSL {context.lsl} MPa · {result.n_builds} builds · {result.n_coupons} tested coupons</p><p className="muted">{context.synthetic ? 'Synthetic demonstration data. Example requirements are illustrative.' : 'Uploaded data. Confirm its provenance, units and customer requirement.'}</p></section>}
+    <section className={`assessment ${result.verdict === 'capable' ? 'good' : 'attention'}`} aria-label="Assessment summary">
+      <p className="status-label">{withheld ? 'Capability conclusion withheld' : result.verdict === 'capable' ? 'Capable under configured checks' : 'Not capable under configured checks'}</p>
+      <h2>{heading}</h2>
+      <p>{flagged.length ? `${flagged.length} of ${result.n_builds} builds triggered a control-chart rule. Review the build investigation below before interpreting capability.` : result.reason}</p>
+      <details><summary>Backend verdict and full reason</summary><p>{result.verdict}: {result.reason}</p></details>
+    </section>
+    <div className="summary-grid">
+      <section><h3>Statistical stability</h3><strong>{flagged.length ? `${flagged.length} builds flagged` : 'No builds flagged'}</strong><p>{flagged.length ? 'Investigate special-cause variation.' : 'No implemented chart rule triggered; this does not prove stability.'}</p></section>
+      <section><h3>Capability assessment</h3><strong>{withheld ? 'Withheld' : result.verdict === 'capable' ? 'Target met' : 'Target not met'}</strong><p>Cpk target 1.33 · minimum 25 builds (dashboard defaults).</p></section>
+      <section><h3>Observed coupon failures</h3><strong>{number(result.failure_rate * 100, 1)}% ({result.n_failures}/{result.n_coupons})</strong><p>Strength strictly below LSL. Observed conformance does not establish capability.</p></section>
+    </div>
+    <section className="indices" aria-label="Capability indices"><div><span>Cpk (lower)</span><strong>{number(result.cpk)}</strong></div><div><span>Ppk (lower)</span><strong>{number(result.ppk)}</strong></div><div><span>Builds / coupons per build</span><strong>{result.n_builds} / {result.n_per_build}</strong></div><p>{withheld ? 'Descriptive values only: capability conclusion is withheld. ' : ''}Lower-side indices are dimensionless. Control limits and customer specifications serve different purposes.</p></section>
+    <h2 className="section-title">Process stability</h2>
+    <div className="charts"><Chart title="X-bar chart — build mean" builds={result.builds} field="mean" limits={result.xbar}/><Chart title="S chart — within-build standard deviation" builds={result.builds} field="s" limits={result.s_chart}/></div>
+    <details className="panel"><summary>View all build data ({result.builds.length} rows)</summary>{tableRegion('All build results', <table><caption>Every plotted build; values calculated by Python</caption><thead><tr>{['Build', 'Date', 'Mean (MPa)', 'S (MPa)', 'Chart status'].map(label => <th scope="col" key={label}>{label}</th>)}</tr></thead><tbody>{result.builds.map(build => <tr key={build.build_id}><th scope="row">{build.build_id}</th><td>{build.order}</td><td>{number(build.mean)}</td><td>{number(build.s)}</td><td>{build.flagged ? build.reason : 'No rule triggered'}</td></tr>)}</tbody></table>)}</details>
+    <section className="panel" aria-label="Build investigation"><h2>Build investigation</h2><p>Review flagged builds alongside recorded conditions. These associations do not establish a cause or prescribe a parameter change.</p>
+      {flagged.length ? tableRegion('Flagged builds and process parameters', <table><caption>{flagged.length} flagged builds — strength and process context</caption><thead><tr>{['Build / date', 'Mean / S (MPa)', 'Reason', ...parameters.map(p => `${p.label} (${p.unit})`)].map(label => <th scope="col" key={label}>{label}</th>)}</tr></thead><tbody>{flagged.map(build => <tr key={build.build_id}><th scope="row">{build.build_id}<small>{build.order}</small></th><td>{number(build.mean)} / {number(build.s)}</td><td>{build.reason}</td>{parameters.map(parameter => <td key={parameter.column}>{(parameter.flagged_builds.find(item => item.build_id === build.build_id)?.values || [null]).map(value => number(value, parameter.column === 'powder_reuse_count' ? 0 : 3)).join(', ')}</td>)}</tr>)}</tbody></table>) : <p className="empty-note">No builds flagged. There are no flagged-build conditions to compare.</p>}
+      {parameters.length > 0 && <details><summary>Observed parameter reference ranges</summary><p>Minimum–maximum of unflagged build means in this file. These are not validated operating windows; changed builds may remain unflagged.</p><dl className="reference-ranges">{parameters.map(p => <div key={p.column}><dt>{p.label} ({p.unit})</dt><dd>{number(p.reference_min)}–{number(p.reference_max)} {p.unit}</dd></div>)}</dl></details>}
+      <p className="muted">A chart flag is not the same as a failed coupon. Use the reason and source test records to guide engineering review.</p>
+    </section>
+    <details className="panel"><summary>Assumptions, settings and statistical diagnostics</summary><p>Lower specification only; equal coupons per build; comparable tests; approximately normal strengths in a stable process. The dashboard uses a minimum of 25 builds and Cpk target of 1.33. Normality does not automatically gate the backend verdict.</p><p>Within-build sigma: {number(result.sigma_short)} MPa. Overall sigma: {number(result.sigma_total)} MPa. Shapiro–Wilk p-value: {number(result.shapiro_p, 4)}. A large p-value does not prove normality.</p><p>Limits use the full dataset. Only means outside X-bar limits and S above the S upper limit trigger flags; run/trend rules are not implemented. Lower-side Cpk/Ppk correspond to Cpl/Ppl terminology.</p></details>
+    {result.histogram?.length > 0 && <details className="panel"><summary>Strength distribution — coupon counts</summary>{tableRegion('Strength distribution bins', <table><caption>Histogram intervals, not specification limits</caption><thead><tr><th scope="col">Strength interval (MPa)</th><th scope="col">Coupon count</th></tr></thead><tbody>{result.histogram.map((bin, index) => <tr key={index}><td>{number(bin.lower)}–{number(bin.upper)}</td><td>{bin.count}</td></tr>)}</tbody></table>)}</details>}
   </div>
 }
 
@@ -53,24 +85,44 @@ export default function App() {
   const uploadInput = useRef(null)
   const [datasets, setDatasets] = useState([]), [dataset, setDataset] = useState('')
   const [lsl, setLsl] = useState('895'), [file, setFile] = useState(null)
-  const [result, setResult] = useState(null), [error, setError] = useState(''), [busy, setBusy] = useState(false)
-  useEffect(() => { listDatasets().then(body => {
-    const items = Array.isArray(body) ? body : body.datasets || []
-    const names = items.map(item => typeof item === 'string' ? item : item.name)
-    setDatasets(names); setDataset(names[0] || '')
-  }).catch(error => setError(error.message)) }, [])
+  const [analysis, setAnalysis] = useState(null), [error, setError] = useState(''), [catalogError, setCatalogError] = useState('')
+  const [busy, setBusy] = useState(false), [loading, setLoading] = useState(true), [retry, setRetry] = useState(0)
+  useEffect(() => {
+    let ignore = false
+    setLoading(true); setCatalogError('')
+    listDatasets().then(body => {
+      if (ignore) return
+      const names = (Array.isArray(body) ? body : body.datasets || []).map(item => typeof item === 'string' ? item : item.name)
+      setDatasets(names); setDataset(current => names.includes(current) ? current : names[0] || '')
+    }).catch(error => { if (!ignore) setCatalogError(error.message) }).finally(() => { if (!ignore) setLoading(false) })
+    return () => { ignore = true }
+  }, [retry])
+  const stale = analysis && (analysis.file !== file || (!file && analysis.dataset !== dataset) || Number(analysis.lsl) !== Number(lsl))
   async function run(event) {
-    event.preventDefault(); setBusy(true); setError(''); setResult(null)
-    try { setResult(await (file ? analyzeUpload(file, lsl) : analyzeDataset(dataset, lsl))) }
-    catch (error) { setError(error.message) } finally { setBusy(false) }
+    event.preventDefault(); setBusy(true); setError('')
+    const snapshot = {file, dataset, lsl, source: file ? file.name : scenarios[dataset]?.[0] || dataset, synthetic: !file}
+    try {
+      const result = await (file ? analyzeUpload(file, lsl) : analyzeDataset(dataset, lsl))
+      setAnalysis({...snapshot, result})
+    } catch (error) { setError(error.message); setAnalysis(null) } finally { setBusy(false) }
   }
-  return <main><header><p className="eyebrow">SIGMA AIRLINES · SYNTHETIC DEMONSTRATION</p><h1>AeroQual</h1><p>Review LPBF titanium build stability and minimum tensile strength capability.</p></header>
-    <form className="card controls" onSubmit={run}><label>Example dataset<select value={dataset} disabled={!!file} onChange={event => setDataset(event.target.value)}>{datasets.map(name => <option key={name}>{name}</option>)}</select></label>
-      <label>Or upload coupon CSV<input ref={uploadInput} type="file" accept=".csv,text/csv" onChange={event => setFile(event.target.files[0] || null)}/></label>
-      {file && <button type="button" onClick={() => { setFile(null); uploadInput.current.value = '' }}>Clear upload</button>}
-      <label>Minimum strength, LSL (MPa)<input type="number" step="any" required value={lsl} onChange={event => setLsl(event.target.value)}/></label>
-      <button disabled={busy || (!file && !dataset)}>{busy ? 'Analyzing…' : 'Analyze builds'}</button>
-      <p>Required columns: build_id, build_date (YYYY-MM-DD), uts_mpa. Example LSL 895 MPa is illustrative.</p></form>
-    {error && <p role="alert" className="error">{error}</p>}{result && <Results result={result}/>}
-    <footer>Decision support for quality engineers. Review the reason and assumptions before interpreting capability.</footer></main>
+  return <><a className="skip-link" href="#analysis-inputs">Skip to analysis inputs</a><main>
+    <header className="app-header"><div><h1>AeroQual</h1><p>Titanium build quality review</p></div><span className="profile-label">LPBF · Sigma Airlines</span></header>
+    <p className="intro">Review strength, process stability and capability against your customer’s minimum requirement.</p>
+    <form className="panel" id="analysis-inputs" onSubmit={run} aria-label="Analysis inputs"><h2>Choose your data</h2><fieldset disabled={busy}><legend className="sr-only">Dataset and strength requirement</legend><div className="controls">
+      <label>Example dataset<select value={dataset} disabled={!!file || loading || !datasets.length} onChange={event => setDataset(event.target.value)}><option value="" disabled>{loading ? 'Loading examples…' : 'Select an example'}</option>{datasets.map(name => <option key={name} value={name}>{scenarios[name]?.[0] || name}</option>)}</select></label>
+      <label>Or upload coupon CSV<input ref={uploadInput} type="file" accept=".csv,text/csv" aria-describedby="csv-help" onChange={event => { setFile(event.target.files[0] || null); setError('') }}/></label>
+      <label>Minimum strength, LSL (MPa)<input type="number" step="any" required value={lsl} onChange={event => setLsl(event.target.value)} aria-describedby="lsl-help"/></label>
+      <button type="submit" disabled={busy || (!file && !dataset)}>{busy ? 'Analyzing…' : 'Analyze builds'}</button>
+    </div>{file ? <p>Selected upload: <strong>{file.name}</strong> <button className="text-button" type="button" onClick={() => { setFile(null); uploadInput.current.value = ''; setError('') }}>Clear upload</button></p> : <p className="scenario-note"><strong>Synthetic demonstration.</strong> {scenarios[dataset]?.[1] || 'Choose an example to explore the analysis.'}</p>}
+    <p className="muted" id="lsl-help">Enter the customer requirement. Example LSL 895 MPa is illustrative; it is not an aerospace acceptance standard.</p>
+    <details id="csv-help"><summary>CSV format and required measurements</summary><p>One row per tested coupon. Required columns: <code>build_id</code>, <code>build_date</code> (YYYY-MM-DD), <code>uts_mpa</code> (MPa). At least two builds, two coupons per build and equal coupon counts are required. Missing strength is an error.</p><p>Optional context: chamber_oxygen_ppm, powder_reuse_count, laser_power_w. Keep one date per build and use comparable test conditions.</p></details></fieldset>
+    {catalogError && <div className="error" role="alert"><p>Could not load examples: {catalogError}. Check the API connection, then retry. You can still upload a CSV.</p><button type="button" onClick={() => setRetry(value => value + 1)}>Retry loading examples</button></div>}
+    {!loading && !catalogError && !datasets.length && <p role="status">No built-in examples are available. Upload a CSV, or ask the app owner to sync the demonstration datasets.</p>}
+    </form>
+    <div role="status" aria-live="polite">{busy ? <p className="notice">Analyzing your data. Inputs are locked until the response arrives.</p> : stale ? <p className="notice">Inputs changed. Results below use the previous inputs shown in “Analysis results”. Select Analyze builds to refresh.</p> : analysis ? <p className="muted">Analysis complete. Results match the inputs shown below.</p> : null}</div>
+    {error && <div role="alert" className="error"><h2>Unable to analyze this file</h2><p>{error}</p><p>Check the required columns, numeric strength and equal coupon counts, then select Analyze builds again. If the API is unavailable, confirm the server is running.</p></div>}
+    {analysis ? <Results key={`${analysis.source}-${analysis.lsl}`} result={analysis.result} context={analysis}/> : !busy && !error && <section className="empty-state"><h2>Your build review starts here</h2><p>Choose a synthetic example or upload test results, enter a minimum strength and select Analyze builds.</p><p>You’ll see observed failures, control charts and a capability assessment with its supporting evidence.</p></section>}
+    <footer>Decision support for quality engineers. Engineering sign-off and hardware release remain external.</footer>
+  </main></>
 }

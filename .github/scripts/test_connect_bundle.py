@@ -50,6 +50,8 @@ class BundleChecks(unittest.TestCase):
         self.assertTrue((self.destination / 'data/unstable_shift.csv').exists())
         self.assertFalse((self.destination / '.env').exists())
         self.assertFalse((self.destination / 'frontend/node_modules').exists())
+        # The manifest fingerprints bytes: Windows must stage the same requirements as CI.
+        self.assertNotIn(b'\r', (self.destination / 'requirements.txt').read_bytes())
         self.manifest()
         bundle.verify(self.destination)
 
