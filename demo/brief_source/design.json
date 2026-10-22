@@ -1,0 +1,123 @@
+﻿{
+    "schemaVersion":  2,
+    "generatedAt":  "2026-10-22T23:35:44.3789889Z",
+    "title":  "Design System: AeroQual engineering brief",
+    "extensions":  {
+                       "scope":  "demo/aeroqual_brief.html only; primitive tokens live in sibling DESIGN.md frontmatter",
+                       "typographyMeta":  {
+                                              "display":  {
+                                                              "displayName":  "IBM Plex Sans Medium",
+                                                              "purpose":  "Embedded offline headings and verdicts; official IBM license included in artifact."
+                                                          },
+                                              "body":  {
+                                                           "displayName":  "Platform sans",
+                                                           "purpose":  "Body copy and tabular numerical evidence."
+                                                       }
+                                          },
+                       "shadows":  [
+
+                                   ],
+                       "motion":  [
+                                      {
+                                          "name":  "page-turn",
+                                          "value":  "280ms cubic-bezier(.16,1,.3,1)",
+                                          "purpose":  "rotateY(-2deg) translateX(12px) and opacity .7 to identity; disabled for reduced motion."
+                                      },
+                                      {
+                                          "name":  "focus-ring",
+                                          "value":  "3px solid #73d7e4; outline-offset:4px",
+                                          "purpose":  "Visible keyboard focus; button offset is 3px."
+                                      }
+                                  ],
+                       "breakpoints":  [
+                                           {
+                                               "name":  "mobile-max",
+                                               "value":  "730px"
+                                           },
+                                           {
+                                               "name":  "intermediate-max",
+                                               "value":  "1050px"
+                                           },
+                                           {
+                                               "name":  "wide-min",
+                                               "value":  "1700px"
+                                           }
+                                       ],
+                       "chartRail":  {
+                                         "minWidth":  "680px",
+                                         "mobileText":  "16px",
+                                         "mobileAxisLabel":  "14px",
+                                         "overflow":  "local horizontal scroll"
+                                     },
+                       "provenance":  {
+                                          "sources":  [
+                                                          "brief.css",
+                                                          "brief.js",
+                                                          "brief.template.html"
+                                                      ],
+                                          "reviewEvidence":  "review/",
+                                          "tokenAuthority":  "DESIGN.md frontmatter"
+                                      }
+                   },
+    "components":  [
+                       {
+                           "name":  "Primary action",
+                           "kind":  "button",
+                           "refersTo":  "button-primary",
+                           "description":  "Cyan principal action.",
+                           "html":  "\u003cbutton class=\"ds-primary\"\u003eOpen application\u003c/button\u003e",
+                           "css":  ".ds-primary{font:600 14px Aptos,\u0027Segoe UI\u0027,Arial,sans-serif;min-height:42px;padding:9px 16px;border:1px solid var(--cyan,#73d7e4);border-radius:6px;background:var(--cyan,#73d7e4);color:var(--navy,#0a1322);cursor:pointer}.ds-primary:hover{background:#a3e7ee}.ds-primary:focus-visible{outline:3px solid var(--cyan,#73d7e4);outline-offset:3px}.ds-primary:disabled{opacity:.4;cursor:default}"
+                       },
+                       {
+                           "name":  "Secondary action",
+                           "kind":  "button",
+                           "description":  "Raised previous/next control.",
+                           "html":  "\u003cbutton class=\"ds-secondary\"\u003eNext\u003c/button\u003e",
+                           "css":  ".ds-secondary{font:600 14px Aptos,\u0027Segoe UI\u0027,Arial,sans-serif;min-height:42px;padding:9px 16px;border:1px solid var(--rule,#31465a);border-radius:6px;background:var(--raised,#192a3b);color:#edf4f9;cursor:pointer}.ds-secondary:hover{background:#233b4e;border-color:#60819a}.ds-secondary:focus-visible{outline:3px solid var(--cyan,#73d7e4);outline-offset:3px}.ds-secondary:disabled{opacity:.4;cursor:default}"
+                       },
+                       {
+                           "name":  "Method selector",
+                           "kind":  "input",
+                           "description":  "Labeled underlined native selector.",
+                           "html":  "\u003clabel class=\"ds-label\"\u003eManufacturing method\u003cselect class=\"ds-select\"\u003e\u003coption\u003eLPBF\u003c/option\u003e\u003coption\u003eWAAM\u003c/option\u003e\u003c/select\u003e\u003c/label\u003e",
+                           "css":  ".ds-label{display:grid;gap:4px;font:11px Aptos,\u0027Segoe UI\u0027,Arial,sans-serif;color:var(--muted,#aebfce)}.ds-select{font:600 14px Aptos,\u0027Segoe UI\u0027,Arial,sans-serif;color:#edf4f9;background:transparent;border:0;border-bottom:1px solid #577185;padding:6px 30px 6px 0;min-height:36px;cursor:pointer}.ds-select option{background:var(--panel,#121f30)}.ds-select:focus-visible{outline:3px solid var(--cyan,#73d7e4);outline-offset:4px}"
+                       },
+                       {
+                           "name":  "Section navigation",
+                           "kind":  "nav",
+                           "description":  "Quiet links with cyan current-state underline.",
+                           "html":  "\u003cnav class=\"ds-nav\"\u003e\u003ca href=\"#decision\" aria-current=\"page\"\u003eDecision\u003c/a\u003e\u003ca href=\"#evidence\"\u003eEvidence\u003c/a\u003e\u003c/nav\u003e",
+                           "css":  ".ds-nav{display:flex;gap:30px;border-bottom:1px solid var(--rule,#31465a);overflow:auto}.ds-nav a{font:13px Aptos,\u0027Segoe UI\u0027,Arial,sans-serif;color:var(--muted,#aebfce);padding:11px 0;text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent}.ds-nav a[aria-current=page]{color:var(--cyan,#73d7e4);border-bottom-color:var(--cyan,#73d7e4)}.ds-nav a:focus-visible{outline:3px solid var(--cyan,#73d7e4);outline-offset:4px}"
+                       },
+                       {
+                           "name":  "Evidence panel",
+                           "kind":  "card",
+                           "refersTo":  "panel",
+                           "description":  "Border-defined graphite evidence container.",
+                           "html":  "\u003csection class=\"ds-panel\"\u003e\u003ch3\u003eStrength evidence\u003c/h3\u003e\u003cp\u003eReview the measured result against its control limits.\u003c/p\u003e\u003c/section\u003e",
+                           "css":  ".ds-panel{background:var(--panel,#121f30);color:#edf4f9;border:1px solid var(--rule,#31465a);border-radius:12px;padding:24px;font:16px/1.5 Aptos,\u0027Segoe UI\u0027,Arial,sans-serif}.ds-panel h3{font-family:PlexBrief,\u0027Segoe UI\u0027,sans-serif;font-size:17px;font-weight:500;margin:0 0 12px}.ds-panel p{color:var(--muted,#aebfce);margin:0;max-width:70ch}"
+                       }
+                   ],
+    "narrative":  {
+                      "northStar":  "Engineering review brief",
+                      "overview":  "This records the user\u0027s professional navy, graphite and cyan direction for demo/aeroqual_brief.html only. It is a separate offline flipbook, not an application rebrand. Literal evidence geometry, concise conclusions and restrained framing carry the presentation.",
+                      "keyCharacteristics":  [
+                                                 "Six paginated spreads with persistent method and scenario context.",
+                                                 "Flat tonal surfaces, clear rules and tabular numerical evidence.",
+                                                 "Engineering conclusions with visible interpretation and provenance boundaries."
+                                             ],
+                      "rules":  [
+
+                                ],
+                      "dos":  [
+                                  "Do keep provenance and synthetic-data context inspectable offline.",
+                                  "Do preserve keyboard focus, reduced motion and local mobile chart scrolling.",
+                                  "Do distinguish control limits, customer LSL and descriptive capability values."
+                              ],
+                      "donts":  [
+                                    "Don\u0027t introduce decorative imagery or page-curl textures into this brief.",
+                                    "Don\u0027t imply causality, approved operating windows, flightworthiness or release authority.",
+                                    "Don\u0027t extend this contract to the existing app, tutorial or other task-owned files."
+                                ]
+                  }
+}

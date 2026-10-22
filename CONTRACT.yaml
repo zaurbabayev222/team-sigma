@@ -236,3 +236,13 @@ tasks:
     notes: "User authorized documentation/tutorial work and subsequently approved committing/pushing the accumulated candidate to main; remaining review/submission stays open-ended; H-06 ledger and deployment files preserved during H-15; the existing push-triggered workflow may run."
     definition_of_done: "python demo/build_slidedeck.py --check; python -m pytest tests/test_demo_artifact.py; docs/evaluation.md maps the unchanged 100-point rubric to current evidence; sixteen scenarios/four validators pass; deck file/HTTP navigation, interactions, downloads, keyboard, print and mobile checks pass; H-06 baseline unchanged; remaining human/publication/submission work stated honestly"
     result: "Fourteen offline HTML lessons, sixteen captured scenarios/exact CSVs, twelve requirement responses and four fixed-baseline date views verified; 78 Python tests plus 18 subtests, 19 frontend tests/build, four validators, sixteen API parity cases and artifact/browser/offline/download/keyboard/mobile/print checks pass; rubric links/H-06 preservation pass; user approved check-in to main; independent review, public-revision reproduction and submission remain open without new assignments"
+
+  - id: H-16
+    title: Executive engineering flipbook brief, isolated from the existing tutorial and app
+    status: done
+    owner: "Codex assisting Sigma Airlines"
+    started_at: "2026-10-22"
+    owns: ["demo/aeroqual_brief.html", "demo/brief_source/", "tests/test_engineering_brief.py"]
+    notes: "User approved the separate professional brief and subsequently approved committing/pushing it to main. H-05 broad demo/frontend ownership is respected by adding only these named paths; existing tutorial, README, app, data and all other active task files are untouched. No deployment authorized. Product and visual context remain scoped to the brief."
+    definition_of_done: "python demo/brief_source/build_brief.py --check; python -m pytest tests/test_engineering_brief.py; sixteen API/core parity captures; Playwright verifies selectors, charts, comparison, drill-down, keyboard, appendix, print, offline/file mode and 1440/1920/mobile layouts with no page errors; Impeccable visual review; only declared new artifacts and this ledger entry change"
+    result: "User accepted brief and approved check-in/push to main; 3 artifact/provenance tests pass; 16 actual FastAPI/core captures, 16 scenario selections, 64 comparison pairs, 5 evidence views, hover/focus/keyboard/drill-down/appendix/print/offline checks pass with zero page/console errors; 375/390/768/1440/1920 layouts pass; Impeccable scored fixes ship; existing owned files unchanged; no deployment"
