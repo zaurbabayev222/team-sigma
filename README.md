@@ -214,7 +214,7 @@ compact overview. The H-10 through H-14 verification paragraphs keep historical 
 | Clear demonstration (10) | [Demo site](https://zaurbabayev222.github.io/team-sigma/demo/), 14-lesson tutorial, written walkthrough and API captures in `demo/` | Done: team reproduced it on the live app (Oct 23) |
 | Documentation (10) | This quick start and API/function reference | Done: fresh-clone walkthrough passed (Oct 23) |
 | Datasets and codebook (10) | Sixteen labeled synthetic files; units, seeds and collection sources | Done: four validators pass in a fresh clone |
-| Public reproducible repository (5) | GitHub source, lockfile and run/test commands | Fresh clone passed; Devpost entry links the repo |
+| Public reproducible repository (5) | GitHub source, lockfile and run/test commands | Done: fresh clone passed; submitted on Devpost (Oct 23) |
 
 Example known-answer evidence (LSL 980 MPa): X-bar center 1000 MPa; limits 980.456–1019.544 MPa; S center 10 MPa; upper limit 25.682 MPa; Cpk 0.591; Ppk 0.571; 1/12 failures; capability withheld for too few builds. Constant-data tests require undefined indices and a no-variation reason; one-build, unequal-count and missing-strength tests require rejection. These checks validate implementation against the stated examples, not hardware qualification.
 

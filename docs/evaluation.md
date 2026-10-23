@@ -16,7 +16,7 @@ verified logged out (H-06), team manual checks passed, fresh public clone passed
 | Excellent documentation | 10 | [README](../README.md), [function/API reference](../app/README.md), [architecture](architecture.md), [Pareto guide](pareto-explorer.md), [tutorial instructions](../demo/README.md) | Done: fresh-clone walkthrough and live URL (H-07/H-06) |
 | 2–3 accurate working test datasets | 5 | Original three LPBF examples provide capable/incapable/unstable cases; 13 supplementary examples extend methods and inspections; four validators | Done: four validators pass in a fresh clone (H-02) |
 | Dataset codebook and README | 5 | [data/README.md](../data/README.md): columns, units, seeds, collection guidance, missing/none semantics | Done: team manual checks |
-| Fully reproducible public repository | 5 | Locked frontend dependencies, pinned Python dependencies, startup scripts; clean local committed-baseline clone and fresh dependency checks | Fresh public clone passed; Devpost submission (H-08) |
+| Fully reproducible public repository | 5 | Locked frontend dependencies, pinned Python dependencies, startup scripts; clean local committed-baseline clone and fresh dependency checks | Done: fresh public clone passed; submitted on Devpost (H-08) |
 | **Total** | **100** | **Coverage is mapped; points are awarded by event staff.** | |
 
 ## Local verification, 22 October 2026

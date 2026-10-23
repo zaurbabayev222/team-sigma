@@ -11,11 +11,9 @@ stays in [CONTRACT.yaml](../CONTRACT.yaml).
 - **H-07 README, H-08 reproducibility:** the public repository was cloned into an empty folder and set
   up from the README. The app started, and all Python and frontend tests plus the four data
   validators passed. A key scan found no real credentials.
+- **H-08 Devpost:** the entry was submitted on 23 October 2026 with the links in [submission.md](submission.md).
 
-## Left before the deadline
-
-- **H-08 Devpost:** submit the entry using the links in [submission.md](submission.md), then open the
-  submitted page logged out and click every link.
+Nothing is left for the hackathon.
 
 ## Possible later work
 

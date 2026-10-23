@@ -11,7 +11,7 @@ protect the displayed statistics; known-answer and empty-window tests protect th
 
 [Evaluation evidence](evaluation.md), [submission text](submission.md) and [remaining work](remaining-work.md)
 are the current handoff. As of 23 October 2026 the app is deployed and verified (H-06), the team's
-manual checks passed and a fresh public clone passed; only the Devpost submission remains.
+manual checks passed, a fresh public clone passed, and the project was submitted on Devpost.
 
 **Approved by the team (2026-10-19); extended by the approved increments listed below.** Change an interface
 below only after telling everyone: all four agents build against it. What and why: [`SPEC.md`](../SPEC.md), [`decisions.md`](decisions.md).

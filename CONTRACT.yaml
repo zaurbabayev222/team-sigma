@@ -145,7 +145,7 @@ tasks:
   - id: H-08
     title: Reproducible public repo, submitted on Devpost
     points: "5 - Tool Documentation: fully reproducible code, posted publicly to GitHub"
-    status: in_progress
+    status: done
     owner: "Jerry Su (agent)"
     started_at: "2026-10-20"
     owns: [".gitignore"]
@@ -162,7 +162,7 @@ tasks:
       then app/testme.sh starts the app (health ok, dashboard 200); 106 Python tests plus 18
       subtests (H-03 core tests: 14 passed), 25 frontend tests and four validators pass;
       git grep -i "api_key" finds only variable names and placeholders, no real key.
-      Devpost submission remains
+      Devpost entry submitted 2026-10-23 with the repo, demo site and live app links
 
   - id: H-09
     title: Cross-platform reproducibility and documentation consistency

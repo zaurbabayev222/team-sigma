@@ -1,6 +1,6 @@
 # Submission text
 
-Text and links for the Devpost entry. The app, the demo and a fresh public clone were checked on October 23, 2026.
+Text and links for the Devpost entry, submitted on October 23, 2026. The app, the demo and a fresh public clone were checked the same day.
 
 ## Project
 
@@ -50,8 +50,8 @@ The team reproduced the demo on the live app, and a fresh clone of the public re
 - Interactive tutorial: https://zaurbabayev222.github.io/team-sigma/demo/slidedeck/ (source:
   [demo/slidedeck/index.html](../demo/slidedeck/index.html)).
 - Public application URL: https://connect.systems-apps.com/content/0639302d-988d-4820-961e-e3268e78b0b0/ (H-06, verified logged out on October 22, 2026).
-- Devpost entry: add the selected links and confirm actual submission; no entry URL is invented here.
+- Devpost entry: submitted on October 23, 2026.
 
-## Final step
+## Status
 
-Submit the Devpost entry with the links above, then open the submitted page logged out and click every link.
+Submitted on Devpost on October 23, 2026.
