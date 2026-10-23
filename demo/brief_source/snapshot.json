@@ -1,7 +1,7 @@
 {
-  "revision": "6b4bc0343c73a35c1b1eeec0d50b0e7e6188c3ef",
-  "origin_main": "6b4bc0343c73a35c1b1eeec0d50b0e7e6188c3ef",
-  "captured_at": "2026-10-22T23:25:15.096733+00:00",
+  "revision": "24949ab55cda8b105dc71ea8c4a93c8c95879768",
+  "origin_main": "24949ab55cda8b105dc71ea8c4a93c8c95879768",
+  "captured_at": "2026-10-23T00:42:45.755881+00:00",
   "lsl": 895,
   "min_builds": 25,
   "cpk_target": 1.33,
@@ -32575,8 +32575,8 @@
     }
   ],
   "hashes": {
-    "app/app.py": "35116d357f778949ed93ef45a61abc83d8e757721b8080e8a3c640b2a883998b",
-    "app/qc.py": "69725976dbe03f5cf3c3e7275a5296b4094a0d181ae76a0095c511d03b060209",
+    "app/app.py": "15204dd07c4748ef97a09631cba90e0bc979b7e9c6c756b47386b2c737eb6f27",
+    "app/qc.py": "94c42ed598ee824f1f441c791df660e67c6a299cd0f90c62babf8aa47840707d",
     "app/signals.py": "acc8b84bf01e53503761fdc1f9d351d6ae9c9fd09b98cad20a336b620e516a8c",
     "app/inspection.py": "39b577ccd9baaab6bb3fa0da436458e09a4cc1b2c2b93c19c33e3a646bb013cd",
     "app/investigation.py": "31aa1aab9a68d8e371c37162a050e5b476db5f4b4dc57e44b797ad10322af25a",

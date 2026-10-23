@@ -168,7 +168,7 @@ tasks:
   - id: H-09
     title: Cross-platform reproducibility and documentation consistency
     status: done
-    owner: "Codex assisting Sigma Airlines"
+    owner: "Cameron Archibald (agent)"
     started_at: "2026-10-22T00:41:20.779147+00:00"
     owns: [".gitattributes", ".github/scripts/README.md", ".github/scripts/prepare-connect-bundle.py", ".github/scripts/test_connect_bundle.py", "data/*.csv", "data/README.md", "app/.python-version", "app/requirements.txt", "app/frontend/index.html"]
     notes: "Authorized by the user's approval of the usability/documentation plan; normalize text line endings only in existing data/runtime inputs; no statistical or dataset-value changes; review completed before local commit; no push or deployment without release confirmation."
@@ -178,7 +178,7 @@ tasks:
   - id: H-10
     title: Add WAAM profile, process selection and validated synthetic scenarios
     status: done
-    owner: "Codex assisting Sigma Airlines"
+    owner: "Cameron Archibald (agent)"
     started_at: "2026-10-22T01:08:46.577940+00:00"
     owns: ["SPEC.md", "PROJECT_OVERVIEW.md", "README.md", "app/README.md", "docs/decisions.md", "docs/architecture.md", "app/app.py", "app/profiles/", "app/frontend/", "app/manifest.json", "data/", "demo/", "tests/test_process_profiles.py", "tests/test_bundle_api.py", ".github/scripts/prepare-connect-bundle.py", ".github/scripts/test_connect_bundle.py", ".github/scripts/README.md", ".github/workflows/deploy-fastapi.yml"]
     notes: "User approved LPBF plus WAAM increment; keep qc.py and legacy LPBF API defaults unchanged; X-bar/S only for defensible equal-size build subgroups; no parameter-to-strength prediction; local review completed and user authorized commit/push on 2026-10-22; qualifying push invokes existing deployment workflow."
@@ -188,7 +188,7 @@ tasks:
   - id: H-11
     title: Control-chart signal Pareto
     status: done
-    owner: "Codex assisting Sigma Airlines"
+    owner: "Cameron Archibald (agent)"
     started_at: "2026-10-22T21:37:44.168487+00:00"
     owns: ["app/signals.py", "tests/test_signals.py", "SPEC.md", "README.md", "app/README.md", "app/frontend/", "app/app.py", "app/manifest.json", "docs/", "demo/", "PROJECT_OVERVIEW.md"]
     notes: "User approved both EB-PBF and laser DED plus existing chart-signal categories; inspection defect categories deferred; no commit, push or deployment during local review."
@@ -198,7 +198,7 @@ tasks:
   - id: H-12
     title: Evidence-based investigation actions
     status: done
-    owner: "Codex assisting Sigma Airlines"
+    owner: "Cameron Archibald (agent)"
     started_at: "2026-10-22T21:39:09.849262+00:00"
     owns: ["app/investigation.py", "tests/test_investigation.py", "SPEC.md", "README.md", "app/README.md", "app/frontend/", "app/app.py", "app/manifest.json", "docs/", "demo/", "PROJECT_OVERVIEW.md"]
     notes: "User approved both EB-PBF and laser DED plus existing chart-signal categories; inspection defect categories deferred; no commit, push or deployment during local review."
@@ -208,7 +208,7 @@ tasks:
   - id: H-13
     title: EB-PBF and powder-fed laser DED profiles and scenarios
     status: done
-    owner: "Codex assisting Sigma Airlines"
+    owner: "Cameron Archibald (agent)"
     started_at: "2026-10-22T21:41:59.738479+00:00"
     owns: ["app/investigation.py", "app/profiles/", "data/", "tests/test_process_profiles.py", "tests/test_additional_processes.py", "tests/test_bundle_api.py", ".github/scripts/", ".github/workflows/deploy-fastapi.yml", "SPEC.md", "README.md", "app/README.md", "app/frontend/", "app/app.py", "app/manifest.json", "docs/", "demo/", "PROJECT_OVERVIEW.md"]
     notes: "User approved both EB-PBF and laser DED plus existing chart-signal categories; inspection defect categories deferred; no commit, push or deployment during local review."
@@ -219,7 +219,7 @@ tasks:
   - id: H-14
     title: Interactive Pareto investigation, fixed-limit date views and inspection defects
     status: done
-    owner: "Codex assisting Sigma Airlines"
+    owner: "Cameron Archibald (agent)"
     started_at: "2026-10-22T21:57:25.241883+00:00"
     owns: ["SPEC.md", "README.md", "PROJECT_OVERVIEW.md", "app/", "tests/", "data/", "demo/", "docs/", ".github/scripts/", ".github/workflows/deploy-fastapi.yml"]
     notes: "User approved all five recommended Pareto improvements; preserve core formulas and original twelve CSVs; add four distinct synthetic inspection examples; no commit, push or deployment during review."
@@ -230,7 +230,7 @@ tasks:
   - id: H-15
     title: Reconcile non-deployment evidence and build an interactive HTML walkthrough
     status: done
-    owner: "Codex assisting Sigma Airlines"
+    owner: "Cameron Archibald (agent)"
     started_at: "2026-10-22T22:21:23.700289+00:00"
     owns: ["SPEC.md", "CONTRACT.yaml", "README.md", "PROJECT_OVERVIEW.md", "app/README.md", "demo/", "docs/", "tests/test_demo_artifact.py"]
     notes: "User authorized documentation/tutorial work and subsequently approved committing/pushing the accumulated candidate to main; remaining review/submission stays open-ended; H-06 ledger and deployment files preserved during H-15; the existing push-triggered workflow may run."
@@ -240,7 +240,7 @@ tasks:
   - id: H-16
     title: Executive engineering flipbook brief, isolated from the existing tutorial and app
     status: done
-    owner: "Codex assisting Sigma Airlines"
+    owner: "Cameron Archibald (agent)"
     started_at: "2026-10-22"
     owns: ["demo/aeroqual_brief.html", "demo/brief_source/", "tests/test_engineering_brief.py"]
     notes: "User approved the separate professional brief and subsequently approved committing/pushing it to main. H-05 broad demo/frontend ownership is respected by adding only these named paths; existing tutorial, README, app, data and all other active task files are untouched. No deployment authorized. Product and visual context remain scoped to the brief."
@@ -250,7 +250,7 @@ tasks:
   - id: H-17
     title: Critical and high-priority application safeguards and end-to-end verification
     status: done
-    owner: "Codex assisting Sigma Airlines"
+    owner: "Cameron Archibald (agent)"
     started_at: "2026-10-22"
     owns: ["app/qc.py", "app/app.py", "app/frontend/src/App.jsx", "app/frontend/src/api.js", "app/frontend/src/display.test.js", "app/frontend/src/api.test.js", "tests/test_application_safeguards.py", "tests/test_pareto_views.py", "tests/application_browser.js", "docs/application-verification.md"]
     notes: "User explicitly approved executing CODEX_AEROQUAL_CRITICAL_HIGH_NO_HTML.md. Existing H-05 frontend ownership overlap reported before edits; preserve design and make only reproduced functional fixes. H-02 data, H-07 READMEs, H-08 ignore rules, all presentation artifacts and all H-06 files are excluded. User approved committing and pushing these application changes to main; deployment work remains excluded."

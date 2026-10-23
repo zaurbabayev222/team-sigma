@@ -14,8 +14,8 @@ are the current handoff. Independent reproduction, reviewed publication, public-
 and Devpost confirmation stay open-ended. H-06 is excluded and unchanged. No new reviewer is assigned,
 and no commit, push or deployment is performed as part of this update.
 
-**DRAFT, pending team review (2026-10-19).** Once approved, change an interface below only after telling
-everyone: all four agents build against it. What and why: [`SPEC.md`](../SPEC.md), [`decisions.md`](decisions.md).
+**Approved by the team (2026-10-19); extended by the approved increments listed below.** Change an interface
+below only after telling everyone: all four agents build against it. What and why: [`SPEC.md`](../SPEC.md), [`decisions.md`](decisions.md).
 
 **User:** the quality engineer reviewing each tested LPBF titanium build. **Question:** is the process
 stable, and can it meet the customer's minimum tensile strength (LSL)?

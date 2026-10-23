@@ -6,10 +6,10 @@
     "entrypoint": "app:app"
   },
   "python": {
-    "version": "3.12.15",
+    "version": "3.12.10",
     "package_manager": {
       "name": "pip",
-      "version": "26.2.2",
+      "version": "25.0.1",
       "package_file": "requirements.txt"
     }
   },
@@ -29,7 +29,7 @@
       "checksum": "92bfc2e7046b5449347f74a2d108a155"
     },
     "app.py": {
-      "checksum": "d0c29bdcd430971f25e95fc8cfce25a7"
+      "checksum": "01bccfe38a4167e4c9cc6c417abf03e2"
     },
     "data/README.md": {
       "checksum": "831fc3b258601d7bf855d16fed5f34a9"
@@ -85,11 +85,11 @@
     "frontend/dist/assets/index-B7JiH0Gj.css": {
       "checksum": "11d1547570475a91864e7caa1b97b1dd"
     },
-    "frontend/dist/assets/index-BClMsTD1.js": {
-      "checksum": "7b3d6fb38f89c68ddb61fcfcbefd656a"
+    "frontend/dist/assets/index-c1DOScRD.js": {
+      "checksum": "25598e46529a10bcf7b212e883defbf9"
     },
     "frontend/dist/index.html": {
-      "checksum": "fc207d6cea3a3df1162f37d5eb12be63"
+      "checksum": "bddd9c9db8f8a6906c7677f9487ff77a"
     },
     "inspection.py": {
       "checksum": "022857d289bb388c9575e2e9dff237d7"
@@ -116,7 +116,7 @@
       "checksum": "566854531d52327385f13c5cb48e2b20"
     },
     "qc.py": {
-      "checksum": "7dfe0f6f637ba9b663b7d5402eeb5e7d"
+      "checksum": "14d481fd87f597b15dcd5b029eb99e1d"
     },
     "signals.py": {
       "checksum": "8d00d67f993370709eaa4628a127eebb"
