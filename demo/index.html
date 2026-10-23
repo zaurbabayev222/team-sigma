@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AeroQual Demo</title>
+<meta name="description" content="AeroQual: process control and capability for 3D-printed titanium aerospace brackets. Live app, tutorial and how it works.">
+<style>
+:root {
+  --bg: #f4f6f8; --card: #ffffff; --ink: #1d2a36; --muted: #556270; --line: #d9e0e6;
+  --brand: #146c74; --brand-ink: #ffffff; --accent: #a8521c; --good: #e7f4ec; --warn: #fdf3e6; --bad: #fbeaea;
+  --code: #eef2f5;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12181e; --card: #1b232b; --ink: #e6edf2; --muted: #9fb0bd; --line: #2e3a45;
+    --brand: #3fb0b8; --brand-ink: #0c1a1c; --accent: #e59a63; --good: #1c3326; --warn: #3a2c18; --bad: #3a1f1f;
+    --code: #24303a;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12181e; --card: #1b232b; --ink: #e6edf2; --muted: #9fb0bd; --line: #2e3a45;
+  --brand: #3fb0b8; --brand-ink: #0c1a1c; --accent: #e59a63; --good: #1c3326; --warn: #3a2c18; --bad: #3a1f1f;
+  --code: #24303a;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+a { color: var(--brand); }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+header.hero { background: var(--card); border-bottom: 1px solid var(--line); padding: 48px 0 40px; }
+.eyebrow { color: var(--muted); font-size: 14px; letter-spacing: .02em; margin: 0 0 8px; }
+h1 { font-size: clamp(32px, 6vw, 48px); line-height: 1.1; margin: 0 0 12px; }
+.lead { font-size: 19px; color: var(--muted); max-width: 720px; margin: 0 0 28px; }
+.buttons { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn { display: inline-block; padding: 12px 18px; border-radius: 8px; text-decoration: none; font-weight: 600;
+  border: 1px solid var(--brand); color: var(--brand); background: transparent; }
+.btn.primary { background: var(--brand); color: var(--brand-ink); }
+.btn small { display: block; font-weight: 400; font-size: 13px; opacity: .85; }
+nav.toc { position: sticky; top: 0; z-index: 2; background: var(--bg); border-bottom: 1px solid var(--line); }
+nav.toc .wrap { display: flex; gap: 18px; overflow-x: auto; padding-top: 10px; padding-bottom: 10px; white-space: nowrap; }
+nav.toc a { text-decoration: none; color: var(--muted); font-size: 14px; }
+section { padding: 44px 0 8px; }
+h2 { font-size: 28px; margin: 0 0 8px; }
+h3 { font-size: 19px; margin: 24px 0 8px; }
+p.sub { color: var(--muted); margin: 0 0 20px; max-width: 760px; }
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+.card h3 { margin-top: 0; }
+.num { display: inline-flex; width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: var(--brand-ink);
+  align-items: center; justify-content: center; font-weight: 700; margin-right: 8px; font-size: 15px; }
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 14px; color: var(--muted); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tag { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+.tag.good { background: var(--good); } .tag.warn { background: var(--warn); } .tag.bad { background: var(--bad); }
+figure { margin: 0; }
+figure img { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+figcaption { color: var(--muted); font-size: 14px; margin-top: 8px; }
+.shots { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.shots .wide { grid-column: 1 / -1; }
+code, .formula { background: var(--code); border-radius: 6px; padding: 1px 6px; font-family: ui-monospace, Consolas, monospace; font-size: 14px; }
+.formula { display: block; padding: 12px 14px; white-space: pre-wrap; line-height: 1.7; }
+.note { border-left: 4px solid var(--accent); background: var(--card); padding: 12px 16px; border-radius: 0 8px 8px 0; color: var(--ink); }
+ul.tight { padding-left: 20px; margin: 8px 0; } ul.tight li { margin: 4px 0; }
+footer { padding: 40px 0 56px; color: var(--muted); font-size: 14px; }
+@media (max-width: 600px) { header.hero { padding: 32px 0 28px; } .lead { font-size: 17px; } section { padding-top: 32px; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Sigma Airlines · Cornell SYSEN 5300 Six Sigma Hackathon 2026 · Prompt 1: 3D Printing for Aerospace</p>
+    <h1>AeroQual</h1>
+    <p class="lead">A quality-control tool for aerospace contractors who 3D-print titanium brackets. Upload the tensile-test
+      results of each build, enter the customer's minimum strength, and AeroQual tells you whether the printing process is
+      stable, whether it is capable of meeting the requirement, and where to look when it is not.</p>
+    <div class="buttons">
+      <a class="btn primary" href="https://connect.systems-apps.com/content/0639302d-988d-4820-961e-e3268e78b0b0/" target="_blank" rel="noopener">Open the live app<small>public, no login</small></a>
+      <a class="btn" href="slidedeck/index.html">Interactive tutorial<small>14 short lessons</small></a>
+      <a class="btn" href="aeroqual_brief.html">Engineering brief<small>one-page summary</small></a>
+      <a class="btn" href="https://github.com/zaurbabayev222/team-sigma" target="_blank" rel="noopener">Source code<small>GitHub repository</small></a>
+    </div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="On this page">
+  <div class="wrap">
+    <a href="#problem">The problem</a><a href="#try">Try it in 2 minutes</a><a href="#looks">What it looks like</a>
+    <a href="#works">How it works</a><a href="#inputs">Inputs</a><a href="#examples">Example datasets</a>
+    <a href="#more">Learn more</a><a href="#limits">Limits</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="problem">
+  <h2>The problem</h2>
+  <p class="sub">"An aerospace contractor 3D-printing titanium brackets is failing client strength tests. They don't currently
+    track enough environmental and stress parameters against final part strength. Design a tool to monitor and flag when
+    and whether the printing process is capable of meeting strict aerospace tolerances, and help contractors resolve these issues."</p>
+  <div class="grid">
+    <div class="card"><h3>Is the process stable?</h3><p>X-bar and S control charts, with each build as a subgroup, flag builds whose
+      average strength or within-build spread is unusual.</p></div>
+    <div class="card"><h3>Can it meet the requirement?</h3><p>Lower-side Cpk and Ppk compare strength with the customer's minimum
+      (LSL), and a verdict says capable, not capable, or not assessable yet, always with the reason.</p></div>
+    <div class="card"><h3>Where should we look?</h3><p>Coupon failure counts, Pareto charts of chart signals and inspection
+      defects, recorded printer conditions for flagged builds, and ordered investigation actions.</p></div>
+  </div>
+  <p class="sub" style="margin-top:20px">Built for the <strong>quality engineer</strong> who reviews each tested build. Four printing processes
+    are supported: laser powder bed fusion (LPBF), wire arc additive manufacturing (WAAM), electron beam powder bed fusion
+    (EB-PBF) and powder-fed laser directed energy deposition (DED).</p>
+</section>
+
+<section id="try">
+  <h2>Try it in 2 minutes</h2>
+  <p class="sub">Nothing to install. Open the <a href="https://connect.systems-apps.com/content/0639302d-988d-4820-961e-e3268e78b0b0/" target="_blank" rel="noopener">live app</a>, then:</p>
+  <div class="grid">
+    <div class="card"><h3><span class="num">1</span>Choose the process</h3><p>Leave <strong>LPBF</strong> selected, or pick WAAM, EB-PBF or laser DED.</p></div>
+    <div class="card"><h3><span class="num">2</span>Pick an example</h3><p>Choose <strong>Stable and capable</strong> in "Example dataset" (or upload your own CSV).</p></div>
+    <div class="card"><h3><span class="num">3</span>Analyze</h3><p>Keep the minimum strength at <strong>895 MPa</strong> and select <strong>Analyze builds</strong>.</p></div>
+  </div>
+  <h3>Then compare the three LPBF examples</h3>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Example</th><th>Verdict</th><th>Cpk</th><th>Ppk</th><th>Failures</th><th>How to read it</th></tr></thead>
+      <tbody>
+        <tr><td>Stable and capable</td><td><span class="tag good">capable</span></td><td class="n">1.683</td><td class="n">1.789</td><td class="n">0 / 90</td>
+          <td>No flagged builds and Cpk above the 1.33 target: the process can meet the requirement.</td></tr>
+        <tr><td>Stable but not capable</td><td><span class="tag bad">not capable</span></td><td class="n">0.312</td><td class="n">0.331</td><td class="n">17 / 90</td>
+          <td>Stable, but too close to the minimum. Stability and meeting the requirement are separate questions.</td></tr>
+        <tr><td>Unstable process shift</td><td><span class="tag warn">not assessable</span></td><td class="n">1.292</td><td class="n">0.712</td><td class="n">0 / 90</td>
+          <td>Strength drops from build B020 while chamber oxygen rises; 11 builds are flagged, so capability is withheld until the shift is investigated.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="sub" style="margin-top:14px">30 builds × 3 coupons each, LSL 895 MPa. The written <a href="https://github.com/zaurbabayev222/team-sigma/blob/main/demo/README.md" target="_blank" rel="noopener">walkthrough</a>
+    has every number, the chart limits and the flagged-build table.</p>
+</section>
+
+<section id="looks">
+  <h2>What it looks like</h2>
+  <p class="sub">Screenshots of the live app on the LPBF examples.</p>
+  <div class="shots">
+    <figure class="wide"><img src="site/live-overview.png" alt="AeroQual input form with printing process, example dataset, upload and minimum strength" loading="lazy">
+      <figcaption>The inputs: one process, one dataset or CSV, one number (the customer's minimum strength).</figcaption></figure>
+    <figure><img src="site/live-verdict-capable.png" alt="Verdict panel: process meets the configured capability target, Cpk 1.68" loading="lazy">
+      <img src="site/live-capability-capable.png" alt="Cpk 1.683, Ppk 1.789, 30 builds of 3 coupons" loading="lazy" style="margin-top:8px">
+      <figcaption>Stable and capable: the verdict, with the reason and the indices behind it.</figcaption></figure>
+    <figure><img src="site/live-verdict.png" alt="Verdict panel: process unstable, investigate flagged builds" loading="lazy">
+      <img src="site/live-capability-unstable.png" alt="Cpk 1.292 and Ppk 0.712 shown as descriptive values, conclusion withheld" loading="lazy" style="margin-top:8px">
+      <figcaption>Unstable shift: capability is withheld; the indices stay visible but are marked descriptive only.</figcaption></figure>
+    <figure class="wide"><img src="site/live-charts.png" alt="X-bar and S control charts for 30 builds with flagged builds as red squares" loading="lazy">
+      <figcaption>X-bar (build means) and S (within-build spread) charts. Red squares are flagged builds; the drop from B020 is the planted shift.</figcaption></figure>
+    <figure><img src="site/live-pareto.png" alt="Pareto chart of control-chart signals with cumulative percentage" loading="lazy">
+      <figcaption>Which chart signals occur most often. Select a bar to see the affected builds.</figcaption></figure>
+    <figure><img src="site/live-actions.png" alt="Ordered list of recommended investigation actions with evidence" loading="lazy">
+      <figcaption>Investigation actions, in order, each with the evidence that triggered it.</figcaption></figure>
+    <figure class="wide"><img src="site/live-investigation.png" alt="Table of flagged builds with chamber oxygen, powder reuse and laser power" loading="lazy">
+      <figcaption>Flagged builds next to the recorded printer conditions: oxygen is around 140 ppm in the shifted builds versus about 40 before. An association to investigate, not a proven cause.</figcaption></figure>
+  </div>
+</section>
+
+<section id="works">
+  <h2>How it works</h2>
+  <p class="sub">Python computes every number; the web page only draws them. The statistics live in one tested function,
+    <code>app/qc.py</code>, checked against a hand-worked example and a constant-data case.</p>
+  <figure><img src="../docs/images/diagram-ffbd.png" alt="Functional flow: receive inputs, validate, map via profile, compute statistics, decide verdict, investigation evidence, display, optional filtered view" loading="lazy">
+    <figcaption>The functional flow, from inputs to results. Green steps are the statistics engine; purple steps only count and describe.
+      See the <a href="../docs/images/diagram-activity.png">step-by-step activity diagram</a>, the <a href="../docs/images/diagram-use-case.png">use cases</a>
+      and <a href="https://github.com/zaurbabayev222/team-sigma/blob/main/docs/architecture.md" target="_blank" rel="noopener">all diagrams</a>.</figcaption></figure>
+  <h3>The statistics</h3>
+  <span class="formula">Each build: mean x̄ and standard deviation s of its n coupons
+X-bar limits = grand mean ± A3 · s̄          S limits = B3 · s̄ to B4 · s̄    (c4, A3, B3, B4 from n)
+σ_short = s̄ / c4                            σ_total = standard deviation of all coupons
+Cpk = (grand mean − LSL) / (3 · σ_short)    Ppk = (grand mean − LSL) / (3 · σ_total)
+Failure rate = coupons below the LSL / all coupons</span>
+  <h3>The verdict, checked in this order</h3>
+  <ul class="tight">
+    <li><strong>Not assessable</strong> if there is no variation, if any build is flagged (unstable), or if there are fewer than 25 builds.</li>
+    <li>Otherwise <strong>capable</strong> if Cpk ≥ 1.33, else <strong>not capable</strong>. Both thresholds can be changed.</li>
+  </ul>
+  <p class="note">Control limits come from all builds in the file. In the unstable example this also flags a few early builds
+    (B007, B014, B018) that sit just above the upper limit, because the shift pulls the centre line down. Pareto charts and
+    date-range views count and describe; they never change a limit, an index or the verdict.</p>
+</section>
+
+<section id="inputs">
+  <h2>Inputs</h2>
+  <p class="sub">One CSV row per tested coupon, plus the customer's minimum strength. Everything a quality engineer already has.</p>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Input</th><th>Required?</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>build_id</code></td><td>yes</td><td>Which build the coupon came from</td></tr>
+        <tr><td><code>build_date</code></td><td>yes</td><td>Build date, YYYY-MM-DD (orders the builds)</td></tr>
+        <tr><td><code>uts_mpa</code></td><td>yes</td><td>Ultimate tensile strength from the test, MPa</td></tr>
+        <tr><td>LSL</td><td>yes</td><td>Customer's minimum strength, MPa (entered in the app)</td></tr>
+        <tr><td>Process settings</td><td>optional</td><td>For example chamber oxygen, powder reuse and laser power for LPBF; arc current and wire feed for WAAM</td></tr>
+        <tr><td><code>primary_defect</code></td><td>optional</td><td>Inspection result per coupon, for the defect Pareto</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="examples">
+  <h2>Example datasets</h2>
+  <p class="sub">16 synthetic datasets, clearly labelled as invented: three scenarios plus an inspection example for each process.
+    All at LSL 895 MPa. The <a href="https://github.com/zaurbabayev222/team-sigma/blob/main/data/README.md" target="_blank" rel="noopener">codebook</a>
+    explains every file, column and unit, and how the data would be collected for real.</p>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Process</th><th>Stable and capable</th><th>Stable but not capable</th><th>Unstable shift</th></tr></thead>
+      <tbody>
+        <tr><td>LPBF</td><td class="n">capable · Cpk 1.68</td><td class="n">not capable · Cpk 0.31</td><td class="n">not assessable</td></tr>
+        <tr><td>WAAM</td><td class="n">capable · Cpk 1.91</td><td class="n">not capable · Cpk 0.31</td><td class="n">not assessable</td></tr>
+        <tr><td>EB-PBF</td><td class="n">capable · Cpk 2.54</td><td class="n">not capable · Cpk 0.40</td><td class="n">not assessable</td></tr>
+        <tr><td>Laser DED</td><td class="n">capable · Cpk 1.39</td><td class="n">not capable · Cpk 0.23</td><td class="n">not assessable</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="more">
+  <h2>Learn more</h2>
+  <div class="grid">
+    <div class="card"><h3><a href="slidedeck/index.html">Interactive tutorial</a></h3><p>14 lessons with every example, CSV downloads, chart and Pareto exercises. Works offline.</p></div>
+    <div class="card"><h3><a href="aeroqual_brief.html">Engineering brief</a></h3><p>A one-page summary for engineering leads, with comparisons and drill-downs.</p></div>
+    <div class="card"><h3><a href="https://github.com/zaurbabayev222/team-sigma/blob/main/demo/README.md" target="_blank" rel="noopener">Written walkthrough</a></h3><p>Every dataset step by step, with the exact numbers and how to read them.</p></div>
+    <div class="card"><h3><a href="https://github.com/zaurbabayev222/team-sigma#readme" target="_blank" rel="noopener">README and API</a></h3><p>Setup, every input and parameter, the API routes (<code>/docs</code> on the live app) and the tests.</p></div>
+  </div>
+</section>
+
+<section id="limits">
+  <h2>Limits</h2>
+  <ul class="tight">
+    <li>All example data and the 895 MPa limit are synthetic and illustrative, not an aerospace standard.</li>
+    <li>Decision support only: it does not certify hardware or authorize release.</li>
+    <li>Process conditions next to flagged builds are associations to investigate, not proven causes.</li>
+    <li>Builds need the same number of coupons; only a lower specification limit is supported.</li>
+  </ul>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">Sigma Airlines · Cornell SYSEN 5300 Six Sigma Hackathon, Virtual DL Challenge 2026 ·
+    <a href="https://github.com/zaurbabayev222/team-sigma" target="_blank" rel="noopener">github.com/zaurbabayev222/team-sigma</a></div>
+</footer>
+
+</body>
+</html>

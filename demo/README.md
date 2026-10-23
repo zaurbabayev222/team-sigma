@@ -1,5 +1,7 @@
 # AeroQual demonstration
 
+**Demo site:** [https://zaurbabayev222.github.io/team-sigma/demo/](https://zaurbabayev222.github.io/team-sigma/demo/) (landing page: [index.html](index.html)), with the live app, a two-minute tryout, screenshots and how it works.
+
 Examples are synthetic titanium coupon data for LPBF, WAAM, EB-PBF and powder-fed laser DED.
 Each method has capable, incapable, unstable and inspection examples: sixteen datasets in total.
 The original LPBF walkthrough is retained below, followed by extension evidence. The illustrative

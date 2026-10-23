@@ -6,11 +6,12 @@ AeroQual helps a quality engineer review tensile-test coupons after each build: 
 
 **Live app (public, no login):** [https://connect.systems-apps.com/content/0639302d-988d-4820-961e-e3268e78b0b0/](https://connect.systems-apps.com/content/0639302d-988d-4820-961e-e3268e78b0b0/) opens the dashboard; the API is at `/docs`.
 
+**Demo site (start here):** [https://zaurbabayev222.github.io/team-sigma/demo/](https://zaurbabayev222.github.io/team-sigma/demo/) shows what AeroQual does, how to try it in two minutes, screenshots, how it works, and links to the interactive tutorial and engineering brief.
+
 **Status:** the dashboard, API and sixteen synthetic datasets (four per process) are deployed on the course Posit Connect server and verified logged out on October 22, 2026. Independent fresh-clone teammate reproduction is still open. This prototype does not certify hardware or authorize release. All demonstration data and example limits are synthetic or illustrative.
 
-Start with the **[interactive HTML walkthrough](demo/slidedeck/index.html)** or the
-[written demo](demo/README.md). Download the HTML file and open it directly in a browser;
-GitHub's file view shows its source. The 14 lessons include captured synthetic API results,
+Start with the **[interactive HTML walkthrough](https://zaurbabayev222.github.io/team-sigma/demo/slidedeck/)** (opens in the browser; source: [demo/slidedeck/index.html](demo/slidedeck/index.html)) or the
+[written demo](demo/README.md). The 14 lessons include captured synthetic API results,
 downloadable example CSVs, chart/Pareto exercises and requirement experiments. It works offline;
 use the running dashboard for actual uploads and analysis.
 

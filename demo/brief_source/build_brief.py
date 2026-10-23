@@ -92,7 +92,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--capture', action='store_true')
     parser.add_argument('--check', action='store_true')
-    parser.add_argument('--dashboard-url',default='http://127.0.0.1:8001/dashboard/')
+    parser.add_argument('--dashboard-url',default='https://connect.systems-apps.com/content/0639302d-988d-4820-961e-e3268e78b0b0/dashboard/')
     args = parser.parse_args()
     if args.capture:
         capture()
