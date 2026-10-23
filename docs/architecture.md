@@ -4,8 +4,8 @@ Sigma Airlines · updated 2026-10-22 (release 1 plus the approved extensions H-1
 
 Pictures of the same app: who uses it ([use cases](#1-use-case-diagram)), what it does step by
 step ([activity diagram](#2-activity-diagram)), and which function belongs to which part of the code
-([FFBD](#3-functional-flow-block-diagram-ffbd)). [Section 4](#4-subsystems-and-who-built-them)
-maps each subsystem to its CONTRACT tasks and the teammates who built it. Details live in
+([FFBD](#3-functional-flow-block-diagram-ffbd)). [Section 4](#4-subsystems)
+maps each subsystem to its functions, CONTRACT tasks and files. Details live in
 [`SPEC.md`](../SPEC.md); reasons in [`decisions.md`](decisions.md).
 
 The [offline walkthrough](../demo/slidedeck/index.html) is a documentation artifact outside `app/`.
@@ -175,22 +175,17 @@ flowchart LR
 
 [Open this diagram as an image](images/diagram-ffbd-investigation.png)
 
-## 4. Subsystems and who built them
+## 4. Subsystems
 
-| Subsystem | Functions | CONTRACT tasks | Main files | Built by |
-|---|---|---|---|---|
-| Statistics engine | 4.0, 5.0 | H-03, H-17 | `app/qc.py`, `tests/` | Zaur Babayev (engine, known-answer tests); Cameron Archibald (input safeguards) |
-| Investigation helpers | 6.0, 8.0 | H-11, H-12, H-14 | `app/signals.py`, `app/inspection.py`, `app/investigation.py`, `app/pareto_view.py` | Cameron Archibald |
-| Test data and codebook | test inputs for 1.0 | H-02, H-10, H-13, H-14 | `data/` | robertwarnold (first three LPBF datasets, codebook); Cameron Archibald (WAAM, EB-PBF, laser DED and inspection datasets) |
-| API and process profiles | 2.0, 3.0 | H-04, H-10, H-13 | `app/app.py`, `app/profiles/` | Zaur Babayev (API, LPBF profile); robertwarnold (dashboard serving); Cameron Archibald (process selection, three profiles) |
-| Front end and demo | 1.0, 7.0 | H-05, H-15, H-16 | `app/frontend/`, `demo/` | robertwarnold (first dashboard, walkthrough); Cameron Archibald (redesign, Pareto views, tutorial, brief) |
-| Deploy | public URL | H-06, H-09 | `.github/`, `app/manifest.json` | robertwarnold (bundle and check tooling); Zaur Babayev (push-to-deploy, first live deploy, verification); Cameron Archibald (cross-platform fixes) |
-| Docs and submission | README, repo check, Devpost | H-01, H-07, H-08 | `SPEC.md`, `PROJECT_OVERVIEW.md`, `README.md`, `app/README.md`, `docs/`, `.gitignore` | Cameron Archibald (first project overview; later README and guide updates); Zaur Babayev (SPEC, plan, decisions, diagrams, team guide); Jerry Su (first AeroQual README, function reference, `.gitignore`, H-07/H-08) |
-
-In each row, names are listed in the order each person started on that subsystem. Every teammate worked with AI coding agents.
-The table comes from the Git history and [`CONTRACT.yaml`](../CONTRACT.yaml), so it shows committed
-work only: reviews, testing, planning and discussion in the team chat do not appear here. If it
-misses your work, correct this table.
+| Subsystem | Functions | CONTRACT tasks | Main files |
+|---|---|---|---|
+| Statistics engine | 4.0, 5.0 | H-03, H-17 | `app/qc.py`, `tests/` |
+| Investigation helpers | 6.0, 8.0 | H-11, H-12, H-14 | `app/signals.py`, `app/inspection.py`, `app/investigation.py`, `app/pareto_view.py` |
+| Test data and codebook | test inputs for 1.0 | H-02, H-10, H-13, H-14 | `data/` |
+| API and process profiles | 2.0, 3.0 | H-04, H-10, H-13 | `app/app.py`, `app/profiles/` |
+| Front end and demo | 1.0, 7.0 | H-05, H-15, H-16 | `app/frontend/`, `demo/` |
+| Deploy | public URL | H-06, H-09 | `.github/`, `app/manifest.json` |
+| Docs and submission | README, repo check, Devpost | H-01, H-07, H-08 | `SPEC.md`, `PROJECT_OVERVIEW.md`, `README.md`, `app/README.md`, `docs/`, `.gitignore` |
 
 **The two interfaces everyone built against**, agreed first and written in `docs/plan.md`:
 
@@ -203,7 +198,8 @@ misses your work, correct this table.
 ### Original work plan (Oct 19, historical)
 
 Before anyone claimed tasks, the plan split the work into four parallel roles (A to D). Teammates
-then claimed tasks freely, so the roles below do not show who did what; the table above does.
+then claimed tasks freely, so the roles below do not show who did what; the Git history and
+[`CONTRACT.yaml`](../CONTRACT.yaml) do.
 
 ```mermaid
 %%{init: {"flowchart": {"padding": 20, "nodeSpacing": 30, "rankSpacing": 50}}}%%
