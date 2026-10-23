@@ -62,6 +62,9 @@ figure img { width: 100%; height: auto; display: block; border: 1px solid var(--
 figcaption { color: var(--muted); font-size: 14px; margin-top: 8px; }
 .shots { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
 .shots .wide { grid-column: 1 / -1; }
+.diagrams { display: grid; gap: 24px; grid-template-columns: 1fr 1.25fr; align-items: start; margin-top: 24px; }
+.diagrams img { max-height: 1500px; object-fit: contain; }
+@media (max-width: 720px) { .diagrams { grid-template-columns: 1fr; } }
 code, .formula { background: var(--code); border-radius: 6px; padding: 1px 6px; font-family: ui-monospace, Consolas, monospace; font-size: 14px; }
 .formula { display: block; padding: 12px 14px; white-space: pre-wrap; line-height: 1.7; }
 .note { border-left: 4px solid var(--accent); background: var(--card); padding: 12px 16px; border-radius: 0 8px 8px 0; color: var(--ink); }
@@ -170,9 +173,15 @@ footer { padding: 40px 0 56px; color: var(--muted); font-size: 14px; }
   <p class="sub">Python computes every number; the web page only draws them. The statistics live in one tested function,
     <code>app/qc.py</code>, checked against a hand-worked example and a constant-data case.</p>
   <figure><img src="../docs/images/diagram-ffbd.png" alt="Functional flow: receive inputs, validate, map via profile, compute statistics, decide verdict, investigation evidence, display, optional filtered view" loading="lazy">
-    <figcaption>The functional flow, from inputs to results. Green steps are the statistics engine; purple steps only count and describe.
-      See the <a href="../docs/images/diagram-activity.png">step-by-step activity diagram</a>, the <a href="../docs/images/diagram-use-case.png">use cases</a>
-      and <a href="https://github.com/zaurbabayev222/team-sigma/blob/main/docs/architecture.md" target="_blank" rel="noopener">all diagrams</a>.</figcaption></figure>
+    <figcaption>The functional flow, from inputs to results. Blue is the web page, amber the API and process profiles,
+      green the statistics engine; purple steps only count and describe.</figcaption></figure>
+  <div class="diagrams">
+    <figure><a href="../docs/images/diagram-use-case.png" title="Open full size"><img src="../docs/images/diagram-use-case.png" alt="Use case diagram: the quality engineer chooses a process, uploads data, enters the minimum strength, checks stability and capability, sees failures, ranks signals and defects, follows actions and narrows dates; the judge runs the examples and tutorial; a developer adds a process profile" loading="lazy"></a>
+      <figcaption><strong>Use cases.</strong> Who uses AeroQual and for what. Select to enlarge.</figcaption></figure>
+    <figure><a href="../docs/images/diagram-activity.png" title="Open full size"><img src="../docs/images/diagram-activity.png" alt="Activity diagram: choose process, pick or upload data, enter the minimum, validate, compute limits and indices, then the verdict checks no variation, flagged builds, 25 builds and Cpk 1.33, followed by Pareto, parameters, actions and optional date views" loading="lazy"></a>
+      <figcaption><strong>Activity.</strong> Every step from inputs to the verdict, including each "not assessable" reason. Select to enlarge.</figcaption></figure>
+  </div>
+  <p class="sub" style="margin-top:16px"><a href="https://github.com/zaurbabayev222/team-sigma/blob/main/docs/architecture.md" target="_blank" rel="noopener">All diagrams with explanations</a>, including the breakdown of the statistics and investigation steps.</p>
   <h3>The statistics</h3>
   <span class="formula">Each build: mean x̄ and standard deviation s of its n coupons
 X-bar limits = grand mean ± A3 · s̄          S limits = B3 · s̄ to B4 · s̄    (c4, A3, B3, B4 from n)
