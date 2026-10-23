@@ -2,8 +2,8 @@
 
 For guided practice, use the [offline interactive HTML walkthrough](../demo/slidedeck/index.html).
 It displays captured synthetic results; actual analysis and uploads use the API described here.
-[Evaluation evidence](../docs/evaluation.md), [remaining work](../docs/remaining-work.md) and the
-[submission draft](../docs/submission.md) describe the current local candidate and outstanding gates.
+[Evaluation evidence](../docs/evaluation.md) maps the rubric; the [submission text](../docs/submission.md)
+has the final links.
 
 Start with the [root README](../README.md) for Windows PowerShell setup, dashboard usage, observed verification results and current limitations. The [codebook](../data/README.md) defines the synthetic datasets; the [walkthrough](../demo/README.md) explains their outputs.
 
@@ -170,9 +170,9 @@ Shapiro-Wilk uses pooled coupon values when total variation is positive; it does
 | `deployme.sh` | Prepare bundle and publish using the upstream name-based target flow; requires Bash 4+ |
 | `requirements.txt` | Pinned direct Python application/test dependencies |
 
-The upstream workflow deploys on qualifying pushes to `main`; its publisher creates or updates the named AeroQual content item. Do not generate manifests or publish for local preview. See the [deployment handoff](../.github/scripts/README.md). The manifest targets Python 3.12 and checksums runtime files; source/data/dependency or built-asset changes require reviewed manifest regeneration before publication. Public deployment is unverified.
+The upstream workflow deploys on qualifying pushes to `main`; its publisher creates or updates the named AeroQual content item. Do not generate manifests or publish for local preview. See the [deployment handoff](../.github/scripts/README.md). The manifest targets Python 3.12 and checksums runtime files; source/data/dependency or built-asset changes require reviewed manifest regeneration before publication. The public deployment is verified (see the [root README](../README.md)).
 
-Run the commands in the [root verification section](../README.md#verification) for Python/frontend tests and live API parity. It records actual outputs, the Windows line-ending correction and passing data validator, and pending independent human reproduction. Local tests do not establish public deployment.
+Run the commands in the [root verification section](../README.md#verification) for Python/frontend tests and live API parity. It records actual outputs, the Windows line-ending correction and passing data validator.
 
 ## Usability and evidence presentation
 
@@ -182,7 +182,7 @@ Each successful response is paired with the selected process, submitted dataset/
 
 Charts provide numeric axes, focusable point descriptions and an expandable table of every build. Flagged builds and their optional recorded conditions share one investigation table. Observed reference ranges, assumptions/diagnostics and distribution-bin tables expand on request. Red squares supplement color as a flag cue; narrow screens use local chart/table scrolling. This is manually checked keyboard/mobile behavior, not a claimed accessibility certification.
 
-See the [judging walkthrough](../demo/README.md) for screenshot evidence, scenario interpretations and the independent reproduction checklist. The API remains the source of QC values. The current candidate was rebuilt and its manifest regenerated/verified locally through H-06 under Python 3.12.15; any later asset or runtime-input changes require repeating that process before publication.
+See the [judging walkthrough](../demo/README.md) for screenshot evidence, scenario interpretations and the reproduction checklist. The API remains the source of QC values. The current candidate was rebuilt and its manifest regenerated/verified locally through H-06 under Python 3.12.15; any later asset or runtime-input changes require repeating that process before publication.
 
 ## WAAM requests and process validation
 

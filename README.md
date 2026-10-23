@@ -8,7 +8,7 @@ AeroQual helps a quality engineer review tensile-test coupons after each build: 
 
 **Demo site (start here):** [https://zaurbabayev222.github.io/team-sigma/demo/](https://zaurbabayev222.github.io/team-sigma/demo/) shows what AeroQual does, how to try it in two minutes, screenshots, how it works, and links to the interactive tutorial and engineering brief.
 
-**Status:** the dashboard, API and sixteen synthetic datasets (four per process) are deployed on the course Posit Connect server and verified logged out on October 22, 2026. Independent fresh-clone teammate reproduction is still open. This prototype does not certify hardware or authorize release. All demonstration data and example limits are synthetic or illustrative.
+**Status:** the dashboard, API and sixteen synthetic datasets (four per process) are deployed on the course Posit Connect server and verified logged out on October 22, 2026. The team's manual checks and a fresh clone of the public repository passed on October 23, 2026. This prototype does not certify hardware or authorize release. All demonstration data and example limits are synthetic or illustrative.
 
 Start with the **[interactive HTML walkthrough](https://zaurbabayev222.github.io/team-sigma/demo/slidedeck/)** (opens in the browser; source: [demo/slidedeck/index.html](demo/slidedeck/index.html)) or the
 [written demo](demo/README.md). The 14 lessons include captured synthetic API results,
@@ -16,9 +16,8 @@ downloadable example CSVs, chart/Pareto exercises and requirement experiments. I
 use the running dashboard for actual uploads and analysis.
 
 [Evaluation evidence](docs/evaluation.md) maps the unchanged 100-point rubric.
-[Remaining work](docs/remaining-work.md) is an open-ended handoff with no new assignments;
-[submission.md](docs/submission.md) provides draft submission text. The user approved publishing this
-candidate to main. Local test success does not establish independent acceptance, deployment or submission.
+[submission.md](docs/submission.md) holds the submission text, and [remaining work](docs/remaining-work.md)
+lists what is left.
 
 ## Run in Positron on Windows PowerShell
 
@@ -175,7 +174,7 @@ The scenario checker needs the running server; omit `--base-url` for core-only c
 
 Baseline local Windows verification before the WAAM increment: **30 Python tests and 5 subtests passed**, **6 frontend tests passed**, the frontend build succeeded, and all three live scenario/API comparisons passed. Python tests emitted a Starlette/httpx deprecation warning. The browser reported a missing favicon (404), without affecting analysis.
 
-**Cross-platform reproducibility:** the earlier Windows byte-check failure came from CRLF checkout endings, not changed measurements. Text files now declare LF endings in `.gitattributes`, runtime data copies were resynced, and the bundle tool writes LF requirements explicitly. `data/validate.py` now passes reproducibility, schema, scenario and edge-case checks without weakening its byte comparison. Existing clones may need a clean checkout to adopt the attributes. Independent fresh-clone human reproduction remains pending.
+**Cross-platform reproducibility:** the earlier Windows byte-check failure came from CRLF checkout endings, not changed measurements. Text files now declare LF endings in `.gitattributes`, runtime data copies were resynced, and the bundle tool writes LF requirements explicitly. `data/validate.py` now passes reproducibility, schema, scenario and edge-case checks without weakening its byte comparison. Existing clones may need a clean checkout to adopt the attributes. A fresh clone of the public repository passed these checks on October 23, 2026.
 
 ## Troubleshooting
 
@@ -202,25 +201,24 @@ Baseline local Windows verification before the WAAM increment: **30 Python tests
 
 Current scope excludes other methods, unequal subgroups, regression, ANOVA, FMEA, multi-defect event analysis, predictive models and numerical parameter-change recommendations. Signal and primary-inspection-defect Paretos, fixed-limit date views and evidence-based investigation checks are implemented. See [SPEC](SPEC.md), [decisions](docs/decisions.md), [task ledger](CONTRACT.yaml) and [rubric](docs/criteria.md). Starter provenance is documented in [demos](demos/README.md) and the deployment handoff; see the [MIT license](LICENSE).
 
-## Submission evidence and remaining checks
+## Submission evidence
 
-For the complete current 100-point mapping, use [docs/evaluation.md](docs/evaluation.md).
-[docs/remaining-work.md](docs/remaining-work.md) is the open-ended handoff; the table below is a
-compact overview. The H-10 through H-14 verification paragraphs retain historical increment results.
+For the complete 100-point mapping, use [docs/evaluation.md](docs/evaluation.md). The table below is a
+compact overview. The H-10 through H-14 verification paragraphs keep historical increment results.
 
-| Rubric item | Evidence to review | Remaining action |
+| Rubric item | Evidence to review | Status |
 | --- | --- | --- |
-| Effective working tool (25) | Local dashboard/API, upload workflow and sixteen examples (four per process) | Done: public URL above, verified logged out (H-06) |
-| Valid QC analysis (25) | SPEC formulas; known-answer and degenerate tests in `tests/` | Retain actual passing output and explain assumptions |
-| Prompt fit, user, minimal inputs (15) | SPEC use case; three required CSV columns plus customer LSL | Confirm the stated workflow with a quality-engineering reviewer |
-| Clear demonstration (10) | Interactive 14-lesson HTML tutorial, written walkthrough and synthetic API captures in `demo/` | Independent teammate reproduction |
-| Documentation (10) | This quick start and API/function reference | Independent fresh-clone walkthrough |
-| Datasets and codebook (10) | Sixteen labeled synthetic files; units, seeds and collection sources | Verify reproducibility on the supported checkout |
-| Public reproducible repository (5) | GitHub source, lockfile and run/test commands | Fresh-clone verification and final Devpost links |
+| Effective working tool (25) | Public dashboard/API, upload workflow and sixteen examples (four per process) | Done: public URL above, verified logged out (H-06) |
+| Valid QC analysis (25) | SPEC formulas; known-answer and degenerate tests in `tests/`; statistics review PASS | Done: tests pass in a fresh clone |
+| Prompt fit, user, minimal inputs (15) | SPEC use case; three required CSV columns plus customer LSL | Done |
+| Clear demonstration (10) | [Demo site](https://zaurbabayev222.github.io/team-sigma/demo/), 14-lesson tutorial, written walkthrough and API captures in `demo/` | Done: team reproduced it on the live app (Oct 23) |
+| Documentation (10) | This quick start and API/function reference | Done: fresh-clone walkthrough passed (Oct 23) |
+| Datasets and codebook (10) | Sixteen labeled synthetic files; units, seeds and collection sources | Done: four validators pass in a fresh clone |
+| Public reproducible repository (5) | GitHub source, lockfile and run/test commands | Fresh clone passed; Devpost entry links the repo |
 
 Example known-answer evidence (LSL 980 MPa): X-bar center 1000 MPa; limits 980.456–1019.544 MPa; S center 10 MPa; upper limit 25.682 MPa; Cpk 0.591; Ppk 0.571; 1/12 failures; capability withheld for too few builds. Constant-data tests require undefined indices and a no-variation reason; one-build, unequal-count and missing-strength tests require rejection. These checks validate implementation against the stated examples, not hardware qualification.
 
-The WAAM release manifest was generated locally with rsconnect-python 1.32.0 under Python 3.12.15. All 18 runtime checksums, isolated dashboard/assets/health, known-answer upload and six scenario comparisons passed. The user approved committing and pushing this WAAM release; the existing workflow publishes qualifying pushes to main. Confirm server interpreter support before publication. Public deployment and independent human checks remain pending; no scores are claimed here.
+The WAAM release manifest was generated locally with rsconnect-python 1.32.0 under Python 3.12.15. All 18 runtime checksums, isolated dashboard/assets/health, known-answer upload and six scenario comparisons passed. The user approved committing and pushing this WAAM release; the existing workflow publishes qualifying pushes to main. The app was later deployed and verified (H-06); no scores are claimed here.
 
 ## WAAM sampling and compatibility
 
@@ -228,7 +226,7 @@ WAAM selection reuses the measured-strength X-bar/S engine; it does not estimate
 
 Legacy requests that omit `process_type` remain LPBF. `/profiles` describes supported measurements and units; `/datasets?process_type=waam` lists WAAM examples. GET analysis takes `process_type` as a query parameter and POST takes it as a multipart form field. Existing LPBF dataset IDs and core output keys remain unchanged. Full synthetic WAAM construction and its limitations are in the [codebook](data/README.md#waam-extension-h-10).
 
-H-10 local verification: **37 Python tests**, **8 frontend tests**, both dataset validators and five bundle tests passed. All six scenarios were exercised in the browser and through the API, including process switching, stale context, uploads, mismatch errors, delayed catalogs and mobile/keyboard use. The core statistical function is unchanged. The WAAM source increment was committed/pushed before the later extensions; public deployment verification remains H-06, and independent reproduction remains open.
+H-10 local verification: **37 Python tests**, **8 frontend tests**, both dataset validators and five bundle tests passed. All six scenarios were exercised in the browser and through the API, including process switching, stale context, uploads, mismatch errors, delayed catalogs and mobile/keyboard use. The core statistical function is unchanged. The WAAM source increment was committed/pushed before the later extensions and is part of the deployed app (H-06).
 
 
 ## Signal Pareto and investigation checks (H-11 to H-13)
@@ -239,7 +237,7 @@ The **Control-chart signal Pareto** ranks mean-below-LCL, mean-above-UCL and S-a
 
 Select **Laser DED > Unstable process shift** to exercise all three signal categories: 16 signals on 15 builds; D024 has both a low-mean and high-S signal. Required CSV columns and original LPBF/WAAM numeric results are unchanged. The new methods each have three additional reproducible synthetic examples, with units and seeds in the codebook. No trained strength-prediction model is included.
 
-This increment is a local review candidate; public deployment and independent teammate walkthrough remain pending. The normal launch command above uses port 8000; the current parallel review preview uses http://127.0.0.1:8001/dashboard/.
+This increment is part of the deployed app (H-06).
 
 H-13 historical local verification: **54 Python tests plus 14 subtests**, **14 frontend tests** and production build, all three dataset validators, all twelve browser/API scenarios, and five bundle tests passed. The regenerated Python 3.12 manifest verified **28 runtime files**, and the isolated bundle served the dashboard/assets, known-answer upload and twelve scenarios. The engine and original six dataset bytes were unchanged.
 
@@ -252,9 +250,9 @@ Use **From build date**, **Through build date** and **Apply date range** for an 
 
 Charts show counts, category shares, cumulative labels and an **80% reference**. Signal percentages use signal occurrences; defect percentages use recorded defective coupons. Inspection coverage, explicit no-defect results and missing records are reported separately. The four new synthetic examples each have 39 primary defects, 45 explicit no-defect results and six unrecorded results; they preserve the original strength data. A physical inspection category is never inferred from a chart signal or a strength failure.
 
-See [the complete interaction/API guide](docs/pareto-explorer.md) and [inspection codebook](data/README.md#synthetic-inspection-examples-h-14). All sixteen datasets have stable IDs. This remains a local review build; no commit, push or deployment is part of this change.
+See [the complete interaction/API guide](docs/pareto-explorer.md) and [inspection codebook](data/README.md#synthetic-inspection-examples-h-14). All sixteen datasets have stable IDs. This is part of the deployed app (H-06).
 
-H-14 local verification: **75 Python tests plus 18 subtests**, **19 frontend tests** and production build, all four data validators/generator checks, all sixteen browser/API scenarios, five bundle tests and the isolated known-answer/dashboard checks pass. The final manifest verifies **34 runtime files**. Keyboard selection, mobile scrolling, native uploads, fixed-limit single-day views, invalid/empty ranges, clearing and reanalysis resets were exercised. The core and original source datasets remain unchanged; release review and independent human reproduction remain pending.
+H-14 local verification: **75 Python tests plus 18 subtests**, **19 frontend tests** and production build, all four data validators/generator checks, all sixteen browser/API scenarios, five bundle tests and the isolated known-answer/dashboard checks pass. The final manifest verifies **34 runtime files**. Keyboard selection, mobile scrolling, native uploads, fixed-limit single-day views, invalid/empty ranges, clearing and reanalysis resets were exercised. The core and original source datasets remain unchanged.
 
 ## Documentation and interactive training (H-15)
 
@@ -267,5 +265,4 @@ Current local checks: **78 Python tests plus 18 subtests**, **19 frontend tests/
 sixteen API parity cases and three tutorial artifact tests pass (the three are included in the 78).
 Browser checks cover navigation, selections, source-byte download parity, offline file opening,
 responsive layout and printing. The unchanged rubric has a complete [evidence mapping](docs/evaluation.md).
-The [remaining-work list](docs/remaining-work.md) stays open-ended. H-06 and deployment files were
-preserved; no commit, push or deployment was performed for this update.
+These were H-15's local results; the app was later deployed (H-06) and reproduced from a fresh clone.

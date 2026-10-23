@@ -9,10 +9,9 @@ synthetic scenarios, exact CSV downloads, control-chart/Pareto exercises, fixed-
 requirement experiments and interpretation checks. Artifact/source hashes and API/core parity
 protect the displayed statistics; known-answer and empty-window tests protect the teaching examples.
 
-[Evaluation evidence](evaluation.md), [submission draft](submission.md) and [remaining work](remaining-work.md)
-are the current handoff. Independent reproduction, reviewed publication, public-revision validation
-and Devpost confirmation stay open-ended. H-06 is excluded and unchanged. No new reviewer is assigned,
-and no commit, push or deployment is performed as part of this update.
+[Evaluation evidence](evaluation.md), [submission text](submission.md) and [remaining work](remaining-work.md)
+are the current handoff. As of 23 October 2026 the app is deployed and verified (H-06), the team's
+manual checks passed and a fresh public clone passed; only the Devpost submission remains.
 
 **Approved by the team (2026-10-19); extended by the approved increments listed below.** Change an interface
 below only after telling everyone: all four agents build against it. What and why: [`SPEC.md`](../SPEC.md), [`decisions.md`](decisions.md).

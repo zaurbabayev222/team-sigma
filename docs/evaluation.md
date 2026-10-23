@@ -1,21 +1,22 @@
 # Evaluation evidence
 
 This maps the **unchanged 100-point rubric** in [criteria.md](criteria.md) to AeroQual evidence.
-It is an evidence inventory, not a self-awarded score. Local checks do not establish publication,
-independent review, deployment or submission. See [remaining-work.md](remaining-work.md).
+It is an evidence inventory, not a self-awarded score. Status as of 23 October 2026: deployed and
+verified logged out (H-06), team manual checks passed, fresh public clone passed. See
+[remaining-work.md](remaining-work.md).
 
-| Rubric item | Points | Current evidence | Remaining confirmation |
+| Rubric item | Points | Current evidence | Confirmation |
 | --- | ---: | --- | --- |
-| Effective, working tool | 25 | FastAPI + React; [Windows setup](../README.md); all 16 API scenarios match the Python engine; UI tests/build | Independent run of the published candidate; public availability is H-06 |
-| Valid QC analyses in Python/R | 25 | [qc.py](../app/qc.py), [SPEC section 4](../SPEC.md), [known-answer and degenerate tests](../tests/); pure tested signal/inspection/view helpers | Team explanation of assumptions and limits; no claim of hardware qualification |
-| Prompt fit | 5 | Prompt 1, aerospace 3D printing; [SPEC](../SPEC.md), [overview](../PROJECT_OVERVIEW.md) | Final narrative review |
-| Clear user and use case | 5 | Quality engineer reviewing titanium build/coupon tensile tests; stability, capability and failures separated | Independent usability feedback |
-| Minimal, reasonable inputs | 5 | Three required CSV columns plus customer LSL; optional process context and primary defect; [API reference](../app/README.md) | Check actual customer sampling and measurement suitability |
-| Clear test-data demonstration | 10 | [14-lesson interactive HTML deck](../demo/slidedeck/index.html), [written walkthrough](../demo/README.md), [API parity runner](../demo/check.py) | Independent teammate follows and reproduces it (H-05) |
-| Excellent documentation | 10 | [README](../README.md), [function/API reference](../app/README.md), [architecture](architecture.md), [Pareto guide](pareto-explorer.md), [tutorial instructions](../demo/README.md) | Independent fresh-clone review and live URL gate (H-07/H-06) |
-| 2–3 accurate working test datasets | 5 | Original three LPBF examples provide capable/incapable/unstable cases; 13 supplementary examples extend methods and inspections; four validators | Reviewed check-in; synthetic data must remain labeled |
-| Dataset codebook and README | 5 | [data/README.md](../data/README.md): columns, units, seeds, collection guidance, missing/none semantics | Final independent readability check |
-| Fully reproducible public repository | 5 | Locked frontend dependencies, pinned Python dependencies, startup scripts; clean local committed-baseline clone and fresh dependency checks | Publish current candidate, reproduce that public revision and confirm Devpost (H-08) |
+| Effective, working tool | 25 | FastAPI + React; [Windows setup](../README.md); all 16 API scenarios match the Python engine; UI tests/build | Done: public app verified logged out (H-06); team checked it |
+| Valid QC analyses in Python/R | 25 | [qc.py](../app/qc.py), [SPEC section 4](../SPEC.md), [known-answer and degenerate tests](../tests/); pure tested signal/inspection/view helpers | Done: statistics review PASS; no claim of hardware qualification |
+| Prompt fit | 5 | Prompt 1, aerospace 3D printing; [SPEC](../SPEC.md), [overview](../PROJECT_OVERVIEW.md) | Done |
+| Clear user and use case | 5 | Quality engineer reviewing titanium build/coupon tensile tests; stability, capability and failures separated | Done: team manual checks |
+| Minimal, reasonable inputs | 5 | Three required CSV columns plus customer LSL; optional process context and primary defect; [API reference](../app/README.md) | Done; real use still needs a suitable sampling and measurement system |
+| Clear test-data demonstration | 10 | [14-lesson interactive HTML deck](../demo/slidedeck/index.html), [written walkthrough](../demo/README.md), [API parity runner](../demo/check.py) | Done: team reproduced it on the live app (H-05) |
+| Excellent documentation | 10 | [README](../README.md), [function/API reference](../app/README.md), [architecture](architecture.md), [Pareto guide](pareto-explorer.md), [tutorial instructions](../demo/README.md) | Done: fresh-clone walkthrough and live URL (H-07/H-06) |
+| 2–3 accurate working test datasets | 5 | Original three LPBF examples provide capable/incapable/unstable cases; 13 supplementary examples extend methods and inspections; four validators | Done: four validators pass in a fresh clone (H-02) |
+| Dataset codebook and README | 5 | [data/README.md](../data/README.md): columns, units, seeds, collection guidance, missing/none semantics | Done: team manual checks |
+| Fully reproducible public repository | 5 | Locked frontend dependencies, pinned Python dependencies, startup scripts; clean local committed-baseline clone and fresh dependency checks | Fresh public clone passed; Devpost submission (H-08) |
 | **Total** | **100** | **Coverage is mapped; points are awarded by event staff.** | |
 
 ## Local verification, 22 October 2026
@@ -58,6 +59,11 @@ layout and printing. They supplement the H-14 app browser evidence; the deck is 
   Shapiro–Wilk results do not identify a physical cause or validate a parameter adjustment.
 
 ## Reproducibility scope
+
+**Update, 23 October 2026:** the public repository at `bf5c729` was cloned into an empty folder and
+set up from the README. `app/testme.sh` started the app (`/health` ok, `/` redirects to the dashboard,
+LPBF `stable_capable` at LSL 895 gives Cpk 1.683 / Ppk 1.789). Then `106 passed, 18 subtests passed`,
+25 frontend tests and all four validators passed. The older notes below are kept for history.
 
 A clean local Git clone of committed revision `3fa4c7c` was installed with locked/pinned dependencies.
 Its README setup must copy `data/*.csv` into `app/data/` before API tests; skipping that step produces

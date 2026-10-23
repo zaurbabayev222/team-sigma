@@ -58,7 +58,7 @@ Capture verifies all core fields against `app.qc.analyze`, records source/data h
 actual responses. `--check` detects stale sources or a stale generated file; it never contacts the API.
 The artifact tests also check exact CSV bytes and unchanged control baselines in LSL/date experiments.
 Screenshots: [desktop](screenshots/walkthrough-desktop.png), [mobile](screenshots/walkthrough-mobile.png).
-Independent reproduction remains open; see [remaining-work.md](../docs/remaining-work.md).
+The team reproduced the walkthrough on the live app on October 23, 2026.
 
 ## Verification status
 
@@ -242,8 +242,8 @@ python -m pytest tests
 | Inputs and data | Three explicitly synthetic CSVs and the linked codebook with units and collection sources |
 | Demonstration | Reproduce the three cases above and inspect the build evidence |
 | Documentation | Follow root setup, input descriptions and API reference from a fresh clone |
-| Independent reproduction | A teammate records date, revision, outputs and visual agreement; still pending |
-| Public submission | Confirm logged-out dashboard access, link repo and demo in Devpost; still pending |
+| Independent reproduction | Done: team members reproduced the numbers on the live app (October 23, 2026) |
+| Public submission | Logged-out access verified; Devpost entry links the repo, demo site and live app |
 
 Synthetic examples illustrate software behavior and do not validate titanium manufacturing physics or qualify hardware.
 
@@ -278,7 +278,7 @@ From PowerShell, with the app running:
 Invoke-RestMethod 'http://127.0.0.1:8000/analyze?dataset=waam_unstable_shift&lsl=895&process_type=waam'
 ```
 
-The six-scenario checker compares every core field, including chart limits and all flags. The original results.json remains the historical LPBF capture; use results_waam.json for the WAAM full-precision capture. No hardware qualification or trained prediction is established by these examples. Independent human reproduction and public deployment verification of the WAAM revision remain pending.
+The six-scenario checker compares every core field, including chart limits and all flags. The original results.json remains the historical LPBF capture; use results_waam.json for the WAAM full-precision capture. No hardware qualification or trained prediction is established by these examples. The WAAM revision is part of the deployed, team-checked app.
 
 ### WAAM local review captures
 
@@ -317,7 +317,7 @@ Run from the repository root after setup (replace port for your running server):
 Invoke-RestMethod 'http://127.0.0.1:8001/analyze?dataset=laser_ded_unstable_shift&lsl=895&process_type=laser_ded'
 ```
 
-`results_extensions.json` captures actual API summaries, Pareto rows and investigation actions for all twelve scenarios at LSL 895, min_builds 25 and cpk_target 1.33. It is supporting evidence, not a replacement for running the app. Original result captures remain unchanged. New actual local captures: [desktop Pareto](screenshots/signal-pareto-laser-ded.png), [investigation actions](screenshots/investigation-actions.png), [mobile Pareto](screenshots/signal-pareto-mobile.png). These show a local build, not proof of public deployment. Independent teammate reproduction remains pending.
+`results_extensions.json` captures actual API summaries, Pareto rows and investigation actions for all twelve scenarios at LSL 895, min_builds 25 and cpk_target 1.33. It is supporting evidence, not a replacement for running the app. Original result captures remain unchanged. New actual local captures: [desktop Pareto](screenshots/signal-pareto-laser-ded.png), [investigation actions](screenshots/investigation-actions.png), [mobile Pareto](screenshots/signal-pareto-mobile.png). These show a local build; the public app is verified separately (H-06).
 
 
 ## H-14: interactive Pareto and inspection demo

@@ -1,6 +1,6 @@
-# Submission draft
+# Submission text
 
-Prepared text for review. **Submission has not been confirmed.** Assignments and timing remain open.
+Text and links for the Devpost entry. The app, the demo and a fresh public clone were checked on October 23, 2026.
 
 ## Project
 
@@ -40,19 +40,18 @@ chart/Pareto interpretation, captured requirement/date experiments and knowledge
 statistics are captured API outputs, with source hashes and API/core parity checks.
 
 Known-answer, degenerate, API, validation and UI checks are linked in [evaluation.md](evaluation.md).
-Independent review and public-candidate reproduction remain to be completed before claiming acceptance.
+The team reproduced the demo on the live app, and a fresh clone of the public repo passed every check (October 23, 2026).
 
 ## Links to select for the final entry
 
-- Repository: [team-sigma](https://github.com/zaurbabayev222/team-sigma). Confirm the final published
-  revision contains the intended candidate before submitting it.
+- Repository: [team-sigma](https://github.com/zaurbabayev222/team-sigma).
+- Demo site (start here): https://zaurbabayev222.github.io/team-sigma/demo/
 - Written demo: [demo/README.md](../demo/README.md).
-- Interactive artifact: [demo/slidedeck/index.html](../demo/slidedeck/index.html). Download/open the HTML
-  or host it as a static artifact; a repository HTML preview is source code, not an interactive website.
+- Interactive tutorial: https://zaurbabayev222.github.io/team-sigma/demo/slidedeck/ (source:
+  [demo/slidedeck/index.html](../demo/slidedeck/index.html)).
 - Public application URL: https://connect.systems-apps.com/content/0639302d-988d-4820-961e-e3268e78b0b0/ (H-06, verified logged out on October 22, 2026).
 - Devpost entry: add the selected links and confirm actual submission; no entry URL is invented here.
 
-## Final checks still to do
+## Final step
 
-Review the wording, reproduce the walkthrough independently, publish the reviewed candidate, check its
-public links and artifact accessibility, then confirm the Devpost submission. H-06 remains outside this task.
+Submit the Devpost entry with the links above, then open the submitted page logged out and click every link.
