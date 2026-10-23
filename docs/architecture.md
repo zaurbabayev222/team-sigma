@@ -1,24 +1,19 @@
 # How AeroQual works
 
-## Current documentation and training surface
+Sigma Airlines · updated 2026-10-22 (release 1 plus the approved extensions H-10 to H-17)
+
+Pictures of the same app: who uses it ([use cases](#1-use-case-diagram)), what it does step by
+step ([activity diagram](#2-activity-diagram)), and which function belongs to which part of the code
+([FFBD](#3-functional-flow-block-diagram-ffbd)). [Section 4](#4-subsystems-and-who-built-them)
+maps each subsystem to its CONTRACT tasks and the teammates who built it. Details live in
+[`SPEC.md`](../SPEC.md); reasons in [`decisions.md`](decisions.md).
 
 The [offline walkthrough](../demo/slidedeck/index.html) is a documentation artifact outside `app/`.
 `demo/build_slidedeck.py` captures verified API outputs and exact synthetic CSVs into `deck-data.json`,
 then inlines the template, styles, JavaScript and data into one HTML file. It has no external library,
 network dependency or browser-side QC calculation. Actual uploads remain in the React/FastAPI app.
-The deck does not change the runtime bundle or deployment configuration. Current evidence and
-open-ended release gates are in [evaluation.md](evaluation.md) and [remaining-work.md](remaining-work.md).
-
-The diagrams below describe the original application foundation. Approved four-process/Pareto
-extensions are documented later in this file and in SPEC; original teammate mappings are historical.
-
-Sigma Airlines · release 1 · 2026-10-19
-
-Three pictures of the same app: who uses it ([use cases](#1-use-case-diagram)), what it does step by
-step ([activity diagram](#2-activity-diagram)), and which function belongs to which subsystem
-([FFBD](#3-functional-flow-block-diagram-ffbd)). The [subsystem table](#4-subsystems-and-who-builds-them)
-maps each subsystem to a CONTRACT task and a teammate. Details live in [`SPEC.md`](../SPEC.md);
-reasons in [`decisions.md`](decisions.md).
+Current evidence and open release gates are in [evaluation.md](evaluation.md) and
+[remaining-work.md](remaining-work.md).
 
 Each diagram has an image link under it, in case GitHub draws the Mermaid code badly. The images
 are exported from the code: after editing a diagram, regenerate its image with
@@ -27,81 +22,90 @@ are exported from the code: after editing a diagram, regenerate its image with
 ## 1. Use case diagram
 
 ```mermaid
-%%{init: {"flowchart": {"padding": 20, "nodeSpacing": 30, "rankSpacing": 70}}}%%
+%%{init: {"flowchart": {"padding": 20, "nodeSpacing": 22, "rankSpacing": 60}}}%%
 flowchart LR
     QE["Quality<br>engineer"]
-    JU["Judge or<br>reviewer"]
-    PE["Process engineer<br>(future)"]
 
     subgraph AQ["AeroQual"]
-        UC1(["Upload build<br>test data"])
+        direction TB
+        UC0(["Choose printing<br>process"])
+        UC1(["Upload build test<br>data or pick example"])
         UC2(["Enter customer<br>minimum strength"])
         UC3(["Check stability<br>(control charts)"])
         UC4(["Check capability<br>(Cpk, Ppk)"])
         UC5(["See coupon<br>failure rate"])
-        UC6(["Investigate<br>flagged builds"])
-        UC7(["Run the demo<br>datasets"])
-        UC8(["Add a printing<br>process profile"])
+        UC6(["Rank chart signals<br>and defects (Pareto)"])
+        UC7(["Follow investigation<br>actions"])
+        UC8(["Narrow to a<br>date range"])
+        UC9(["Run the example<br>datasets"])
+        UC10(["Work through the<br>offline tutorial"])
+        UC11(["Add a process<br>profile"])
     end
 
-    QE --- UC1
-    QE --- UC2
-    QE --- UC3
-    QE --- UC4
-    QE --- UC5
-    QE --- UC6
-    JU --- UC7
-    PE -.- UC8
-    UC7 -. includes .-> UC3
-    UC7 -. includes .-> UC4
+    JU["Judge or<br>reviewer"]
+    DEV["Developer"]
+
+    QE --- UC0 & UC1 & UC2 & UC3 & UC4 & UC5 & UC6 & UC7 & UC8
+    UC9 --- JU
+    UC10 --- JU
+    UC11 --- DEV
 ```
 
 [Open this diagram as an image](images/diagram-use-case.png)
 
-The quality engineer is the one user release 1 is built for. Judges use the same page through the
-demo datasets. Adding a process profile is a future use case (dashed); release 1 only makes it
-cheap.
+The quality engineer is the user the tool is built for. Judges use the same dashboard through the
+example datasets, or the offline tutorial. A developer adds a printing process by writing one profile
+file in `app/profiles/` and registering it; four exist (LPBF, WAAM, EB-PBF, powder-fed laser DED).
 
 ## 2. Activity diagram
 
 ```mermaid
 %%{init: {"flowchart": {"padding": 20, "nodeSpacing": 40, "rankSpacing": 40}}}%%
 flowchart TD
-    S([Start]) --> A1["Choose demo data<br>or upload a CSV"]
+    S([Start]) --> A0["Choose process: LPBF,<br>WAAM, EB-PBF or<br>laser DED"]
+    A0 --> A1["Pick an example<br>or upload a CSV"]
     A1 --> A2["Enter customer<br>minimum (LSL, MPa)"]
     A2 --> D1{"File<br>valid?"}
     D1 -- no --> E1["Show the error,<br>naming the row"]
     E1 --> A1
-    D1 -- yes --> A3["Map columns via<br>LPBF profile"]
+    D1 -- yes --> A3["Map columns via<br>the selected profile"]
     A3 --> A4["Sort builds<br>by date"]
     A4 --> A5["Mean and std dev<br>of each build"]
     A5 --> A6["X-bar and S<br>control limits"]
     A6 --> A7["Flag builds<br>outside limits"]
     A7 --> A8["Cpk, Ppk,<br>failure rate,<br>normality check"]
-    A8 --> D2{"Any build<br>flagged?"}
+    A8 --> D0{"Any<br>variation?"}
+    D0 -- no --> V0["Not assessable:<br>no variation"]
+    D0 -- yes --> D2{"Any build<br>flagged?"}
     D2 -- yes --> V1["Not assessable:<br>unstable"]
     D2 -- no --> D3{"25+<br>builds?"}
     D3 -- no --> V2["Not assessable:<br>too few builds"]
     D3 -- yes --> D4{"Cpk<br>≥ 1.33?"}
     D4 -- yes --> V3["Capable"]
     D4 -- no --> V4["Not capable"]
-    V1 --> A9["Parameter table<br>for flagged builds"]
-    A9 --> A10["Show charts,<br>numbers, verdict<br>and reason"]
-    V2 --> A10
-    V3 --> A10
-    V4 --> A10
-    A10 --> F([End])
+    V0 --> A9
+    V1 --> A9
+    V2 --> A9
+    V3 --> A9
+    V4 --> A9
+    A9["Signal and defect<br>Pareto, parameters,<br>investigation actions"] --> A10["Show charts,<br>numbers, verdict<br>and reason"]
+    A10 --> D5{"Apply a date<br>range or pick<br>a Pareto bar?"}
+    D5 -- yes --> A11["Recount the Pareto<br>for that view, same<br>full-log limits"]
+    A11 --> A10
+    D5 -- no --> F([End])
 ```
 
 [Open this diagram as an image](images/diagram-activity.png)
 
-"File valid?" checks four things: the required columns are present, no `uts_mpa` is blank, every
-build has the same number of coupons, and there are at least 2 builds. Every path ends with the
-numbers on screen. Only the verdict changes, and it always says why.
+"File valid?" checks the required columns, that no `uts_mpa` is blank or non-numeric, that every
+build has one date and the same number of coupons, that there are at least 2 builds, and that the
+data match the chosen process. Every path ends with the numbers on screen. Only the verdict
+changes, and it always says why. A date range or a Pareto selection changes only the investigation
+view: limits, Cpk, Ppk and the verdict always come from the complete file.
 
 ## 3. Functional flow block diagram (FFBD)
 
-Top level. Each block is a function; its colour is the subsystem that owns it (section 4).
+Top level. Each block is a function; its colour is the part of the code that owns it.
 
 ```mermaid
 %%{init: {"flowchart": {"padding": 20, "nodeSpacing": 30, "rankSpacing": 40}}}%%
@@ -110,20 +114,26 @@ flowchart LR
     F2 --> F3["3.0<br>Map via<br>profile"]
     F3 --> F4["4.0<br>Compute<br>statistics"]
     F4 --> F5["5.0<br>Decide<br>verdict"]
-    F5 --> F6["6.0<br>Investigation<br>table"]
+    F5 --> F6["6.0<br>Investigation<br>evidence"]
     F6 --> F7["7.0<br>Display<br>results"]
+    F7 -. optional .-> F8["8.0<br>Filtered<br>view"]
+    F8 -.-> F7
 
     classDef ui fill:#e7f1fb,stroke:#4a78b5,color:#000
     classDef api fill:#f9eeda,stroke:#b5874a,color:#000
     classDef stats fill:#e5f4e4,stroke:#4a9a52,color:#000
+    classDef helper fill:#f0e9f7,stroke:#7a5aa8,color:#000
     class F1,F7 ui
-    class F2,F3,F6 api
+    class F2,F3 api
     class F4,F5 stats
+    class F6,F8 helper
 ```
 
 [Open this diagram as an image](images/diagram-ffbd.png)
 
-Blue = front end · amber = API and profile · green = statistics engine.
+Blue = front end (`app/frontend/`) · amber = API and process profiles (`app/app.py`,
+`app/profiles/`) · green = statistics engine (`app/qc.py`) · purple = descriptive investigation
+helpers (plain Python, no new statistics).
 
 Function 4.0 broken down (all inside `app/qc.py`, no web code):
 
@@ -145,26 +155,55 @@ flowchart LR
 The constants in 4.2 are c4, A3, B3 and B4, computed from the number of coupons per build. The
 normality check in 4.7 is a Shapiro-Wilk test.
 
-## 4. Subsystems and who builds them
+Functions 6.0 and 8.0 broken down. They count and describe; they never change a limit or an index:
 
-| Subsystem | Functions | CONTRACT task | Files it owns | Teammate |
+```mermaid
+%%{init: {"flowchart": {"padding": 20, "nodeSpacing": 30, "rankSpacing": 50}}}%%
+flowchart LR
+    R["5.0<br>Verdict and<br>full-log limits"] --> H1["6.1<br>Signal Pareto<br>signals.py"]
+    R --> H2["6.2<br>Inspection Pareto<br>inspection.py"]
+    R --> H3["6.3<br>Parameter summary<br>app.py"]
+    R --> H4["6.4<br>Investigation actions<br>investigation.py"]
+    H1 --> H5["8.0<br>Date-window and<br>selection views<br>pareto_view.py"]
+    H2 --> H5
+
+    classDef stats fill:#e5f4e4,stroke:#4a9a52,color:#000
+    classDef helper fill:#f0e9f7,stroke:#7a5aa8,color:#000
+    class R stats
+    class H1,H2,H3,H4,H5 helper
+```
+
+[Open this diagram as an image](images/diagram-ffbd-investigation.png)
+
+## 4. Subsystems and who built them
+
+| Subsystem | Functions | CONTRACT tasks | Main files | Built by |
 |---|---|---|---|---|
-| Statistics engine | 4.0, 5.0 | H-03 | `app/qc.py`, `tests/` | A |
-| Test data and codebook | test inputs for 1.0 | H-02 | `data/` | B |
-| API and process profile | 2.0, 3.0, 6.0 | H-04 | `app/` except A's files | C |
-| Front end and demo | 1.0, 7.0 | H-05 | `app/frontend/`, `demo/` | D |
-| Deploy | public URL | H-06 | `.github/`, `app/manifest.json` | C |
-| Docs and submission | README, repo check, Devpost | H-07, H-08 | `README.md`, `app/README.md`, `.gitignore` | B |
+| Statistics engine | 4.0, 5.0 | H-03, H-17 | `app/qc.py`, `tests/` | Zaur Babayev (engine, known-answer tests); Cameron Archibald (input safeguards) |
+| Investigation helpers | 6.0, 8.0 | H-11, H-12, H-14 | `app/signals.py`, `app/inspection.py`, `app/investigation.py`, `app/pareto_view.py` | Cameron Archibald |
+| Test data and codebook | test inputs for 1.0 | H-02, H-10, H-13, H-14 | `data/` | robertwarnold (first three LPBF datasets, codebook); Cameron Archibald (WAAM, EB-PBF, laser DED and inspection datasets) |
+| API and process profiles | 2.0, 3.0 | H-04, H-10, H-13 | `app/app.py`, `app/profiles/` | Zaur Babayev (API, LPBF profile); robertwarnold (dashboard serving); Cameron Archibald (process selection, three profiles) |
+| Front end and demo | 1.0, 7.0 | H-05, H-15, H-16 | `app/frontend/`, `demo/` | robertwarnold (first dashboard, walkthrough); Cameron Archibald (redesign, Pareto views, tutorial, brief) |
+| Deploy | public URL | H-06, H-09 | `.github/`, `app/manifest.json` | robertwarnold (bundle and check tooling); Zaur Babayev (push-to-deploy, first live deploy, verification); Cameron Archibald (cross-platform fixes) |
+| Docs and submission | README, repo check, Devpost | H-01, H-07, H-08 | `SPEC.md`, `PROJECT_OVERVIEW.md`, `README.md`, `app/README.md`, `docs/`, `.gitignore` | Cameron Archibald (first project overview; later README and guide updates); Zaur Babayev (SPEC, plan, decisions, diagrams, team guide); Jerry Su (first AeroQual README, function reference, `.gitignore`, H-07/H-08) |
 
-**The two interfaces everyone builds against**, agreed first and written in `docs/plan.md`:
+In each row, names are listed in the order each person started on that subsystem. Every teammate worked with AI coding agents.
+The table comes from the Git history and [`CONTRACT.yaml`](../CONTRACT.yaml), so it shows committed
+work only: reviews, testing, planning and discussion in the team chat do not appear here. If it
+misses your work, correct this table.
 
-1. **Data columns** (between B, C and A): `build_id`, `build_date`, `uts_mpa`, plus the optional
-   LPBF parameters. SPEC section 3.
-2. **What `qc.py` returns** (between A, C and D): one result object with the per-build points,
-   the limits, Cpk, Ppk, the failure rate, the flags, the verdict and its reason. C passes it
-   through the API as JSON; D draws it.
+**The two interfaces everyone built against**, agreed first and written in `docs/plan.md`:
 
-With those two fixed, all four can work at once:
+1. **Data columns:** `build_id`, `build_date`, `uts_mpa`, plus the optional parameters of the
+   selected process profile. SPEC section 3.
+2. **What `qc.py` returns:** one result object with the per-build points, the limits, Cpk, Ppk,
+   the failure rate, the flags, the verdict and its reason. The API adds the investigation helpers'
+   output and passes it on as JSON; the front end draws it.
+
+### Original work plan (Oct 19, historical)
+
+Before anyone claimed tasks, the plan split the work into four parallel roles (A to D). Teammates
+then claimed tasks freely, so the roles below do not show who did what; the table above does.
 
 ```mermaid
 %%{init: {"flowchart": {"padding": 20, "nodeSpacing": 30, "rankSpacing": 50}}}%%
