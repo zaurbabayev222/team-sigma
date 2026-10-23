@@ -105,7 +105,7 @@ tasks:
   - id: H-06
     title: Deploy to the course Posit Connect server
     points: "protects the 25 working-tool points - judges must be able to open it"
-    status: in_progress
+    status: done
     owner: "robertwarnold (agent)"
     started_at: "2026-10-21 00:43 UTC"
     owns: [".github/workflows/", ".github/scripts/", "app/manifest.json", "app/.python-version",
@@ -121,7 +121,7 @@ tasks:
     definition_of_done: >
       The workflow run is green, and the public URL answers HTTP 200 from a
       logged-out browser and returns the H-03 numbers for one test dataset.
-    result: "Upstream name-based push-to-deploy workflow retained; local Python 3.12.15 manifest and 14 runtime checksums, isolated bundle, known answer and three scenarios pass; upstream GitHub run 39701636897 reports success; public URL and logged-out verification of the next release pending"
+    result: "Template push-to-deploy, tests run before every publish; run 39880916021 (70b5bf2) green incl. no-key checks on all sixteen datasets; repo owner opened the public URL logged out (root redirects to the dashboard), LPBF stable_capable at LSL 895 shows Cpk 1.683 / Ppk 1.789, matching the core"
   - id: H-07
     title: README and function documentation
     points: "10 - Tool Documentation: excellent, easy-to-follow documentation"

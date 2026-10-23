@@ -49,7 +49,7 @@ Independent review and public-candidate reproduction remain to be completed befo
 - Written demo: [demo/README.md](../demo/README.md).
 - Interactive artifact: [demo/slidedeck/index.html](../demo/slidedeck/index.html). Download/open the HTML
   or host it as a static artifact; a repository HTML preview is source code, not an interactive website.
-- Public application URL: use a verified H-06 result when available. A localhost address is not a public demo.
+- Public application URL: https://connect.systems-apps.com/content/0639302d-988d-4820-961e-e3268e78b0b0/ (H-06, verified logged out on October 22, 2026).
 - Devpost entry: add the selected links and confirm actual submission; no entry URL is invented here.
 
 ## Final checks still to do

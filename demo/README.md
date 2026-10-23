@@ -235,7 +235,7 @@ python -m pytest tests
 
 | Evidence | Current requirement |
 | --- | --- |
-| Working tool | Local dashboard/API and all three scenarios; public Connect URL still pending |
+| Working tool | Public app at https://connect.systems-apps.com/content/0639302d-988d-4820-961e-e3268e78b0b0/ (verified logged out) plus the local dashboard/API |
 | Statistical correctness | Run the SPEC known-answer and degenerate tests; retain terminal output |
 | Inputs and data | Three explicitly synthetic CSVs and the linked codebook with units and collection sources |
 | Demonstration | Reproduce the three cases above and inspect the build evidence |

@@ -4,7 +4,9 @@ Titanium additive manufacturing quality dashboard by **Sigma Airlines**, Cornell
 
 AeroQual helps a quality engineer review tensile-test coupons after each build: detect changes in process stability, assess lower-side strength capability, count observed failures, and inspect recorded conditions for flagged builds. The application supports **laser powder bed fusion (LPBF)** and **wire arc additive manufacturing (WAAM)**, **electron beam powder bed fusion (EB-PBF)** and **powder-fed laser DED** profiles through a React/Vite dashboard and FastAPI backend. Python calculates every QC result.
 
-**Status:** the dashboard, API and sixteen synthetic datasets (four per process) work locally. Public Posit Connect deployment and independent fresh-clone teammate reproduction remain unverified. This prototype does not certify hardware or authorize release. All demonstration data and example limits are synthetic or illustrative.
+**Live app (public, no login):** [https://connect.systems-apps.com/content/0639302d-988d-4820-961e-e3268e78b0b0/](https://connect.systems-apps.com/content/0639302d-988d-4820-961e-e3268e78b0b0/) opens the dashboard; the API is at `/docs`.
+
+**Status:** the dashboard, API and sixteen synthetic datasets (four per process) are deployed on the course Posit Connect server and verified logged out on October 22, 2026. Independent fresh-clone teammate reproduction is still open. This prototype does not certify hardware or authorize release. All demonstration data and example limits are synthetic or illustrative.
 
 Start with the **[interactive HTML walkthrough](demo/slidedeck/index.html)** or the
 [written demo](demo/README.md). Download the HTML file and open it directly in a browser;
@@ -186,7 +188,7 @@ Baseline local Windows verification before the WAAM increment: **30 Python tests
 
 ## Deployment and project map
 
-**Public Posit Connect URL: not yet verified (H-06).** Local preview is not evidence of public deployment. The upstream workflow now tests and deploys automatically on pushes to `main` that change `app/`, `data/` or the configured deployment paths; it can also be started manually. A push is a deployment action when publisher secrets are configured. Follow the [deployment handoff](.github/scripts/README.md). Keep credentials in environment settings or repository secrets. Do not invoke publishing scripts to preview the app.
+**Public Posit Connect URL:** [https://connect.systems-apps.com/content/0639302d-988d-4820-961e-e3268e78b0b0/](https://connect.systems-apps.com/content/0639302d-988d-4820-961e-e3268e78b0b0/) (H-06). Verified logged out on October 22, 2026: the address opens the dashboard, `/health` answers `{"status":"ok"}`, and LPBF `stable_capable` at LSL 895 shows capable, Cpk 1.683, Ppk 1.789, matching the core. The workflow now tests and deploys automatically on pushes to `main` that change `app/`, `data/` or the configured deployment paths; it can also be started manually. A push is a deployment action when publisher secrets are configured. Follow the [deployment handoff](.github/scripts/README.md). Keep credentials in environment settings or repository secrets. Do not invoke publishing scripts to preview the app.
 
 | Location | Purpose |
 | --- | --- |
@@ -207,7 +209,7 @@ compact overview. The H-10 through H-14 verification paragraphs retain historica
 
 | Rubric item | Evidence to review | Remaining action |
 | --- | --- | --- |
-| Effective working tool (25) | Local dashboard/API, upload workflow and sixteen examples (four per process) | Publish and verify a public course Connect URL |
+| Effective working tool (25) | Local dashboard/API, upload workflow and sixteen examples (four per process) | Done: public URL above, verified logged out (H-06) |
 | Valid QC analysis (25) | SPEC formulas; known-answer and degenerate tests in `tests/` | Retain actual passing output and explain assumptions |
 | Prompt fit, user, minimal inputs (15) | SPEC use case; three required CSV columns plus customer LSL | Confirm the stated workflow with a quality-engineering reviewer |
 | Clear demonstration (10) | Interactive 14-lesson HTML tutorial, written walkthrough and synthetic API captures in `demo/` | Independent teammate reproduction |
