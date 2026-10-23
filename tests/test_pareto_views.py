@@ -91,11 +91,12 @@ def test_bad_filters_return_recoverable_errors(filters):
     assert response.status_code == 400 and response.json()['detail']
 
 
-def test_source_date_ambiguity_is_rejected_only_when_requesting_date_window():
+def test_source_date_ambiguity_is_rejected_before_any_analysis_view():
     df = pd.read_csv(ROOT/'tests/fixtures/spec_example.csv')
     df.loc[0,'build_date'] = 'bad-date'
-    assert run_analysis(df,980,25,1.33)['n_builds'] == 4
-    with pytest.raises(HTTPException, match='conflicting dates'):
+    with pytest.raises(HTTPException, match='conflicting'):
+        run_analysis(df,980,25,1.33)
+    with pytest.raises(HTTPException, match='conflicting'):
         run_analysis(df,980,25,1.33,start_date='2026-01-01')
     df.loc[:2,'build_date'] = '2026-02-30'
     with pytest.raises(HTTPException, match='valid calendar date'):

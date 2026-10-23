@@ -28,7 +28,7 @@ from qc import analyze  # noqa: E402
 from signals import signal_pareto  # noqa: E402
 from investigation import investigation_actions  # noqa: E402
 from inspection import inspection_records, inspection_pareto  # noqa: E402
-from pareto_view import pareto_view  # noqa: E402
+from pareto_view import pareto_view, iso_date  # noqa: E402
 from profiles import DATASETS, PROFILES, get_profile  # noqa: E402
 
 # Datasets live in the data folder next to this file (copied by sync_data.sh).
@@ -97,6 +97,15 @@ def run_analysis(df, lsl, min_builds, cpk_target, process_type="lpbf",
             min_builds=min_builds,
             cpk_target=cpk_target,
         )
+        for build in result['builds']:
+            iso_date(build['order'], f"build_date for build '{build['build_id']}'")
+        for parameter in profile['parameters']:
+            column = parameter['column']
+            if column in df:
+                infinite = pd.to_numeric(df[column], errors='coerce').isin([np.inf, -np.inf])
+                if infinite.any():
+                    row = int(np.flatnonzero(infinite.to_numpy())[0]) + 1
+                    raise ValueError(f"'{column}' must be finite or missing at data row {row}")
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error))
     result["signal_pareto"] = signal_pareto(result)

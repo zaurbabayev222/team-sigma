@@ -6,7 +6,7 @@ import SignalPareto, { InspectionPareto } from './SignalPareto'
 import { API_URL, analyzeDataset, analyzeUpload, listDatasets } from './api'
 
 // Display fixture only: statistics correctness belongs to the Python known-answer tests.
-const fixture = {n_builds:4,n_per_build:3,n_coupons:12,n_failures:1,failure_rate:1/12,cpk:.591,ppk:.571,sigma_short:11.284,sigma_total:11.677,shapiro_p:.5,verdict:'not assessable',reason:'Too few builds',builds:[{build_id:'B1',order:'2026-01-01',mean:1000,s:10,flagged:false}],xbar:{center:1000,lcl:980.46,ucl:1019.54},s_chart:{center:10,lcl:0,ucl:25.68}}
+const fixture = {profile:{name:'lpbf',label:'LPBF',parameters:[]},n_builds:4,n_per_build:3,n_coupons:12,n_failures:1,failure_rate:1/12,cpk:.591,ppk:.571,sigma_short:11.284,sigma_total:11.677,shapiro_p:.5,verdict:'not assessable',reason:'Too few builds',builds:[{build_id:'B1',order:'2026-01-01',mean:1000,s:10,flagged:false}],xbar:{center:1000,lcl:980.46,ucl:1019.54},s_chart:{center:10,lcl:0,ucl:25.68}}
 afterEach(() => vi.unstubAllGlobals())
 describe('server results display', () => {
   it('shows server numbers, both charts and verdict reason', () => {
@@ -42,7 +42,7 @@ describe('API wiring', () => {
 
 describe('process-specific contracts', () => {
   it('sends the selected WAAM process in catalog, analysis and upload requests', async () => {
-    const fetch=vi.fn().mockResolvedValue({ok:true,json:async()=>fixture});vi.stubGlobal('fetch',fetch)
+    const fetch=vi.fn().mockResolvedValue({ok:true,json:async()=>({...fixture,profile:{name:'waam'}})});vi.stubGlobal('fetch',fetch)
     await listDatasets('waam')
     expect(fetch.mock.calls[0][0]).toBe(`${API_URL}/datasets?process_type=waam`)
     await analyzeDataset('waam_stable_capable',895,'waam')
@@ -93,7 +93,7 @@ describe('investigation actions', () => {
 
 describe('additional printing methods', () => {
   it.each(['ebpbf','laser_ded'])('uses the selected %s profile without a fallback', async process => {
-    const fetch=vi.fn().mockResolvedValue({ok:true,json:async()=>fixture});vi.stubGlobal('fetch',fetch)
+    const fetch=vi.fn().mockResolvedValue({ok:true,json:async()=>({...fixture,profile:{name:process}})});vi.stubGlobal('fetch',fetch)
     await listDatasets(process);await analyzeDataset(`${process}_stable_capable`,895,process);await analyzeUpload(new Blob(['test']),895,process)
     expect(fetch.mock.calls[0][0]).toContain(`process_type=${process}`)
     expect(fetch.mock.calls[1][0]).toContain(`process_type=${process}`)
@@ -115,7 +115,7 @@ describe('interactive Pareto contracts', () => {
     expect(html).not.toContain('NaN')
   })
   it('passes inclusive date and category fields through GET and multipart without changing the analysis inputs', async () => {
-    const fetch=vi.fn().mockResolvedValue({ok:true,json:async()=>fixture});vi.stubGlobal('fetch',fetch)
+    const fetch=vi.fn().mockResolvedValue({ok:true,json:async()=>({...fixture,profile:{name:'laser_ded'}})});vi.stubGlobal('fetch',fetch)
     const filters={start_date:'2026-10-24',end_date:'2026-10-24',defect_category:'Lack of fusion',signal_category:null}
     await analyzeDataset('laser_ded_inspection_demo',895,'laser_ded',filters)
     const url=new URL(fetch.mock.calls[0][0],'http://localhost/')

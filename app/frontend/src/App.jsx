@@ -140,14 +140,15 @@ export default function App() {
     return () => { ignore = true }
   }, [processType, retry])
   const profile = profiles.find(item => item.name === processType)
+  function clearAnalysis() { setAnalysis(null); setError('') }
   function changeProcess(value) {
     if (value === processType) return
-    setProcessType(value); setDataset(''); setDatasets([]); setFile(null); setError('')
+    clearAnalysis(); setProcessType(value); setDataset(''); setDatasets([]); setFile(null)
     if (uploadInput.current) uploadInput.current.value = ''
   }
   const stale = analysis && (analysis.processType !== processType || analysis.file !== file || (!file && analysis.dataset !== dataset) || Number(analysis.lsl) !== Number(lsl))
   async function run(event) {
-    event.preventDefault(); setBusy(true); setError('')
+    event.preventDefault(); clearAnalysis(); setBusy(true)
     const snapshot = {file, dataset, lsl, processType, processLabel: profile?.label || processType.toUpperCase(), source: file ? file.name : scenarioFor(dataset)?.[0] || dataset, synthetic: !file}
     try {
       const result = await (file ? analyzeUpload(file, lsl, processType) : analyzeDataset(dataset, lsl, processType))

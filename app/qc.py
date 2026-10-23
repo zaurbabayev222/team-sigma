@@ -14,6 +14,7 @@ Assumptions: values roughly normal, builds in time order, equal coupons per buil
 only a lower spec limit.
 """
 import math
+from numbers import Integral, Real
 
 import pandas as pd
 from scipy import stats
@@ -21,7 +22,11 @@ from scipy import stats
 
 def c4_constant(n):
     """c4 = sqrt(2/(n-1)) * Gamma(n/2) / Gamma((n-1)/2), computed from n."""
-    return math.sqrt(2 / (n - 1)) * math.gamma(n / 2) / math.gamma((n - 1) / 2)
+    try:
+        return math.sqrt(2 / (n - 1)) * math.gamma(n / 2) / math.gamma((n - 1) / 2)
+    except OverflowError:
+        # Same gamma-ratio estimator, evaluated in log space for large subgroups.
+        return math.sqrt(2 / (n - 1)) * math.exp(math.lgamma(n / 2) - math.lgamma((n - 1) / 2))
 
 
 def chart_constants(n):
@@ -57,9 +62,18 @@ def analyze(df, lsl, subgroup_col="subgroup", order_col="order", value_col="valu
     # ---- check the input ----
     if isinstance(lsl, bool) or not isinstance(lsl, (int, float)) or not math.isfinite(lsl):
         raise ValueError(f"lsl must be a finite number, got {lsl!r}")
+    if isinstance(min_builds, bool) or not isinstance(min_builds, Integral) or min_builds < 2:
+        raise ValueError('min_builds must be an integer of at least 2')
+    if isinstance(cpk_target, bool) or not isinstance(cpk_target, Real) or not math.isfinite(cpk_target) or cpk_target <= 0:
+        raise ValueError('cpk_target must be a positive finite number')
     for col in (subgroup_col, order_col, value_col):
         if col not in df.columns:
             raise ValueError(f"missing column '{col}'")
+    for col in (subgroup_col, order_col):
+        labels = df[col].astype('string')
+        missing = labels.isna() | labels.str.strip().eq('')
+        if missing.any():
+            raise ValueError(f"blank or missing '{col}' at row {df.index[missing][0]}")
     values = pd.to_numeric(df[value_col], errors="coerce")
     bad = df.index[values.isna() | values.isin([math.inf, -math.inf])]
     if len(bad) > 0:
@@ -69,6 +83,10 @@ def analyze(df, lsl, subgroup_col="subgroup", order_col="order", value_col="valu
         "order": df[order_col].astype(str),
         "value": values.astype(float),
     })
+    orders = data.groupby('build', sort=False)['order'].nunique()
+    if orders.gt(1).any():
+        name = orders[orders.gt(1)].index[0]
+        raise ValueError(f"build '{name}' has conflicting '{order_col}' values; use one order value per build")
 
     sizes = data.groupby("build", sort=False).size()
     if len(sizes) < 2:
